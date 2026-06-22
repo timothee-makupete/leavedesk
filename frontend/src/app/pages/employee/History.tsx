@@ -118,6 +118,16 @@ export function LeaveHistoryPage() {
               { key: "range", header: "Date range", render: (r) => `${formatDate(r.start_date)} – ${formatDate(r.end_date)}` },
               { key: "days", header: "Days", render: (r) => r.number_of_days },
               { key: "status", header: "Status", render: (r) => <StatusBadge status={r.status} /> },
+              {
+                key: "comment",
+                header: "Admin comment",
+                render: (r) =>
+                  r.status !== "Pending" && r.admin_comment ? (
+                    <span className="max-w-xs text-sm text-slate-600">{r.admin_comment}</span>
+                  ) : (
+                    <span className="text-sm text-slate-400">—</span>
+                  ),
+              },
               { key: "submitted", header: "Submitted", render: (r) => formatDate(r.created_at) },
               {
                 key: "actions",

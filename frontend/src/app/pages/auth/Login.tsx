@@ -13,7 +13,7 @@ import { getErrorMessage } from "../../api/client";
 export function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation() as { state?: { from?: string } };
+  const location = useLocation() as { state?: { from?: string; email?: string } };
   const [showPw, setShowPw] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
 
@@ -23,7 +23,7 @@ export function LoginPage() {
     formState: { errors, isSubmitting },
   } = useForm<LoginValues>({
     resolver: zodResolver(loginSchema),
-    defaultValues: { email: "", password: "" },
+    defaultValues: { email: location.state?.email ?? "", password: "" },
   });
 
   const onSubmit = async (values: LoginValues) => {
@@ -36,7 +36,11 @@ export function LoginPage() {
         (user.role === "ADMIN" ? "/admin/dashboard" : "/employee/dashboard");
       navigate(to, { replace: true });
     } catch (err) {
-      setServerError(getErrorMessage(err, "Unable to sign in"));
+      const message = getErrorMessage(err, "Unable to sign in");
+      setServerError(message);
+      if (message.toLowerCase().includes("verify your email")) {
+        toast.info("Please verify your email before signing in.");
+      }
     }
   };
 
@@ -93,6 +97,10 @@ export function LoginPage() {
           Don't have an account?{" "}
           <Link to="/register" className="text-[#1D4ED8] hover:underline">
             Create one
+          </Link>
+          {" · "}
+          <Link to="/verify-email" className="text-[#1D4ED8] hover:underline">
+            Verify email
           </Link>
         </p>
       </form>

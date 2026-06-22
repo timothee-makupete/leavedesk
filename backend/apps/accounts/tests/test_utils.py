@@ -22,6 +22,7 @@ class EMSAPITestCase(APITestCase):
             "last_name": "Employee",
             "employee_id": kwargs.pop("employee_id", "EMP100"),
             "department": "Engineering",
+            "email_verified": True,
         }
         defaults.update(kwargs)
         return User.objects.create_user(email=email, password=password, **defaults)
@@ -38,6 +39,7 @@ class EMSAPITestCase(APITestCase):
             "employee_id": kwargs.pop("employee_id", "ADM100"),
             "role": UserRole.ADMIN,
             "is_staff": True,
+            "email_verified": True,
         }
         defaults.update(kwargs)
         return User.objects.create_user(email=email, password=password, **defaults)

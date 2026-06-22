@@ -10,6 +10,14 @@ from apps.accounts.models import UserRole
 User = get_user_model()
 
 
+class RegistrationResponseSerializer(serializers.Serializer):
+    """Response after successful employee registration."""
+
+    message = serializers.CharField()
+    email = serializers.EmailField()
+    email_verified = serializers.BooleanField()
+
+
 class UserRegistrationSerializer(serializers.ModelSerializer):
     """Serializer for employee self-registration."""
 
@@ -63,6 +71,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(
             password=password,
             role=UserRole.EMPLOYEE,
+            email_verified=False,
             **validated_data,
         )
         return user
@@ -83,6 +92,15 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
     def validate(self, attrs: dict) -> dict:
         data = super().validate(attrs)
+        if self.user.is_employee and not self.user.email_verified:
+            raise serializers.ValidationError(
+                {
+                    "non_field_errors": [
+                        "Please verify your email address before signing in. "
+                        "Check your inbox for the verification code."
+                    ]
+                }
+            )
         data["user"] = UserProfileSerializer(self.user).data
         return data
 
@@ -104,9 +122,10 @@ class UserProfileSerializer(serializers.ModelSerializer):
             "department",
             "employee_id",
             "role",
+            "email_verified",
             "date_joined",
         ]
-        read_only_fields = ["id", "email", "employee_id", "role", "date_joined"]
+        read_only_fields = ["id", "email", "employee_id", "role", "email_verified", "date_joined"]
 
 
 class UserProfileUpdateSerializer(serializers.ModelSerializer):
@@ -121,6 +140,24 @@ class LogoutSerializer(serializers.Serializer):
     """Serializer for blacklisting refresh tokens on logout."""
 
     refresh = serializers.CharField(required=True)
+
+
+class VerifyEmailSerializer(serializers.Serializer):
+    """Serializer for verifying an email address with a code."""
+
+    email = serializers.EmailField()
+    code = serializers.CharField(min_length=6, max_length=6)
+
+    def validate_code(self, value: str) -> str:
+        if not value.isdigit():
+            raise serializers.ValidationError("Verification code must be 6 digits.")
+        return value
+
+
+class ResendVerificationSerializer(serializers.Serializer):
+    """Serializer for resending a verification code."""
+
+    email = serializers.EmailField()
 
 
 class AdminUserSerializer(serializers.ModelSerializer):
@@ -176,7 +213,11 @@ class AdminUserSerializer(serializers.ModelSerializer):
         password = validated_data.pop("password", None)
         if not password:
             raise serializers.ValidationError({"password": "Password is required."})
-        return User.objects.create_user(password=password, **validated_data)
+        return User.objects.create_user(
+            password=password,
+            email_verified=True,
+            **validated_data,
+        )
 
     def update(self, instance: User, validated_data: dict) -> User:
         password = validated_data.pop("password", None)

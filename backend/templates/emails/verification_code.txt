@@ -1,0 +1,12 @@
+Hello {{ user_name }},
+
+Thank you for registering with LeaveDesk. Use the verification code below to activate your account:
+
+{{ code }}
+
+This code expires in 15 minutes. If you did not create an account, you can ignore this email.
+
+Verify your email: {{ frontend_url }}/verify-email
+
+Regards,
+Employee Leave Management System

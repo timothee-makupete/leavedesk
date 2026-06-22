@@ -5,6 +5,7 @@ from django.dispatch import receiver
 
 from apps.leaves.email_service import send_leave_status_email
 from apps.leaves.models import LeaveRequest, LeaveStatus
+from apps.notifications.services import create_leave_status_notification
 
 
 @receiver(post_save, sender=LeaveRequest)
@@ -21,4 +22,5 @@ def notify_leave_status_change(
     if instance.status in (LeaveStatus.APPROVED, LeaveStatus.REJECTED):
         update_fields = kwargs.get("update_fields")
         if update_fields is None or "status" in update_fields:
+            create_leave_status_notification(instance)
             send_leave_status_email(instance)

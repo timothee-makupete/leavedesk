@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     "apps.leaves",
     "apps.employees",
     "apps.audits",
+    "apps.notifications",
 ]
 
 MIDDLEWARE = [
@@ -215,6 +216,7 @@ SPECTACULAR_SETTINGS = {
         {"name": "Admin - Employees", "description": "Admin employee management"},
         {"name": "Admin - Dashboard", "description": "Dashboard statistics"},
         {"name": "Admin - Audit Logs", "description": "System audit trail"},
+        {"name": "Notifications", "description": "In-app user notifications"},
     ],
 }
 

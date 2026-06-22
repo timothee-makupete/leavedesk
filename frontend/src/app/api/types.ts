@@ -12,6 +12,7 @@ export interface User {
   department: string;
   employee_id: string;
   role: UserRole;
+  email_verified: boolean;
   is_active?: boolean;
   date_joined: string;
 }
@@ -85,6 +86,29 @@ export interface ApiError {
   detail?: string;
   non_field_errors?: string[];
   [field: string]: string | string[] | undefined;
+}
+
+export type NotificationType = "leave_approved" | "leave_rejected";
+
+export interface Notification {
+  id: number;
+  notification_type: NotificationType;
+  title: string;
+  message: string;
+  leave_request: number | null;
+  is_read: boolean;
+  created_at: string;
+}
+
+export interface RegisterResponse {
+  message: string;
+  email: string;
+  email_verified: boolean;
+}
+
+export interface VerifyEmailResponse {
+  message: string;
+  user: User;
 }
 
 // UI convenience — backend has no /departments endpoint, but the form needs options.

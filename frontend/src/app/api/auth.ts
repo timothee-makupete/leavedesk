@@ -1,5 +1,5 @@
 import { api, tokenStore, USER_KEY } from "./client";
-import type { AuthResponse, User } from "./types";
+import type { AuthResponse, RegisterResponse, User, VerifyEmailResponse } from "./types";
 
 export interface RegisterPayload {
   email: string;
@@ -20,8 +20,18 @@ export const authApi = {
     return data;
   },
 
-  async register(payload: RegisterPayload): Promise<User> {
-    const { data } = await api.post<User>("/auth/register/", payload);
+  async register(payload: RegisterPayload): Promise<RegisterResponse> {
+    const { data } = await api.post<RegisterResponse>("/auth/register/", payload);
+    return data;
+  },
+
+  async verifyEmail(email: string, code: string): Promise<VerifyEmailResponse> {
+    const { data } = await api.post<VerifyEmailResponse>("/auth/verify-email/", { email, code });
+    return data;
+  },
+
+  async resendVerification(email: string): Promise<RegisterResponse> {
+    const { data } = await api.post<RegisterResponse>("/auth/resend-verification/", { email });
     return data;
   },
 

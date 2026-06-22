@@ -29,8 +29,8 @@ export function RegisterPage() {
     setServerError(null);
     try {
       await registerUser(values);
-      toast.success("Account created. Please sign in to continue.");
-      navigate("/login", { replace: true });
+      toast.success("Account created. Check your email for a verification code.");
+      navigate("/verify-email", { replace: true, state: { email: values.email } });
     } catch (err) {
       setServerError(getErrorMessage(err, "Unable to register"));
     }

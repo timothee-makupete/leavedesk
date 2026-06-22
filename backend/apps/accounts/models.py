@@ -28,6 +28,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
+    email_verified = models.BooleanField(default=False)
     date_joined = models.DateTimeField(default=timezone.now)
 
     objects = UserManager()
@@ -54,3 +55,26 @@ class User(AbstractBaseUser, PermissionsMixin):
     @property
     def is_employee(self) -> bool:
         return self.role == UserRole.EMPLOYEE
+
+
+class EmailVerificationCode(models.Model):
+    """One-time email verification code for new employee accounts."""
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="verification_codes",
+    )
+    code = models.CharField(max_length=6)
+    is_used = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField()
+
+    class Meta:
+        ordering = ["-created_at"]
+        indexes = [
+            models.Index(fields=["user", "code", "is_used"]),
+        ]
+
+    def __str__(self) -> str:
+        return f"Verification code for {self.user.email}"

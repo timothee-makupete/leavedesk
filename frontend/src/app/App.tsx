@@ -8,6 +8,7 @@ import { AuthLayout } from "./layouts/AuthLayout";
 import { AppLayout } from "./layouts/AppLayout";
 import { LoginPage } from "./pages/auth/Login";
 import { RegisterPage } from "./pages/auth/Register";
+import { VerifyEmailPage } from "./pages/auth/VerifyEmail";
 import { EmployeeDashboard } from "./pages/employee/Dashboard";
 import { ApplyLeavePage } from "./pages/employee/ApplyLeave";
 import { LeaveHistoryPage } from "./pages/employee/History";
@@ -27,6 +28,7 @@ export default function App() {
           <Route element={<AuthLayout />}>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/verify-email" element={<VerifyEmailPage />} />
           </Route>
 
           <Route element={<ProtectedRoute />}>

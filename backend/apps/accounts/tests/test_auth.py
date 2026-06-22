@@ -1,6 +1,8 @@
 """Authentication API tests."""
 
-from apps.accounts.models import User
+from django.core import mail
+
+from apps.accounts.models import EmailVerificationCode, User
 from apps.accounts.tests.test_utils import EMSAPITestCase
 
 
@@ -21,7 +23,55 @@ class AuthAPITestCase(EMSAPITestCase):
             format="json",
         )
         self.assertEqual(response.status_code, 201)
-        self.assertTrue(User.objects.filter(email="new.employee@test.com").exists())
+        user = User.objects.get(email="new.employee@test.com")
+        self.assertFalse(user.email_verified)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertIn("Verify your LeaveDesk account", mail.outbox[0].subject)
+
+    def test_verify_email(self):
+        self.client.post(
+            "/api/auth/register/",
+            {
+                "email": "verify@test.com",
+                "password": "SecurePass123!",
+                "password_confirm": "SecurePass123!",
+                "first_name": "Verify",
+                "last_name": "User",
+                "employee_id": "EMP205",
+            },
+            format="json",
+        )
+        user = User.objects.get(email="verify@test.com")
+        code = EmailVerificationCode.objects.filter(user=user, is_used=False).first().code
+        response = self.client.post(
+            "/api/auth/verify-email/",
+            {"email": user.email, "code": code},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        user.refresh_from_db()
+        self.assertTrue(user.email_verified)
+
+    def test_login_blocked_until_email_verified(self):
+        self.client.post(
+            "/api/auth/register/",
+            {
+                "email": "blocked@test.com",
+                "password": "SecurePass123!",
+                "password_confirm": "SecurePass123!",
+                "first_name": "Blocked",
+                "last_name": "User",
+                "employee_id": "EMP206",
+            },
+            format="json",
+        )
+        response = self.client.post(
+            "/api/auth/login/",
+            {"email": "blocked@test.com", "password": "SecurePass123!"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("verify your email", response.data["non_field_errors"][0].lower())
 
     def test_register_duplicate_email(self):
         self.create_employee(email="dup@test.com", employee_id="EMP201")

@@ -1,13 +1,12 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import { authApi, type RegisterPayload } from "../api/auth";
-import { tokenStore } from "../api/client";
+import { authApi, type RegisterPayload, type RegisterResponse } from "../api/auth";import { tokenStore } from "../api/client";
 import type { User } from "../api/types";
 
 type AuthCtx = {
   user: User | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<User>;
-  register: (data: RegisterPayload) => Promise<User>;
+  register: (data: RegisterPayload) => Promise<RegisterResponse>;
   logout: () => Promise<void>;
   updateProfile: (patch: Partial<Pick<User, "first_name" | "last_name" | "phone_number" | "department">>) => Promise<User>;
   refreshUser: () => Promise<User | null>;

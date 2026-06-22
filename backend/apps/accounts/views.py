@@ -13,16 +13,20 @@ from rest_framework_simplejwt.views import TokenRefreshView as SimpleJWTTokenRef
 from apps.accounts.serializers import (
     CustomTokenObtainPairSerializer,
     LogoutSerializer,
+    RegistrationResponseSerializer,
+    ResendVerificationSerializer,
     UserProfileSerializer,
     UserProfileUpdateSerializer,
     UserRegistrationSerializer,
+    VerifyEmailSerializer,
 )
+from apps.accounts.verification import create_and_send_verification_code, verify_email_code
 
 
 @extend_schema(
     tags=["Authentication"],
     request=UserRegistrationSerializer,
-    responses={201: UserProfileSerializer},
+    responses={201: RegistrationResponseSerializer},
     examples=[
         OpenApiExample(
             "Register Employee",
@@ -50,8 +54,13 @@ class RegisterView(generics.CreateAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
+        create_and_send_verification_code(user)
         return Response(
-            UserProfileSerializer(user).data,
+            {
+                "message": "Account created. Please check your email for a verification code.",
+                "email": user.email,
+                "email_verified": user.email_verified,
+            },
             status=status.HTTP_201_CREATED,
         )
 
@@ -93,6 +102,76 @@ class LogoutView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
         return Response(status=status.HTTP_205_RESET_CONTENT)
+
+
+@extend_schema(
+    tags=["Authentication"],
+    request=VerifyEmailSerializer,
+    responses={200: UserProfileSerializer},
+)
+class VerifyEmailView(APIView):
+    """Verify an employee email address using a 6-digit code."""
+
+    permission_classes = [AllowAny]
+
+    def post(self, request: Request) -> Response:
+        serializer = VerifyEmailSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        email = serializer.validated_data["email"]
+        code = serializer.validated_data["code"]
+        try:
+            user = verify_email_code(email=email, code=code)
+        except ValueError as exc:
+            return Response({"detail": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            {
+                "message": "Email verified successfully. You can now sign in.",
+                "user": UserProfileSerializer(user).data,
+            },
+            status=status.HTTP_200_OK,
+        )
+
+
+@extend_schema(
+    tags=["Authentication"],
+    request=ResendVerificationSerializer,
+    responses={200: RegistrationResponseSerializer},
+)
+class ResendVerificationView(APIView):
+    """Resend the email verification code."""
+
+    permission_classes = [AllowAny]
+
+    def post(self, request: Request) -> Response:
+        serializer = ResendVerificationSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        email = serializer.validated_data["email"].lower()
+
+        from apps.accounts.models import User
+
+        try:
+            user = User.objects.get(email__iexact=email)
+        except User.DoesNotExist:
+            return Response(
+                {"message": "If an account exists with this email, a verification code has been sent."},
+                status=status.HTTP_200_OK,
+            )
+
+        if user.email_verified:
+            return Response(
+                {"detail": "This email address is already verified."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        create_and_send_verification_code(user)
+        return Response(
+            {
+                "message": "Verification code sent. Please check your email.",
+                "email": user.email,
+                "email_verified": user.email_verified,
+            },
+            status=status.HTTP_200_OK,
+        )
 
 
 class ProfileView(generics.RetrieveUpdateAPIView):
