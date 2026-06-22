@@ -1,0 +1,20 @@
+Hello {{ employee_name }},
+
+Your leave request has been {{ status }}.
+
+Leave Details
+-------------
+Type: {{ leave_type }}
+Start Date: {{ start_date }}
+End Date: {{ end_date }}
+Number of Days: {{ number_of_days }}
+Status: {{ status }}
+
+Admin Comment
+-------------
+{{ admin_comment }}
+
+You can view your leave requests at: {{ frontend_url }}
+
+Regards,
+Employee Leave Management System
