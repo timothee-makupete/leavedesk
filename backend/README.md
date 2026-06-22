@@ -12,6 +12,8 @@ Production-ready Django REST Framework backend for managing employee leave reque
 - **Dashboard** — Aggregated leave and employee statistics
 - **Audit Trail** — Tracks leave approvals/rejections and employee create/update events
 - **Email Notifications** — Configurable emails on leave approval/rejection
+- **Email Verification** — 6-digit code sent on employee self-registration
+- **In-app Notifications** — Bell dropdown with read/unread tracking
 - **OpenAPI Docs** — Interactive Swagger UI at `/api/docs/`
 - **Security** — Password validation, throttling, pagination, CORS, environment-based config
 
@@ -35,6 +37,7 @@ backend/
 │   ├── accounts/       # User model, auth, profile
 │   ├── employees/      # Admin employee CRUD, dashboard
 │   ├── leaves/         # Leave requests, approval workflow
+│   ├── notifications/  # In-app user notifications
 │   └── audits/         # Audit trail
 ├── config/             # Django settings and root URLs
 ├── templates/emails/   # Email templates
@@ -167,6 +170,27 @@ Ensure `.env` uses `DB_ENGINE=postgresql` and matches your credentials.
 python manage.py migrate
 ```
 
+> **Important:** After pulling schema changes (e.g. email verification or notifications), always run migrations before starting the server. Unapplied migrations will cause errors such as `no such column: accounts_user.email_verified`.
+
+## Seeding Demo Data
+
+Populate the database with demo admin/employee accounts and sample leave requests:
+
+```bash
+python manage.py seed
+```
+
+| Flag | Description |
+|------|-------------|
+| `--flush` | Remove seeded records and re-insert |
+| `--password` | Set password for all demo accounts (default: `SecurePass123!`) |
+
+Demo admin: `admin@company.com` — see command output for all accounts.
+
+## Architecture Documentation
+
+See [ARCHITECTURE.md](../ARCHITECTURE.md) for system design, design decisions, and problem-solving notes.
+
 ## Creating an Admin User
 
 ```bash
@@ -214,6 +238,8 @@ http://127.0.0.1:8000/api/schema/
 | Method | Endpoint | Description |
 |---|---|---|
 | POST | `/api/auth/register/` | Register employee |
+| POST | `/api/auth/verify-email/` | Verify email with 6-digit code |
+| POST | `/api/auth/resend-verification/` | Resend verification code |
 | POST | `/api/auth/login/` | Login (returns JWT) |
 | POST | `/api/auth/token/refresh/` | Refresh access token |
 | POST | `/api/auth/logout/` | Blacklist refresh token |
@@ -234,6 +260,15 @@ http://127.0.0.1:8000/api/schema/
 | GET | `/api/leaves/{id}/` | Retrieve request |
 | PUT/PATCH | `/api/leaves/{id}/` | Update pending request |
 | DELETE | `/api/leaves/{id}/` | Delete pending request |
+
+### Notifications
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/notifications/` | List own notifications |
+| GET | `/api/notifications/unread-count/` | Unread notification count |
+| PATCH | `/api/notifications/{id}/read/` | Mark one as read |
+| POST | `/api/notifications/mark-all-read/` | Mark all as read |
 
 ### Admin — Leaves
 
