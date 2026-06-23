@@ -34,6 +34,12 @@ def env_list(key: str, default: list[str] | None = None) -> list[str]:
 DEBUG = env_bool("DEBUG", default=False)
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "leavedesk.onrender.com"]
 
+
+def get_default_email_backend() -> str:
+    if "test" in sys.argv:
+        return "django.core.mail.backends.locmem.EmailBackend"
+    return "django.core.mail.backends.smtp.EmailBackend"
+
 SECRET_KEY = os.getenv("SECRET_KEY")
 if not SECRET_KEY:
     if DEBUG:
@@ -218,10 +224,7 @@ SPECTACULAR_SETTINGS = {
 }
 
 # Email
-EMAIL_BACKEND = os.getenv(
-    "EMAIL_BACKEND",
-    "django.core.mail.backends.console.EmailBackend",
-)
+EMAIL_BACKEND = os.getenv("EMAIL_BACKEND") or get_default_email_backend()
 EMAIL_HOST = os.getenv("EMAIL_HOST", "smtp.gmail.com")
 EMAIL_PORT = env_int("EMAIL_PORT", 587)
 EMAIL_USE_TLS = env_bool("EMAIL_USE_TLS", default=True)
