@@ -32,12 +32,12 @@ def env_list(key: str, default: list[str] | None = None) -> list[str]:
 
 
 DEBUG = env_bool("DEBUG", default=False)
-ALLOWED_HOSTS = env_list("ALLOWED_HOSTS", default=["localhost", "127.0.0.1", "leavedesk.onrender.com"])
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "leavedesk.onrender.com"]
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 if not SECRET_KEY:
     if DEBUG:
-        SECRET_KEY = "django-insecure-dev-only-change-me"
+        SECRET_KEY = "u9$k8!zQ2#pL7@vR5^mN3xT6&cD1!sW8yF4hJ0"
     else:
         raise ImproperlyConfigured("SECRET_KEY environment variable is required.")
 
