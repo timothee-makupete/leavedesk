@@ -101,13 +101,34 @@ shapes: `{ detail }`, `{ non_field_errors }`, and per-field arrays like
 ## Running
 
 ```bash
-bun install
-bun run dev
+npm install
+npm run dev
 ```
 
 Then open http://localhost:8080 and sign in with an account that exists in your
 Django database. New employees can self-register at `/register` — admins must be
 created by another admin via `/admin/employees`.
+
+## Creating a Super Admin
+
+To create a super admin user, run the Django management command from the backend
+directory:
+
+```bash
+cd ../backend
+python manage.py createsuperuser
+```
+
+Follow the prompts to enter:
+- **Email** — unique email address
+- **First Name** — first name
+- **Last Name** — last name
+- **Employee ID** — unique employee identifier
+- **Password** — secure password
+
+The super admin user can then log in to the frontend at `http://localhost:8080`
+with their email and password, and will have access to all admin features including
+employee management, leave approvals, and audit logs.
 
 ## Notes
 
