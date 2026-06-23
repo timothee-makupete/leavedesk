@@ -57,9 +57,9 @@ export function ProfilePage() {
 
   return (
     <div className="mx-auto max-w-4xl space-y-6">
-      <div>
+      <div className="space-y-1">
         <h1 className="text-xl font-semibold tracking-tight text-[#0F172A]">My profile</h1>
-        <p className="mt-1 text-sm text-slate-500">View and update your account information.</p>
+        <p className="text-sm text-slate-500">View and update your account information.</p>
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
@@ -73,7 +73,7 @@ export function ProfilePage() {
             </h3>
             <p className="text-xs text-slate-500">{user.role === "ADMIN" ? "Administrator" : "Employee"}</p>
             <div className="mt-4 w-full space-y-2 border-t border-[#E2E8F0] pt-4 text-left text-xs">
-              <div className="flex justify-between">
+              <div className="flex justify-between gap-2">
                 <span className="text-slate-500">Employee ID</span>
                 <span className="font-medium text-[#0F172A]">{user.employee_id}</span>
               </div>
@@ -108,7 +108,7 @@ export function ProfilePage() {
                 {...register("department")}
               />
             </div>
-            <div className="flex justify-end gap-2 border-t border-[#E2E8F0] pt-4">
+            <div className="flex flex-col-reverse gap-2 border-t border-[#E2E8F0] pt-4 sm:flex-row sm:justify-end">
               <Button type="submit" loading={isSubmitting} disabled={!isDirty}>
                 Save changes
               </Button>

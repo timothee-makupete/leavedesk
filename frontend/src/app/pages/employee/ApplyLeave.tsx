@@ -42,9 +42,9 @@ export function ApplyLeavePage() {
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
-      <div>
+      <div className="space-y-1">
         <h1 className="text-xl font-semibold tracking-tight text-[#0F172A]">Apply for leave</h1>
-        <p className="mt-1 text-sm text-slate-500">Submit a new leave request for HR approval.</p>
+        <p className="text-sm text-slate-500">Submit a new leave request for HR approval.</p>
       </div>
 
       <Card>
@@ -79,7 +79,7 @@ export function ApplyLeavePage() {
             )}
           </div>
 
-          <div className="flex justify-end gap-2 border-t border-[#E2E8F0] pt-4">
+          <div className="flex flex-col-reverse gap-2 border-t border-[#E2E8F0] pt-4 sm:flex-row sm:justify-end">
             <Button type="button" variant="secondary" onClick={() => reset()} disabled={isSubmitting}>
               Reset
             </Button>

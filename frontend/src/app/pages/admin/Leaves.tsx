@@ -90,14 +90,14 @@ export function AdminLeavesPage() {
 
   return (
     <div className="space-y-6">
-      <div>
+      <div className="space-y-1">
         <h1 className="text-xl font-semibold tracking-tight text-[#0F172A]">Leave requests</h1>
-        <p className="mt-1 text-sm text-slate-500">Review and act on team leave requests.</p>
+        <p className="text-sm text-slate-500">Review and act on team leave requests.</p>
       </div>
 
       <Card>
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="relative flex-1 min-w-[220px]">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <div className="relative flex-1 min-w-0 sm:min-w-[220px]">
             <Search className="pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
             <input
               value={q}
@@ -106,7 +106,7 @@ export function AdminLeavesPage() {
               className="block w-full rounded-md border border-[#E2E8F0] bg-white py-2 pl-9 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB]/30"
             />
           </div>
-          <div className="w-44">
+          <div className="w-full sm:w-44">
             <Select
               value={status}
               onChange={(e) => {
@@ -138,7 +138,7 @@ export function AdminLeavesPage() {
                 key: "actions",
                 header: "Actions",
                 render: (r) => (
-                  <div className="flex items-center gap-1">
+                  <div className="flex flex-wrap items-center gap-1">
                     <Button size="sm" variant="ghost" onClick={() => setViewing(r)}>
                       <Eye className="h-3.5 w-3.5" /> View
                     </Button>
@@ -163,7 +163,7 @@ export function AdminLeavesPage() {
 
       <Modal open={!!viewing} onClose={() => setViewing(null)} title="Leave request details">
         {viewing && (
-          <dl className="grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
+          <dl className="grid grid-cols-1 gap-x-4 gap-y-3 text-sm sm:grid-cols-2">
             <dt className="text-slate-500">Employee</dt>
             <dd className="font-medium text-[#0F172A]">{viewing.employee.full_name}</dd>
             <dt className="text-slate-500">Employee ID</dt>
@@ -186,14 +186,14 @@ export function AdminLeavesPage() {
                 <dd>{formatDateTime(viewing.approved_at)}</dd>
               </>
             )}
-            <dt className="col-span-2 mt-2 text-slate-500">Reason</dt>
-            <dd className="col-span-2 rounded-md border border-[#E2E8F0] bg-slate-50 p-3 text-slate-700">
+            <dt className="sm:col-span-2 mt-2 text-slate-500">Reason</dt>
+            <dd className="sm:col-span-2 rounded-md border border-[#E2E8F0] bg-slate-50 p-3 text-slate-700">
               {viewing.reason}
             </dd>
             {viewing.admin_comment && (
               <>
-                <dt className="col-span-2 mt-2 text-slate-500">Admin comment</dt>
-                <dd className="col-span-2 rounded-md border border-[#E2E8F0] bg-slate-50 p-3 text-slate-700">
+                <dt className="sm:col-span-2 mt-2 text-slate-500">Admin comment</dt>
+                <dd className="sm:col-span-2 rounded-md border border-[#E2E8F0] bg-slate-50 p-3 text-slate-700">
                   {viewing.admin_comment}
                 </dd>
               </>

@@ -156,19 +156,19 @@ export function AdminEmployeesPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-end justify-between gap-3">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h1 className="text-xl font-semibold tracking-tight text-[#0F172A]">Employees</h1>
           <p className="mt-1 text-sm text-slate-500">Manage employee accounts and access.</p>
         </div>
-        <Button onClick={openCreate}>
+        <Button onClick={openCreate} className="w-full sm:w-auto">
           <Plus className="h-4 w-4" /> Add employee
         </Button>
       </div>
 
       <Card>
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="relative flex-1 min-w-[220px]">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <div className="relative flex-1 min-w-0 sm:min-w-[220px]">
             <Search className="pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
             <input
               value={q}
@@ -177,7 +177,7 @@ export function AdminEmployeesPage() {
               className="block w-full rounded-md border border-[#E2E8F0] bg-white py-2 pl-9 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB]/30"
             />
           </div>
-          <div className="w-44">
+          <div className="w-full sm:w-44">
             <Select
               value={roleFilter}
               onChange={(e) => {
@@ -227,7 +227,7 @@ export function AdminEmployeesPage() {
                 key: "actions",
                 header: "Actions",
                 render: (r) => (
-                  <div className="flex items-center gap-1">
+                  <div className="flex flex-wrap items-center gap-1">
                     <Button size="sm" variant="secondary" onClick={() => openEdit(r)}>
                       <Pencil className="h-3.5 w-3.5" /> Edit
                     </Button>
