@@ -1,20 +1,26 @@
 
 import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig(async () => {
+  const baseConfig: any = {
+    plugins: [react(), tailwindcss()],
+  };
+
   try {
-    // Try to load the optional tanstack Vite helper. If it's not installed,
-    // fall back to a empty config so the build won't fail on platforms
-    // where the package isn't present (e.g. Vercel) unless you explicitly
-    // add it to dependencies.
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    await import("@lovable.dev/vite-tanstack-config");
+    const tanstackModule = (await import("@lovable.dev/vite-tanstack-config")) as any;
+    const tanstackConfig = tanstackModule?.default ?? tanstackModule;
+
+    if (typeof tanstackConfig === "function") {
+      return tanstackConfig(baseConfig);
+    }
+
     return {
-      tanstackStart: {
-        server: { entry: "server" },
-      },
-    } as any;
-  } catch (err) {
-    return {} as any;
+      ...baseConfig,
+      ...tanstackConfig,
+    };
+  } catch {
+    return baseConfig;
   }
 });
