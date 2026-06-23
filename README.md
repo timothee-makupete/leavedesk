@@ -1,3 +1,136 @@
+# Employee Leave Management System (ELMS)
+
+Welcome — this repository contains the frontend and backend for a simple Employee Leave Management System (ELMS).
+
+This single README explains how to run the frontend and backend locally in a friendly, practical way.
+
+## Contents
+
+- `backend/` — Django REST API and management commands
+- `frontend/` — React + Vite single-page app
+
+---
+
+## Quick start (dev)
+
+You'll typically run the backend API and frontend dev server at the same time during development.
+
+1. Backend (Django)
+
+   - Open a terminal and change to the backend folder:
+
+     ```bash
+     cd backend
+     ```
+
+   - Create and activate a Python virtual environment:
+
+     ```bash
+     python -m venv .venv
+
+     # Windows
+     .venv\Scripts\activate
+
+     # macOS / Linux
+     # source .venv/bin/activate
+     ```
+
+   - Install dependencies:
+
+     ```bash
+     pip install -r requirements.txt
+     ```
+
+   - Copy the example environment file and edit values if needed:
+
+     ```bash
+     copy .env.example .env
+     ```
+
+     Key things to set in `.env`:
+     - `SECRET_KEY` (required)
+     - DB settings (`DB_ENGINE`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_HOST`, `DB_PORT`)
+     - `FRONTEND_URL` (e.g. `http://localhost:5173`)
+
+   - Run migrations and (optionally) seed demo data:
+
+     ```bash
+     python manage.py migrate
+     python manage.py seed   # optional: populates demo users and leaves
+     ```
+
+   - Start the Django dev server:
+
+     ```bash
+     python manage.py runserver
+     ```
+
+   - The API will be available at `http://127.0.0.1:8000/api/` by default.
+
+2. Frontend (React + Vite)
+
+   - In a second terminal, change to the frontend folder:
+
+     ```bash
+     cd frontend
+     ```
+
+   - Install Node dependencies (npm shown; use `pnpm` or `yarn` if preferred):
+
+     ```bash
+     npm install
+     ```
+
+   - Optional: create a `.env` file to point the frontend at your API. The app defaults to `http://127.0.0.1:8000` if you don't set this.
+
+     ```env
+     VITE_API_BASE_URL=http://127.0.0.1:8000
+     ```
+
+   - Start the dev server:
+
+     ```bash
+     npm run dev
+     ```
+
+   - The frontend runs on Vite's default (usually `http://localhost:5173`). Open that in your browser.
+
+---
+
+## Production / Build
+
+- Build the frontend:
+
+  ```bash
+  cd frontend
+  npm run build
+  ```
+
+- Preview the built frontend locally:
+
+  ```bash
+  npm run preview
+  ```
+
+- The backend can be served with a production WSGI server (Gunicorn / Daphne / Uvicorn) and a proper Postgres database; Docker Compose is a convenient option for local production-like setups.
+
+---
+
+## Notes & tips
+
+- The frontend reads `VITE_API_BASE_URL` at build + dev time. If you are running the backend on `127.0.0.1:8000` you don't need to change anything.
+- If using Docker Compose for Postgres, run it from the project root and ensure your `.env` matches the compose configuration.
+- The backend includes useful management commands such as `seed` for demo data and `createsuperuser` for admin access.
+- OpenAPI docs are available at `/api/docs/` when the server is running.
+
+---
+
+If you'd like, I can:
+- add a small `Makefile` or `scripts` to simplify these commands,
+- add a quick troubleshooting section for common errors, or
+- keep `backend/README.md` as an archived copy instead of deleting it.
+
+Happy hacking!
 # ELMS — Architecture & Design Decisions
 
 **Employee Leave Management System (LeaveDesk)** — a full-stack application for employees to request time off and for HR administrators to review, approve, or reject those requests.
