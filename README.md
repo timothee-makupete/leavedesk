@@ -29,7 +29,7 @@ You'll typically run the backend API and frontend dev server at the same time du
      python -m venv .venv
 
      # Windows
-     .venv\Scripts\activate
+     venv\Scripts\activate
 
      # macOS / Linux
      # source .venv/bin/activate
@@ -48,7 +48,6 @@ You'll typically run the backend API and frontend dev server at the same time du
      ```
 
      Key things to set in `.env`:
-     - `SECRET_KEY` (required)
      - DB settings (`DB_ENGINE`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_HOST`, `DB_PORT`)
      - `FRONTEND_URL` (e.g. `http://localhost:5173`)
 
@@ -125,12 +124,7 @@ You'll typically run the backend API and frontend dev server at the same time du
 
 ---
 
-If you'd like, I can:
-- add a small `Makefile` or `scripts` to simplify these commands,
-- add a quick troubleshooting section for common errors, or
-- keep `backend/README.md` as an archived copy instead of deleting it.
 
-Happy hacking!
 # ELMS — Architecture & Design Decisions
 
 **Employee Leave Management System (LeaveDesk)** — a full-stack application for employees to request time off and for HR administrators to review, approve, or reject those requests.
