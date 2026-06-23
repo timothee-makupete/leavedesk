@@ -2,7 +2,8 @@ import axios, { AxiosError, type AxiosRequestConfig } from "axios";
 import { toast } from "react-toastify";
 import type { ApiError } from "./types";
 
-const RAW_BASE = (import.meta.env.VITE_API_BASE_URL as string | undefined) || "http://127.0.0.1:8000";
+//const RAW_BASE = (import.meta.env.VITE_API_BASE_URL as string | undefined) || "http://127.0.0.1:8000";
+const RAW_BASE = (import.meta.env.VITE_API_BASE_URL as string | undefined) || "https://leavedesk.onrender.com";
 export const API_BASE_URL = RAW_BASE.replace(/\/+$/, "");
 
 export const ACCESS_KEY = "ems.access";
