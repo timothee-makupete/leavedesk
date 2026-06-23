@@ -146,11 +146,13 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080",
     "http://127.0.0.1:5173",
+    "https://leavedesk-pi.vercel.app",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:8080",
     "http://127.0.0.1:5173",
+    "https://leavedesk-pi.vercel.app",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
