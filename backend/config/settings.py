@@ -32,7 +32,7 @@ def env_list(key: str, default: list[str] | None = None) -> list[str]:
 
 
 DEBUG = env_bool("DEBUG", default=False)
-ALLOWED_HOSTS = env_list("ALLOWED_HOSTS", default=["localhost", "127.0.0.1"])
+ALLOWED_HOSTS = env_list("ALLOWED_HOSTS", default=["localhost", "127.0.0.1", "leavedesk.onrender.com"])
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 if not SECRET_KEY:
