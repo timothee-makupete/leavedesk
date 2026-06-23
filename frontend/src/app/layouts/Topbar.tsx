@@ -80,7 +80,7 @@ export function Topbar({ onMenu }: { onMenu: () => void }) {
   };
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center gap-2 border-b border-[#E2E8F0] bg-white px-3 sm:gap-3 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-30 flex h-14 items-center gap-2 border-b border-[#E2E8F0] bg-white px-2.5 sm:h-16 sm:gap-3 sm:px-6 lg:px-8">
       <button
         onClick={onMenu}
         className="rounded-md p-2 text-slate-600 hover:bg-slate-100 lg:hidden"
@@ -94,7 +94,7 @@ export function Topbar({ onMenu }: { onMenu: () => void }) {
         </h2>
       </div>
 
-      <div className="ml-auto flex items-center gap-1.5 sm:gap-3">
+      <div className="ml-auto flex items-center gap-1 sm:gap-2 sm:gap-3">
       <Popover open={open} onOpenChange={handleOpenChange}>
         <PopoverTrigger asChild>
           <button
@@ -152,11 +152,11 @@ export function Topbar({ onMenu }: { onMenu: () => void }) {
         </PopoverContent>
       </Popover>
 
-        <div className="flex items-center gap-2 border-l border-[#E2E8F0] pl-2 sm:gap-3 sm:pl-4">
-          <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#EFF6FF] text-sm font-semibold text-[#1D4ED8]">
+        <div className="flex items-center gap-1.5 border-l border-[#E2E8F0] pl-1.5 sm:gap-2 sm:pl-3">
+          <div className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#EFF6FF] text-xs font-semibold text-[#1D4ED8] sm:h-9 sm:w-9 sm:text-sm">
             {initials}
           </div>
-          <div className="hidden min-[420px]:block">
+          <div className="hidden sm:block">
             <div className="text-sm font-medium text-[#0F172A]">
               {user ? user.full_name || `${user.first_name} ${user.last_name}` : "—"}
             </div>
