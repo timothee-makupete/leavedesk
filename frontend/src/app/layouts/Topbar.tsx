@@ -80,7 +80,7 @@ export function Topbar({ onMenu }: { onMenu: () => void }) {
   };
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-[#E2E8F0] bg-white px-4 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-30 flex h-16 items-center gap-2 border-b border-[#E2E8F0] bg-white px-3 sm:gap-3 sm:px-6 lg:px-8">
       <button
         onClick={onMenu}
         className="rounded-md p-2 text-slate-600 hover:bg-slate-100 lg:hidden"
@@ -88,12 +88,13 @@ export function Topbar({ onMenu }: { onMenu: () => void }) {
       >
         <Menu className="h-5 w-5" />
       </button>
-      <div className="flex-1">
-        <h2 className="text-sm font-medium text-slate-500">
+      <div className="min-w-0 flex-1">
+        <h2 className="truncate text-sm font-medium text-slate-500">
           {isAdmin ? "HR Administration" : "Employee Workspace"}
         </h2>
       </div>
 
+      <div className="ml-auto flex items-center gap-1.5 sm:gap-3">
       <Popover open={open} onOpenChange={handleOpenChange}>
         <PopoverTrigger asChild>
           <button
@@ -108,7 +109,7 @@ export function Topbar({ onMenu }: { onMenu: () => void }) {
             )}
           </button>
         </PopoverTrigger>
-        <PopoverContent align="end" className="w-80 p-0">
+        <PopoverContent align="end" className="w-[90vw] max-w-sm p-0 sm:w-80">
           <div className="flex items-center justify-between border-b border-[#E2E8F0] px-4 py-3">
             <h3 className="text-sm font-semibold text-[#0F172A]">Notifications</h3>
             {unreadCount > 0 && (
@@ -151,25 +152,28 @@ export function Topbar({ onMenu }: { onMenu: () => void }) {
         </PopoverContent>
       </Popover>
 
-      <div className="flex items-center gap-3 border-l border-[#E2E8F0] pl-4">
-        <div className="grid h-9 w-9 place-items-center rounded-full bg-[#EFF6FF] text-sm font-semibold text-[#1D4ED8]">
-          {initials}
-        </div>
-        <div className="hidden text-sm sm:block">
-          <div className="font-medium text-[#0F172A]">
-            {user ? user.full_name || `${user.first_name} ${user.last_name}` : "—"}
+        <div className="flex items-center gap-2 border-l border-[#E2E8F0] pl-2 sm:gap-3 sm:pl-4">
+          <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#EFF6FF] text-sm font-semibold text-[#1D4ED8]">
+            {initials}
           </div>
-          <div className="text-xs text-slate-500">{isAdmin ? "Administrator" : "Employee"}</div>
+          <div className="hidden min-[420px]:block">
+            <div className="text-sm font-medium text-[#0F172A]">
+              {user ? user.full_name || `${user.first_name} ${user.last_name}` : "—"}
+            </div>
+            <div className="text-xs text-slate-500">{isAdmin ? "Administrator" : "Employee"}</div>
+          </div>
+          <button
+            onClick={async () => {
+              await logout();
+              navigate("/login", { replace: true });
+            }}
+            className="inline-flex items-center justify-center rounded-md border border-[#E2E8F0] p-2 text-slate-700 hover:bg-slate-50 sm:px-3 sm:py-1.5"
+            aria-label="Log out"
+          >
+            <LogOut className="h-3.5 w-3.5" />
+            <span className="ml-1.5 hidden text-xs font-medium sm:inline">Logout</span>
+          </button>
         </div>
-        <button
-          onClick={async () => {
-            await logout();
-            navigate("/login", { replace: true });
-          }}
-          className="inline-flex items-center gap-1.5 rounded-md border border-[#E2E8F0] px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50"
-        >
-          <LogOut className="h-3.5 w-3.5" /> Logout
-        </button>
       </div>
     </header>
   );
