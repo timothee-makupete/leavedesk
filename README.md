@@ -94,27 +94,6 @@ You'll typically run the backend API and frontend dev server at the same time du
 
    - The frontend runs on Vite's default (usually `http://localhost:5173`). Open that in your browser.
 
----
-
-## Production / Build
-
-- Build the frontend:
-
-  ```bash
-  cd frontend
-  npm run build
-  ```
-
-- Preview the built frontend locally:
-
-  ```bash
-  npm run preview
-  ```
-
-- The backend can be served with a production WSGI server (Gunicorn / Daphne / Uvicorn) and a proper Postgres database; Docker Compose is a convenient option for local production-like setups.
-
----
-
 ## Notes & tips
 
 - The frontend reads `VITE_API_BASE_URL` at build + dev time. If you are running the backend on `127.0.0.1:8000` you don't need to change anything.
