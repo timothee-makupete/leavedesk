@@ -1,0 +1,1 @@
+import{t as e}from"./AppMount-DUG6l9ol.js";var t=e;export{t as component};
