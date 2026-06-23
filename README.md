@@ -124,6 +124,21 @@ employee management, leave approvals, and audit logs.
 - The backend includes useful management commands such as `seed` for demo data and `createsuperuser` for admin access.
 - OpenAPI docs are available at `/api/docs/` when the server is running.
 
+## Screenshots
+
+The following screenshots are available in the repository root under `screenshots/`:
+
+- [Screenshot (2)](screenshots/Screenshot%20(2).png)
+- [Screenshot (3)](screenshots/Screenshot%20(3).png)
+- [Screenshot (4)](screenshots/Screenshot%20(4).png)
+- [Screenshot (5)](screenshots/Screenshot%20(5).png)
+- [Screenshot (6)](screenshots/Screenshot%20(6).png)
+- [Screenshot (7)](screenshots/Screenshot%20(7).png)
+- [Screenshot (8)](screenshots/Screenshot%20(8).png)
+- [Screenshot (10)](screenshots/Screenshot%20(10).png)
+- [Screenshot (11)](screenshots/Screenshot%20(11).png)
+- [Screenshot (12)](screenshots/Screenshot%20(12).png)
+
 ---
 
 
