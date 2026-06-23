@@ -1,6 +1,6 @@
 # Employee Leave Management System (ELMS)
 
-Welcome — this repository contains the frontend and backend for a simple Employee Leave Management System (ELMS).
+Welcome this repository contains the frontend and backend for a simple Employee Leave Management System (ELMS).
 
 This single README explains how to run the frontend and backend locally in a friendly, practical way.
 
