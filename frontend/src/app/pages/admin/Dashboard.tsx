@@ -55,12 +55,14 @@ export function AdminDashboard() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-xl font-semibold tracking-tight text-[#0F172A]">HR Dashboard</h1>
-      
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h1 className="text-xl font-semibold tracking-tight text-[#0F172A]">HR Dashboard</h1>
+          <p className="mt-1 text-sm text-slate-500">Track leave activity and team status at a glance.</p>
+        </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-5">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-5">
         <StatCard label="Employees" value={stats?.total_employees ?? 0} icon={<Users className="h-4 w-4" />} tone="info" />
         <StatCard label="Total requests" value={stats?.total_requests ?? 0} icon={<ClipboardList className="h-4 w-4" />} />
         <StatCard label="Pending" value={stats?.pending_requests ?? 0} icon={<CalendarClock className="h-4 w-4" />} tone="warning" />
@@ -68,9 +70,9 @@ export function AdminDashboard() {
         <StatCard label="Rejected" value={stats?.rejected_requests ?? 0} icon={<CalendarX className="h-4 w-4" />} tone="danger" />
       </div>
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-3">
         <Card className="lg:col-span-2" title="Requests by leave type" subtitle="From most recent activity">
-          <div className="h-72">
+          <div className="h-64 sm:h-72">
             <ResponsiveContainer>
               <BarChart data={byType} margin={{ top: 8, right: 8, bottom: 0, left: -20 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" vertical={false} />
@@ -86,7 +88,7 @@ export function AdminDashboard() {
           {statusChart.length === 0 ? (
             <p className="py-10 text-center text-xs text-slate-500">No data yet.</p>
           ) : (
-            <div className="h-72">
+            <div className="h-64 sm:h-72">
               <ResponsiveContainer>
                 <PieChart>
                   <Pie data={statusChart} dataKey="value" innerRadius={45} outerRadius={75}>

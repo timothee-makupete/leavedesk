@@ -60,7 +60,7 @@ export function EmployeeDashboard() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-end justify-between gap-3">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h1 className="text-xl font-semibold tracking-tight text-[#0F172A]">
             Welcome back, {user?.first_name}
@@ -69,19 +69,19 @@ export function EmployeeDashboard() {
             Overview of your leave requests and balances.
           </p>
         </div>
-        <Link to="/employee/apply-leave">
-          <Button>+ Apply for leave</Button>
+        <Link to="/employee/apply-leave" className="w-full sm:w-auto">
+          <Button className="w-full sm:w-auto">+ Apply for leave</Button>
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard label="Total requests" value={stats.total} icon={<Calendar className="h-4 w-4" />} tone="info" />
         <StatCard label="Pending" value={stats.pending} icon={<CalendarClock className="h-4 w-4" />} tone="warning" />
         <StatCard label="Approved" value={stats.approved} icon={<CalendarCheck className="h-4 w-4" />} tone="success" />
         <StatCard label="Rejected" value={stats.rejected} icon={<CalendarX className="h-4 w-4" />} tone="danger" />
       </div>
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2">
           <Card title="Recent leave requests" subtitle="Your last five submissions">
             <Table
@@ -106,7 +106,7 @@ export function EmployeeDashboard() {
           {chartData.length === 0 ? (
             <p className="py-10 text-center text-xs text-slate-500">No data to display.</p>
           ) : (
-            <div className="h-60">
+            <div className="h-56 sm:h-60">
               <ResponsiveContainer>
                 <PieChart>
                   <Pie data={chartData} dataKey="value" innerRadius={50} outerRadius={80} paddingAngle={2}>

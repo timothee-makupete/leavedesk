@@ -21,7 +21,7 @@ export function Table<T extends { id: string | number }>({
 }) {
   return (
     <div className="overflow-x-auto rounded-md border border-[#E2E8F0]">
-      <table className="min-w-full divide-y divide-[#E2E8F0] text-sm">
+      <table className="min-w-[640px] w-full divide-y divide-[#E2E8F0] text-sm">
         <thead className="bg-slate-50">
           <tr>
             {columns.map((c) => (
