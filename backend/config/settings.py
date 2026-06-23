@@ -1,5 +1,3 @@
-"""Django settings for the Employee Leave Management System."""
-
 import os
 import sys
 from datetime import timedelta
@@ -10,7 +8,6 @@ from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Load .env from project root and backend directory (backend overrides root)
 load_dotenv(BASE_DIR.parent / ".env")
 load_dotenv(BASE_DIR / ".env", override=True)
 
@@ -149,13 +146,11 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080",
     "http://127.0.0.1:5173",
-    "https://scoolverse.netlify.app",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:8080",
     "http://127.0.0.1:5173",
-    "https://scoolverse.netlify.app",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
@@ -228,8 +223,8 @@ EMAIL_BACKEND = os.getenv(
 EMAIL_HOST = os.getenv("EMAIL_HOST", "smtp.gmail.com")
 EMAIL_PORT = env_int("EMAIL_PORT", 587)
 EMAIL_USE_TLS = env_bool("EMAIL_USE_TLS", default=True)
-EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "")
-EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
-DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "noreply@ems.local")
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "timotheemakupete@gmail.com")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "sirk hxjs drwb qgdv")
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "timotheemakupete@gmail.com")
 
 FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
