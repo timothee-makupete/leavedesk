@@ -129,13 +129,3 @@ Follow the prompts to enter:
 The super admin user can then log in to the frontend at `http://localhost:8080`
 with their email and password, and will have access to all admin features including
 employee management, leave approvals, and audit logs.
-
-## Notes
-
-- Date inputs send ISO date strings (`YYYY-MM-DD`).
-- Timestamps from the API are displayed in the user's local timezone.
-- Lists are server-paginated (20 per page by default). Filters and search are
-  passed as query parameters; search is debounced 300 ms.
-- The frontend never short-circuits backend validation — the same dates,
-  overlaps and "pending only" rules are enforced server-side and surfaced
-  through `getErrorMessage`.

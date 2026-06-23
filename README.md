@@ -58,6 +58,29 @@ You'll typically run the backend API and frontend dev server at the same time du
      python manage.py seed   # optional: populates demo users and leaves
      ```
 
+
+     
+## Creating a Super Admin
+
+To create a super admin user, run the Django management command from the backend
+directory:
+
+```bash
+cd ../backend
+python manage.py createsuperuser
+```
+
+Follow the prompts to enter:
+- **Email** — unique email address
+- **First Name** — first name
+- **Last Name** — last name
+- **Employee ID** — unique employee identifier
+- **Password** — secure password
+
+The super admin user can then log in to the frontend at `http://localhost:8080`
+with their email and password, and will have access to all admin features including
+employee management, leave approvals, and audit logs.
+
    - Start the Django dev server:
 
      ```bash
