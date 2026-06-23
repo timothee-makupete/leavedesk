@@ -160,6 +160,47 @@ class ResendVerificationSerializer(serializers.Serializer):
     email = serializers.EmailField()
 
 
+class ForgotPasswordSerializer(serializers.Serializer):
+    """Serializer for requesting a password reset code."""
+
+    email = serializers.EmailField()
+
+
+class ResetPasswordSerializer(serializers.Serializer):
+    """Serializer for resetting a password with a code."""
+
+    email = serializers.EmailField()
+    code = serializers.CharField(min_length=6, max_length=6)
+    password = serializers.CharField(
+        write_only=True,
+        required=True,
+        style={"input_type": "password"},
+    )
+    password_confirm = serializers.CharField(
+        write_only=True,
+        required=True,
+        style={"input_type": "password"},
+    )
+
+    def validate_code(self, value: str) -> str:
+        if not value.isdigit():
+            raise serializers.ValidationError("Reset code must be 6 digits.")
+        return value
+
+    def validate(self, attrs: dict) -> dict:
+        if attrs["password"] != attrs["password_confirm"]:
+            raise serializers.ValidationError(
+                {"password_confirm": "Passwords do not match."}
+            )
+        try:
+            user = User.objects.get(email__iexact=attrs["email"])
+        except User.DoesNotExist:
+            pass
+        else:
+            validate_password(attrs["password"], user=user)
+        return attrs
+
+
 class AdminUserSerializer(serializers.ModelSerializer):
     """Serializer for admin employee management."""
 

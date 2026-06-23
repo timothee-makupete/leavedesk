@@ -240,6 +240,8 @@ http://127.0.0.1:8000/api/schema/
 | POST | `/api/auth/register/` | Register employee |
 | POST | `/api/auth/verify-email/` | Verify email with 6-digit code |
 | POST | `/api/auth/resend-verification/` | Resend verification code |
+| POST | `/api/auth/forgot-password/` | Send password reset code to email |
+| POST | `/api/auth/reset-password/` | Reset password with code |
 | POST | `/api/auth/login/` | Login (returns JWT) |
 | POST | `/api/auth/token/refresh/` | Refresh access token |
 | POST | `/api/auth/logout/` | Blacklist refresh token |

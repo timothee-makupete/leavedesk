@@ -78,3 +78,26 @@ class EmailVerificationCode(models.Model):
 
     def __str__(self) -> str:
         return f"Verification code for {self.user.email}"
+
+
+class PasswordResetCode(models.Model):
+    """One-time password reset code sent to the user's email."""
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="password_reset_codes",
+    )
+    code = models.CharField(max_length=6)
+    is_used = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField()
+
+    class Meta:
+        ordering = ["-created_at"]
+        indexes = [
+            models.Index(fields=["user", "code", "is_used"]),
+        ]
+
+    def __str__(self) -> str:
+        return f"Password reset code for {self.user.email}"

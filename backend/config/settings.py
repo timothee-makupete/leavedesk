@@ -223,8 +223,8 @@ EMAIL_BACKEND = os.getenv(
 EMAIL_HOST = os.getenv("EMAIL_HOST", "smtp.gmail.com")
 EMAIL_PORT = env_int("EMAIL_PORT", 587)
 EMAIL_USE_TLS = env_bool("EMAIL_USE_TLS", default=True)
-EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "timotheemakupete@gmail.com")
-EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "sirk hxjs drwb qgdv")
-DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "timotheemakupete@gmail.com")
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "noreply@ems.local")
 
 FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")

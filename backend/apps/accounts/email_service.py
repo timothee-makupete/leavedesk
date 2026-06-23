@@ -26,3 +26,24 @@ def send_verification_email(user: User, code: str) -> None:
         html_message=message,
         fail_silently=False,
     )
+
+
+def send_password_reset_email(user: User, code: str) -> None:
+    """Send a 6-digit password reset code to the user's email."""
+    context = {
+        "user_name": user.full_name,
+        "code": code,
+        "frontend_url": settings.FRONTEND_URL,
+    }
+    subject = "Reset your LeaveDesk password"
+    message = render_to_string("emails/password_reset.html", context)
+    plain_message = render_to_string("emails/password_reset.txt", context)
+
+    send_mail(
+        subject=subject,
+        message=plain_message,
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=[user.email],
+        html_message=message,
+        fail_silently=False,
+    )

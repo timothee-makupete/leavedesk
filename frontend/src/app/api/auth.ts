@@ -35,6 +35,26 @@ export const authApi = {
     return data;
   },
 
+  async forgotPassword(email: string): Promise<{ message: string; email?: string }> {
+    const { data } = await api.post<{ message: string; email?: string }>("/auth/forgot-password/", {
+      email,
+    });
+    return data;
+  },
+
+  async resetPassword(payload: {
+    email: string;
+    code: string;
+    password: string;
+    password_confirm: string;
+  }): Promise<{ message: string; email: string }> {
+    const { data } = await api.post<{ message: string; email: string }>(
+      "/auth/reset-password/",
+      payload,
+    );
+    return data;
+  },
+
   async logout(): Promise<void> {
     const refresh = tokenStore.getRefresh();
     try {

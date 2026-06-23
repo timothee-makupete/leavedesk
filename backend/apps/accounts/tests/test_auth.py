@@ -2,7 +2,7 @@
 
 from django.core import mail
 
-from apps.accounts.models import EmailVerificationCode, User
+from apps.accounts.models import EmailVerificationCode, PasswordResetCode, User
 from apps.accounts.tests.test_utils import EMSAPITestCase
 
 
@@ -112,3 +112,49 @@ class AuthAPITestCase(EMSAPITestCase):
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {login_response.data['access']}")
         response = self.client.post("/api/auth/logout/", {"refresh": refresh}, format="json")
         self.assertEqual(response.status_code, 205)
+
+    def test_forgot_password_sends_email(self):
+        user = self.create_employee(email="reset@test.com", employee_id="EMP207")
+        response = self.client.post(
+            "/api/auth/forgot-password/",
+            {"email": user.email},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertIn("Reset your LeaveDesk password", mail.outbox[0].subject)
+        self.assertTrue(PasswordResetCode.objects.filter(user=user, is_used=False).exists())
+
+    def test_forgot_password_unknown_email(self):
+        response = self.client.post(
+            "/api/auth/forgot-password/",
+            {"email": "unknown@test.com"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(mail.outbox), 0)
+
+    def test_reset_password_with_code(self):
+        user = self.create_employee(email="newpass@test.com", employee_id="EMP208")
+        self.client.post("/api/auth/forgot-password/", {"email": user.email}, format="json")
+        code = PasswordResetCode.objects.filter(user=user, is_used=False).first().code
+        response = self.client.post(
+            "/api/auth/reset-password/",
+            {
+                "email": user.email,
+                "code": code,
+                "password": "NewSecurePass456!",
+                "password_confirm": "NewSecurePass456!",
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        user.refresh_from_db()
+        self.assertTrue(user.check_password("NewSecurePass456!"))
+
+        login_response = self.client.post(
+            "/api/auth/login/",
+            {"email": user.email, "password": "NewSecurePass456!"},
+            format="json",
+        )
+        self.assertEqual(login_response.status_code, 200)

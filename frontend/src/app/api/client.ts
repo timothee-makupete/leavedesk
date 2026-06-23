@@ -69,6 +69,8 @@ api.interceptors.response.use(
       url.includes("/auth/register") ||
       url.includes("/auth/verify-email") ||
       url.includes("/auth/resend-verification") ||
+      url.includes("/auth/forgot-password") ||
+      url.includes("/auth/reset-password") ||
       url.includes("/auth/token/refresh");
 
     if (status === 401 && original && !original._retry && !isAuthEndpoint && tokenStore.getRefresh()) {

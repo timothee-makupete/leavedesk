@@ -12,14 +12,17 @@ from rest_framework_simplejwt.views import TokenRefreshView as SimpleJWTTokenRef
 
 from apps.accounts.serializers import (
     CustomTokenObtainPairSerializer,
+    ForgotPasswordSerializer,
     LogoutSerializer,
     RegistrationResponseSerializer,
     ResendVerificationSerializer,
+    ResetPasswordSerializer,
     UserProfileSerializer,
     UserProfileUpdateSerializer,
     UserRegistrationSerializer,
     VerifyEmailSerializer,
 )
+from apps.accounts.password_reset import create_and_send_password_reset_code, reset_password_with_code
 from apps.accounts.verification import create_and_send_verification_code, verify_email_code
 
 
@@ -169,6 +172,80 @@ class ResendVerificationView(APIView):
                 "message": "Verification code sent. Please check your email.",
                 "email": user.email,
                 "email_verified": user.email_verified,
+            },
+            status=status.HTTP_200_OK,
+        )
+
+
+@extend_schema(
+    tags=["Authentication"],
+    request=ForgotPasswordSerializer,
+    responses={200: RegistrationResponseSerializer},
+)
+class ForgotPasswordView(APIView):
+    """Send a password reset code to the user's email."""
+
+    permission_classes = [AllowAny]
+
+    def post(self, request: Request) -> Response:
+        serializer = ForgotPasswordSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        email = serializer.validated_data["email"].lower()
+
+        from apps.accounts.models import User
+
+        try:
+            user = User.objects.get(email__iexact=email)
+        except User.DoesNotExist:
+            return Response(
+                {
+                    "message": "If an account exists with this email, a password reset code has been sent."
+                },
+                status=status.HTTP_200_OK,
+            )
+
+        if not user.is_active:
+            return Response(
+                {
+                    "message": "If an account exists with this email, a password reset code has been sent."
+                },
+                status=status.HTTP_200_OK,
+            )
+
+        create_and_send_password_reset_code(user)
+        return Response(
+            {
+                "message": "Password reset code sent. Please check your email.",
+                "email": user.email,
+            },
+            status=status.HTTP_200_OK,
+        )
+
+
+@extend_schema(
+    tags=["Authentication"],
+    request=ResetPasswordSerializer,
+    responses={200: RegistrationResponseSerializer},
+)
+class ResetPasswordView(APIView):
+    """Reset the user's password using a 6-digit code."""
+
+    permission_classes = [AllowAny]
+
+    def post(self, request: Request) -> Response:
+        serializer = ResetPasswordSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        email = serializer.validated_data["email"]
+        code = serializer.validated_data["code"]
+        password = serializer.validated_data["password"]
+        try:
+            reset_password_with_code(email=email, code=code, new_password=password)
+        except ValueError as exc:
+            return Response({"detail": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            {
+                "message": "Password reset successfully. You can now sign in with your new password.",
+                "email": email.lower(),
             },
             status=status.HTTP_200_OK,
         )
