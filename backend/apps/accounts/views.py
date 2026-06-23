@@ -39,7 +39,7 @@ from apps.accounts.verification import create_and_send_verification_code, verify
                 "password_confirm": "SecurePass123!",
                 "first_name": "John",
                 "last_name": "Doe",
-                "phone_number": "+1234567890",
+                "phone_number": "+260977777777",
                 "department": "Engineering",
                 "employee_id": "EMP001",
             },

@@ -53,7 +53,7 @@ export function LoginPage() {
       </div>
       <h2 className="text-xl font-semibold tracking-tight text-[#0F172A]">Sign in to LeaveDesk</h2>
       <p className="mt-1 text-sm text-slate-500">
-        Use the email address registered with your HR team.
+        Use the email address registered with your LeaveDesk.
       </p>
 
       <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-4" noValidate>

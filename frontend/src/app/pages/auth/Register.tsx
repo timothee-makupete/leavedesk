@@ -40,7 +40,7 @@ export function RegisterPage() {
     <div>
       <h2 className="text-xl font-semibold tracking-tight text-[#0F172A]">Create your account</h2>
       <p className="mt-1 text-sm text-slate-500">
-        Employee self-registration. Admin accounts are created by HR.
+        Employee self-registration.
       </p>
 
       <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-4" noValidate>
@@ -63,7 +63,7 @@ export function RegisterPage() {
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <Input
             label="Phone number"
-            placeholder="+1234567890"
+            placeholder="+265977777777"
             error={errors.phone_number?.message}
             {...register("phone_number")}
           />

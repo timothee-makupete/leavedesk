@@ -16,7 +16,7 @@ class AuthAPITestCase(EMSAPITestCase):
                 "password_confirm": "SecurePass123!",
                 "first_name": "New",
                 "last_name": "Employee",
-                "phone_number": "+1234567890",
+                "phone_number": "+260977777777",
                 "department": "HR",
                 "employee_id": "EMP200",
             },
