@@ -57,7 +57,7 @@ export function AdminDashboard() {
     <div className="space-y-6">
       <div>
         <h1 className="text-xl font-semibold tracking-tight text-[#0F172A]">HR Dashboard</h1>
-        <p className="mt-1 text-sm text-slate-500">Organization-wide leave overview.</p>
+      
       </div>
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-5">

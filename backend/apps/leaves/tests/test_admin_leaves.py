@@ -1,9 +1,12 @@
 """Admin leave management API tests."""
 
+from unittest.mock import patch
+
 from django.core import mail
 
 from apps.accounts.tests.test_utils import EMSAPITestCase
 from apps.audits.models import AuditTrail
+from apps.leaves.email_service import send_leave_status_email
 from apps.leaves.models import LeaveRequest, LeaveStatus, LeaveType
 
 
@@ -22,11 +25,23 @@ class AdminLeaveAPITestCase(EMSAPITestCase):
         self.authenticate(self.admin)
 
     def test_admin_approve_leave(self):
-        response = self.client.patch(
-            f"/api/admin/leaves/{self.leave.id}/approve/",
-            {"admin_comment": "Approved"},
-            format="json",
-        )
+        class ImmediateThread:
+            def __init__(self, target, daemon=True):
+                self.target = target
+                self.daemon = daemon
+
+            def start(self):
+                self.target()
+
+        with patch("apps.leaves.email_service.transaction.on_commit", side_effect=lambda callback: callback()), patch(
+            "apps.leaves.email_service.Thread",
+            ImmediateThread,
+        ):
+            response = self.client.patch(
+                f"/api/admin/leaves/{self.leave.id}/approve/",
+                {"admin_comment": "Approved"},
+                format="json",
+            )
         self.assertEqual(response.status_code, 200)
         self.leave.refresh_from_db()
         self.assertEqual(self.leave.status, LeaveStatus.APPROVED)
@@ -43,6 +58,12 @@ class AdminLeaveAPITestCase(EMSAPITestCase):
         self.leave.refresh_from_db()
         self.assertEqual(self.leave.status, LeaveStatus.REJECTED)
         self.assertTrue(AuditTrail.objects.filter(action="Leave rejected").exists())
+
+    def test_leave_status_email_is_deferred_until_commit(self):
+        with patch("apps.leaves.email_service.transaction.on_commit", create=True) as mock_on_commit:
+            send_leave_status_email(self.leave)
+
+        mock_on_commit.assert_called_once()
 
     def test_admin_cannot_approve_own_leave(self):
         admin_leave = LeaveRequest.objects.create(
