@@ -48,7 +48,7 @@ export function LoginPage() {
     <div>
       <div className="mb-8 lg:hidden">
         <div className="grid h-9 w-9 place-items-center rounded-md bg-[#2563EB] font-semibold text-white">
-          LM
+          LD
         </div>
       </div>
       <h2 className="text-xl font-semibold tracking-tight text-[#0F172A]">Sign in to LeaveDesk</h2>

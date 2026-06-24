@@ -42,7 +42,7 @@ export function Sidebar({
       <div className="flex h-16 items-center justify-between border-b border-[#E2E8F0] px-5">
         <div className="flex items-center gap-2">
           <div className="grid h-8 w-8 place-items-center rounded-md bg-[#2563EB] text-sm font-semibold text-white">
-            LM
+            LD
           </div>
           <span className="text-sm font-semibold text-[#0F172A]">LeaveDesk</span>
         </div>
