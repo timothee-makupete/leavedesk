@@ -547,7 +547,7 @@ function Topbar({ onMenu }) {
 				className: "flex-1",
 				children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
 					className: "text-sm font-medium text-slate-500",
-					children: isAdmin ? "HR Administration" : "Employee Workspace"
+					children: isAdmin ? "" : ""
 				})
 			}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Popover, {

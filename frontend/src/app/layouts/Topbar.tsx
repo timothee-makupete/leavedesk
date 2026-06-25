@@ -90,7 +90,7 @@ export function Topbar({ onMenu }: { onMenu: () => void }) {
       </button>
       <div className="min-w-0 flex-1">
         <h2 className="truncate text-sm font-medium text-slate-500">
-          {isAdmin ? "HR Administration" : "Employee Workspace"}
+          {isAdmin ? "" : ""}
         </h2>
       </div>
 
