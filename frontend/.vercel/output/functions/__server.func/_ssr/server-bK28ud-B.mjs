@@ -1,7 +1,7 @@
 import "../_runtime.mjs";
 import { u as require_react } from "../_libs/@floating-ui/react-dom+[...].mjs";
 import { o as require_jsx_runtime } from "../_libs/@radix-ui/react-arrow+[...].mjs";
-import { C as resolveManifestAssetLink, D as isResolvedRedirect, E as isRedirect, O as rootRouteId, S as getStylesheetHref, T as executeRewriteInput, a as replaceSsrResponse, i as normalizeSsrResponse, j as invariant, k as isNotFound, l as RouterProvider, n as defineHandlerCallback, o as stripSsrResponseBody, r as isSsrResponse, t as renderRouterToStream, w as resolveManifestCssLink, x as getScriptPreloadAttrs } from "../_libs/@tanstack/react-router+[...].mjs";
+import { A as invariant, C as resolveManifestCssLink, D as rootRouteId, E as isResolvedRedirect, O as isNotFound, S as resolveManifestAssetLink, T as isRedirect, a as replaceSsrResponse, b as getScriptPreloadAttrs, i as normalizeSsrResponse, l as RouterProvider, n as defineHandlerCallback, o as stripSsrResponseBody, r as isSsrResponse, t as renderRouterToStream, w as executeRewriteInput, x as getStylesheetHref } from "../_libs/@tanstack/react-router+[...].mjs";
 import { n as createMemoryHistory } from "../_libs/tanstack__history.mjs";
 import { a as defaultSerovalPlugins, c as makeSerovalPlugin, d as su, i as getOrigin, l as Pu, n as attachRouterServerSsrUtils, o as createRawStreamRPCPlugin, r as getNormalizedURL, s as createSerializationAdapter, t as mergeHeaders, u as iu } from "../_libs/@tanstack/router-core+[...].mjs";
 import { t as createMiddleware } from "./createStart-Dt05N14y.mjs";
@@ -71,7 +71,6 @@ function getH3Event() {
 function getResponse() {
 	return getH3Event().res;
 }
-var HEADERS = { TSS_SHELL: "X-TSS_SHELL" };
 /**
 * @description Returns the router manifest data that should be sent to the client.
 * This includes only the assets and preloads for the current route and any
@@ -82,7 +81,7 @@ var HEADERS = { TSS_SHELL: "X-TSS_SHELL" };
 * the dev styles URL for route-scoped CSS collection.
 */
 async function getStartManifest(matchedRoutes) {
-	const { tsrStartManifest } = await import("../_tanstack-start-manifest_v-JqbibO2r.mjs");
+	const { tsrStartManifest } = await import("../_tanstack-start-manifest_v-37hwPXLJ.mjs");
 	const startManifest = tsrStartManifest();
 	let routes = startManifest.routes;
 	routes[rootRouteId];
@@ -254,7 +253,7 @@ function getDefaultSerovalPlugins() {
 /** Cached TextEncoder for frame encoding */
 var textEncoder = new TextEncoder();
 /** Shared empty payload for END frames - avoids allocation per call */
-var EMPTY_PAYLOAD = new Uint8Array(0);
+var EMPTY_PAYLOAD = /* @__PURE__ */ new Uint8Array(0);
 /**
 * Encodes a single frame with header and payload.
 */
@@ -603,7 +602,7 @@ function isNotFoundResponse(error) {
 	});
 }
 var LINK_PARAM_TOKEN_RE = /^[!#$%&'*+\-.^_`|~0-9A-Za-z]+$/;
-var PRELOAD_AS_VALUES = new Set([
+var PRELOAD_AS_VALUES = /* @__PURE__ */ new Set([
 	"fetch",
 	"font",
 	"image",
@@ -1135,6 +1134,7 @@ function warmupFinalManifest(opts) {
 	if (opts.onError) warmupPromise.catch(opts.onError);
 	return warmupPromise;
 }
+var HEADERS = { TSS_SHELL: "X-TSS_SHELL" };
 var ServerFunctionSerializationAdapter = createSerializationAdapter({
 	key: "$TSS/serverfn",
 	test: (v) => {
@@ -1163,7 +1163,7 @@ var getBaseManifest = getProdBaseManifest;
 var createEarlyHintsForRequest = createEarlyHintsCollector;
 async function loadEntries() {
 	const [routerEntry, startEntry, pluginAdapters] = await Promise.all([
-		import("./router-C5a938aP.mjs"),
+		import("./router-DGfPd5DB.mjs"),
 		import("./start-Ok9K6Nid.mjs"),
 		import("./empty-plugin-adapters-D9UWiqvJ.mjs")
 	]);

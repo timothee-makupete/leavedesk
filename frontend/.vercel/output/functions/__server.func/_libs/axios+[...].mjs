@@ -11331,7 +11331,7 @@ var callbackify = (fn, reducer) => {
 };
 //#endregion
 //#region node_modules/axios/lib/helpers/shouldBypassProxy.js
-var LOOPBACK_HOSTNAMES = new Set(["localhost", "0.0.0.0"]);
+var LOOPBACK_HOSTNAMES = /* @__PURE__ */ new Set(["localhost", "0.0.0.0"]);
 var isIPv4Loopback = (host) => {
 	const parts = host.split(".");
 	if (parts.length !== 4) return false;

@@ -1,4 +1,4 @@
-import { a as tickStep, c as bisector, i as tickIncrement, l as ascending, n as quantile$1, o as ticks, r as quantileSorted, s as bisectRight, t as range } from "./d3-array.mjs";
+import { a as quantile$1, c as bisector, i as range, l as ascending, n as tickStep, o as quantileSorted, r as ticks, s as bisectRight, t as tickIncrement } from "./d3-array.mjs";
 import { i as number_default, n as round_default, r as value_default, t as piecewise } from "./d3-interpolate.mjs";
 import { a as formatPrefix, i as format, n as precisionPrefix_default, o as formatSpecifier, r as precisionFixed_default, t as precisionRound_default } from "./d3-format.mjs";
 //#region node_modules/internmap/src/index.js
@@ -736,26 +736,6 @@ function timeInterval(floori, offseti, count, field) {
 	return interval;
 }
 //#endregion
-//#region node_modules/d3-time/src/millisecond.js
-var millisecond = timeInterval(() => {}, (date, step) => {
-	date.setTime(+date + step);
-}, (start, end) => {
-	return end - start;
-});
-millisecond.every = (k) => {
-	k = Math.floor(k);
-	if (!isFinite(k) || !(k > 0)) return null;
-	if (!(k > 1)) return millisecond;
-	return timeInterval((date) => {
-		date.setTime(Math.floor(date / k) * k);
-	}, (date, step) => {
-		date.setTime(+date + step * k);
-	}, (start, end) => {
-		return (end - start) / k;
-	});
-};
-millisecond.range;
-//#endregion
 //#region node_modules/d3-time/src/duration.js
 var durationSecond = 1e3;
 var durationMinute = durationSecond * 60;
@@ -960,6 +940,26 @@ utcYear.every = (k) => {
 	});
 };
 utcYear.range;
+//#endregion
+//#region node_modules/d3-time/src/millisecond.js
+var millisecond = timeInterval(() => {}, (date, step) => {
+	date.setTime(+date + step);
+}, (start, end) => {
+	return end - start;
+});
+millisecond.every = (k) => {
+	k = Math.floor(k);
+	if (!isFinite(k) || !(k > 0)) return null;
+	if (!(k > 1)) return millisecond;
+	return timeInterval((date) => {
+		date.setTime(Math.floor(date / k) * k);
+	}, (date, step) => {
+		date.setTime(+date + step * k);
+	}, (start, end) => {
+		return (end - start) / k;
+	});
+};
+millisecond.range;
 //#endregion
 //#region node_modules/d3-time/src/ticks.js
 function ticker(year, month, week, day, hour, minute) {

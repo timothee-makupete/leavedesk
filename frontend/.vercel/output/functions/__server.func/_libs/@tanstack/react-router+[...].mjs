@@ -4,8 +4,26 @@ import { o as require_jsx_runtime } from "../@radix-ui/react-arrow+[...].mjs";
 import { r as parseHref } from "../tanstack__history.mjs";
 import { PassThrough, Readable } from "node:stream";
 import { ReadableStream as ReadableStream$1 } from "node:stream/web";
-//#region node_modules/@tanstack/react-router/dist/esm/utils.js
+//#region node_modules/@tanstack/react-router/dist/esm/routerContext.js
 var import_react = /* @__PURE__ */ __toESM(require_react(), 1);
+var routerContext = import_react.createContext(null);
+//#endregion
+//#region node_modules/@tanstack/react-router/dist/esm/useRouter.js
+/**
+* Access the current TanStack Router instance from React context.
+* Must be used within a `RouterProvider`.
+*
+* Options:
+* - `warn`: Log a warning if no router context is found (default: true).
+*
+* @returns The registered router instance.
+* @link https://tanstack.com/router/latest/docs/framework/react/api/router/useRouterHook
+*/
+function useRouter(opts) {
+	return import_react.useContext(routerContext);
+}
+//#endregion
+//#region node_modules/@tanstack/react-router/dist/esm/utils.js
 /**
 * React.use if available (React 19+), undefined otherwise.
 * Use dynamic lookup to avoid Webpack compilation errors with React 18.
@@ -71,6 +89,54 @@ function useForwardedRef(ref) {
 	const innerRef = import_react.useRef(null);
 	import_react.useImperativeHandle(ref, () => innerRef.current, []);
 	return innerRef;
+}
+//#endregion
+//#region node_modules/@tanstack/react-router/dist/esm/ClientOnly.js
+var import_jsx_runtime = require_jsx_runtime();
+/**
+* Render the children only after the JS has loaded client-side. Use an optional
+* fallback component if the JS is not yet loaded.
+*
+* @example
+* Render a Chart component if JS loads, renders a simple FakeChart
+* component server-side or if there is no JS. The FakeChart can have only the
+* UI without the behavior or be a loading spinner or skeleton.
+*
+* ```tsx
+* return (
+*   <ClientOnly fallback={<FakeChart />}>
+*     <Chart />
+*   </ClientOnly>
+* )
+* ```
+*/
+function ClientOnly({ children, fallback = null }) {
+	return useHydrated() ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_react.Fragment, { children }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_react.Fragment, { children: fallback });
+}
+/**
+* Return a boolean indicating if the JS has been hydrated already.
+* When doing Server-Side Rendering, the result will always be false.
+* When doing Client-Side Rendering, the result will always be false on the
+* first render and true from then on. Even if a new component renders it will
+* always start with true.
+*
+* @example
+* ```tsx
+* // Disable a button that needs JS to work.
+* let hydrated = useHydrated()
+* return (
+*   <button type="button" disabled={!hydrated} onClick={doSomethingCustom}>
+*     Click me
+*   </button>
+* )
+* ```
+* @returns True if the JS has been hydrated already, false otherwise.
+*/
+function useHydrated() {
+	return import_react.useSyncExternalStore(subscribe, () => true, () => false);
+}
+function subscribe() {
+	return () => {};
 }
 //#endregion
 //#region node_modules/@tanstack/router-core/dist/esm/utils.js
@@ -419,7 +485,7 @@ function getOpenAndCloseBraces(part) {
 * `output` is stored outside to avoid allocations during repeated calls. It doesn't need to be typed
 * or initialized, it will be done automatically.
 */
-function parseSegment(path, start, output = new Uint16Array(6)) {
+function parseSegment(path, start, output = /* @__PURE__ */ new Uint16Array(6)) {
 	const next = path.indexOf("/", start);
 	const end = next === -1 ? path.length : next;
 	const part = path.substring(start, end);
@@ -714,7 +780,7 @@ function createDynamicNode(kind, fullPath, caseSensitive, prefix, suffix) {
 }
 function processRouteMasks(routeList, processedTree) {
 	const segmentTree = createStaticNode("/");
-	const data = new Uint16Array(6);
+	const data = /* @__PURE__ */ new Uint16Array(6);
 	for (const route of routeList) parseSegments(false, data, route, 1, segmentTree, 0);
 	sortTreeNodes(segmentTree);
 	processedTree.masksTree = segmentTree;
@@ -741,7 +807,7 @@ function findSingleMatch(from, caseSensitive, fuzzy, path, processedTree) {
 	let tree = processedTree.singleCache.get(key);
 	if (!tree) {
 		tree = createStaticNode("/");
-		parseSegments(caseSensitive, new Uint16Array(6), { from }, 1, tree, 0);
+		parseSegments(caseSensitive, /* @__PURE__ */ new Uint16Array(6), { from }, 1, tree, 0);
 		processedTree.singleCache.set(key, tree);
 	}
 	return findMatch(path, tree, fuzzy);
@@ -772,7 +838,7 @@ function trimPathRight$1(path) {
 */
 function processRouteTree(routeTree, caseSensitive = false, initRoute) {
 	const segmentTree = createStaticNode(routeTree.fullPath);
-	const data = new Uint16Array(6);
+	const data = /* @__PURE__ */ new Uint16Array(6);
 	const routesById = {};
 	const routesByPath = {};
 	let index = 0;
@@ -1344,9 +1410,274 @@ function isNotFound(obj) {
 	return obj?.isNotFound === true;
 }
 //#endregion
-//#region node_modules/@tanstack/router-core/dist/esm/qss.js
-var import_jsx_runtime = require_jsx_runtime();
+//#region node_modules/@tanstack/router-core/dist/esm/root.js
+/** Stable identifier used for the root route in a route tree. */
+var rootRouteId = "__root__";
+//#endregion
+//#region node_modules/@tanstack/router-core/dist/esm/redirect.js
+/**
+* Create a redirect Response understood by TanStack Router.
+*
+* Use from route `loader`/`beforeLoad` or server functions to trigger a
+* navigation. If `throw: true` is set, the redirect is thrown instead of
+* returned. When an absolute `href` is supplied and `reloadDocument` is not
+* set, a full-document navigation is inferred.
+*
+* @param opts Options for the redirect. Common fields:
+* - `href`: absolute URL for external redirects; infers `reloadDocument`.
+* - `statusCode`: HTTP status code to use (defaults to 307).
+* - `headers`: additional headers to include on the Response.
+* - Standard navigation options like `to`, `params`, `search`, `replace`,
+*   and `reloadDocument` for internal redirects.
+* @returns A Response augmented with router navigation options.
+* @link https://tanstack.com/router/latest/docs/framework/react/api/router/redirectFunction
+*/
+function redirect(opts) {
+	opts.statusCode = opts.statusCode || opts.code || 307;
+	if (!opts._builtLocation && !opts.reloadDocument && typeof opts.href === "string") try {
+		new URL(opts.href);
+		opts.reloadDocument = true;
+	} catch {}
+	const headers = new Headers(opts.headers);
+	if (opts.href && headers.get("Location") === null) headers.set("Location", opts.href);
+	const response = new Response(null, {
+		status: opts.statusCode,
+		headers
+	});
+	response.options = opts;
+	if (opts.throw) throw response;
+	return response;
+}
+/** Check whether a value is a TanStack Router redirect Response. */
+/** Check whether a value is a TanStack Router redirect Response. */
+function isRedirect(obj) {
+	return obj instanceof Response && !!obj.options;
+}
+/** True if value is a redirect with a resolved `href` location. */
+/** True if value is a redirect with a resolved `href` location. */
+function isResolvedRedirect(obj) {
+	return isRedirect(obj) && !!obj.options.href;
+}
+//#endregion
+//#region node_modules/@tanstack/router-core/dist/esm/rewrite.js
 var import_react_dom = /* @__PURE__ */ __toESM(require_react_dom(), 1);
+/** Compose multiple rewrite pairs into a single in/out rewrite. */
+function composeRewrites(rewrites) {
+	return {
+		input: ({ url }) => {
+			for (const rewrite of rewrites) url = executeRewriteInput(rewrite, url);
+			return url;
+		},
+		output: ({ url }) => {
+			for (let i = rewrites.length - 1; i >= 0; i--) url = executeRewriteOutput(rewrites[i], url);
+			return url;
+		}
+	};
+}
+/** Create a rewrite pair that strips/adds a basepath on input/output. */
+function rewriteBasepath(opts) {
+	const trimmedBasepath = trimPath(opts.basepath);
+	const normalizedBasepath = `/${trimmedBasepath}`;
+	const checkBasepath = opts.caseSensitive ? normalizedBasepath : normalizedBasepath.toLowerCase();
+	const checkBasepathWithSlash = `${checkBasepath}/`;
+	return {
+		input: ({ url }) => {
+			const pathname = opts.caseSensitive ? url.pathname : url.pathname.toLowerCase();
+			if (pathname === checkBasepath) url.pathname = "/";
+			else if (pathname.startsWith(checkBasepathWithSlash)) url.pathname = url.pathname.slice(normalizedBasepath.length);
+			return url;
+		},
+		output: ({ url }) => {
+			url.pathname = joinPaths([
+				"/",
+				trimmedBasepath,
+				url.pathname
+			]);
+			return url;
+		}
+	};
+}
+/** Execute a location input rewrite if provided. */
+function executeRewriteInput(rewrite, url) {
+	const res = rewrite?.input?.({ url });
+	if (res) {
+		if (typeof res === "string") return new URL(res);
+		else if (res instanceof URL) return res;
+	}
+	return url;
+}
+/** Execute a location output rewrite if provided. */
+function executeRewriteOutput(rewrite, url) {
+	const res = rewrite?.output?.({ url });
+	if (res) {
+		if (typeof res === "string") return new URL(res);
+		else if (res instanceof URL) return res;
+	}
+	return url;
+}
+//#endregion
+//#region node_modules/@tanstack/router-core/dist/esm/stores.js
+/** SSR non-reactive createMutableStore */
+function createNonReactiveMutableStore(initialValue) {
+	let value = initialValue;
+	return {
+		get() {
+			return value;
+		},
+		set(nextOrUpdater) {
+			value = functionalUpdate(nextOrUpdater, value);
+		}
+	};
+}
+/** SSR non-reactive createReadonlyStore */
+function createNonReactiveReadonlyStore(read) {
+	return { get() {
+		return read();
+	} };
+}
+function createRouterStores(initialState, config) {
+	const { createMutableStore, createReadonlyStore, batch, init } = config;
+	const matchStores = /* @__PURE__ */ new Map();
+	const pendingMatchStores = /* @__PURE__ */ new Map();
+	const cachedMatchStores = /* @__PURE__ */ new Map();
+	const status = createMutableStore(initialState.status);
+	const loadedAt = createMutableStore(initialState.loadedAt);
+	const isLoading = createMutableStore(initialState.isLoading);
+	const isTransitioning = createMutableStore(initialState.isTransitioning);
+	const location = createMutableStore(initialState.location);
+	const resolvedLocation = createMutableStore(initialState.resolvedLocation);
+	const statusCode = createMutableStore(initialState.statusCode);
+	const redirect = createMutableStore(initialState.redirect);
+	const matchesId = createMutableStore([]);
+	const pendingIds = createMutableStore([]);
+	const cachedIds = createMutableStore([]);
+	const matches = createReadonlyStore(() => readPoolMatches(matchStores, matchesId.get()));
+	const pendingMatches = createReadonlyStore(() => readPoolMatches(pendingMatchStores, pendingIds.get()));
+	const cachedMatches = createReadonlyStore(() => readPoolMatches(cachedMatchStores, cachedIds.get()));
+	const firstId = createReadonlyStore(() => matchesId.get()[0]);
+	const hasPending = createReadonlyStore(() => matchesId.get().some((matchId) => {
+		return matchStores.get(matchId)?.get().status === "pending";
+	}));
+	const matchRouteDeps = createReadonlyStore(() => ({
+		locationHref: location.get().href,
+		resolvedLocationHref: resolvedLocation.get()?.href,
+		status: status.get()
+	}));
+	const __store = createReadonlyStore(() => ({
+		status: status.get(),
+		loadedAt: loadedAt.get(),
+		isLoading: isLoading.get(),
+		isTransitioning: isTransitioning.get(),
+		matches: matches.get(),
+		location: location.get(),
+		resolvedLocation: resolvedLocation.get(),
+		statusCode: statusCode.get(),
+		redirect: redirect.get()
+	}));
+	const matchStoreByRouteIdCache = createLRUCache(64);
+	function getRouteMatchStore(routeId) {
+		let cached = matchStoreByRouteIdCache.get(routeId);
+		if (!cached) {
+			cached = createReadonlyStore(() => {
+				const ids = matchesId.get();
+				for (const id of ids) {
+					const matchStore = matchStores.get(id);
+					if (matchStore && matchStore.routeId === routeId) return matchStore.get();
+				}
+			});
+			matchStoreByRouteIdCache.set(routeId, cached);
+		}
+		return cached;
+	}
+	const store = {
+		status,
+		loadedAt,
+		isLoading,
+		isTransitioning,
+		location,
+		resolvedLocation,
+		statusCode,
+		redirect,
+		matchesId,
+		pendingIds,
+		cachedIds,
+		matches,
+		pendingMatches,
+		cachedMatches,
+		firstId,
+		hasPending,
+		matchRouteDeps,
+		matchStores,
+		pendingMatchStores,
+		cachedMatchStores,
+		__store,
+		getRouteMatchStore,
+		setMatches,
+		setPending,
+		setCached
+	};
+	setMatches(initialState.matches);
+	init?.(store);
+	function setMatches(nextMatches) {
+		reconcileMatchPool(nextMatches, matchStores, matchesId, createMutableStore, batch);
+	}
+	function setPending(nextMatches) {
+		reconcileMatchPool(nextMatches, pendingMatchStores, pendingIds, createMutableStore, batch);
+	}
+	function setCached(nextMatches) {
+		reconcileMatchPool(nextMatches, cachedMatchStores, cachedIds, createMutableStore, batch);
+	}
+	return store;
+}
+function readPoolMatches(pool, ids) {
+	const matches = [];
+	for (const id of ids) {
+		const matchStore = pool.get(id);
+		if (matchStore) matches.push(matchStore.get());
+	}
+	return matches;
+}
+function reconcileMatchPool(nextMatches, pool, idStore, createMutableStore, batch) {
+	const nextIds = nextMatches.map((d) => d.id);
+	const nextIdSet = new Set(nextIds);
+	batch(() => {
+		for (const id of pool.keys()) if (!nextIdSet.has(id)) pool.delete(id);
+		for (const nextMatch of nextMatches) {
+			const existing = pool.get(nextMatch.id);
+			if (!existing) {
+				const matchStore = createMutableStore(nextMatch);
+				matchStore.routeId = nextMatch.routeId;
+				pool.set(nextMatch.id, matchStore);
+				continue;
+			}
+			existing.routeId = nextMatch.routeId;
+			if (existing.get() !== nextMatch) existing.set(nextMatch);
+		}
+		if (!arraysEqual(idStore.get(), nextIds)) idStore.set(nextIds);
+	});
+}
+//#endregion
+//#region node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js
+function getSafeSessionStorage() {
+	try {
+		return sessionStorage;
+	} catch {
+		return;
+	}
+}
+var storageKey = "tsr-scroll-restoration-v1_3";
+getSafeSessionStorage();
+/**
+* The default `getKey` function for `useScrollRestoration`.
+* It returns the `key` from the location state or the `href` of the location.
+*
+* The `location.href` is used as a fallback to support the use case where the location state is not available like the initial render.
+*/
+var defaultGetScrollRestorationKey = (location) => {
+	return location.state.__TSR_key || location.href;
+};
+//#endregion
+//#region node_modules/@tanstack/router-core/dist/esm/qss.js
 /**
 * Program is a reimplementation of the `qss` package:
 * Copyright (c) Luke Edwards luke.edwards05@gmail.com, MIT License
@@ -1468,55 +1799,6 @@ function stringifySearchWith(stringify, parser) {
 		const searchStr = encode(search, stringifyValue);
 		return searchStr ? `?${searchStr}` : "";
 	};
-}
-//#endregion
-//#region node_modules/@tanstack/router-core/dist/esm/root.js
-/** Stable identifier used for the root route in a route tree. */
-var rootRouteId = "__root__";
-//#endregion
-//#region node_modules/@tanstack/router-core/dist/esm/redirect.js
-/**
-* Create a redirect Response understood by TanStack Router.
-*
-* Use from route `loader`/`beforeLoad` or server functions to trigger a
-* navigation. If `throw: true` is set, the redirect is thrown instead of
-* returned. When an absolute `href` is supplied and `reloadDocument` is not
-* set, a full-document navigation is inferred.
-*
-* @param opts Options for the redirect. Common fields:
-* - `href`: absolute URL for external redirects; infers `reloadDocument`.
-* - `statusCode`: HTTP status code to use (defaults to 307).
-* - `headers`: additional headers to include on the Response.
-* - Standard navigation options like `to`, `params`, `search`, `replace`,
-*   and `reloadDocument` for internal redirects.
-* @returns A Response augmented with router navigation options.
-* @link https://tanstack.com/router/latest/docs/framework/react/api/router/redirectFunction
-*/
-function redirect(opts) {
-	opts.statusCode = opts.statusCode || opts.code || 307;
-	if (!opts._builtLocation && !opts.reloadDocument && typeof opts.href === "string") try {
-		new URL(opts.href);
-		opts.reloadDocument = true;
-	} catch {}
-	const headers = new Headers(opts.headers);
-	if (opts.href && headers.get("Location") === null) headers.set("Location", opts.href);
-	const response = new Response(null, {
-		status: opts.statusCode,
-		headers
-	});
-	response.options = opts;
-	if (opts.throw) throw response;
-	return response;
-}
-/** Check whether a value is a TanStack Router redirect Response. */
-/** Check whether a value is a TanStack Router redirect Response. */
-function isRedirect(obj) {
-	return obj instanceof Response && !!obj.options;
-}
-/** True if value is a redirect with a resolved `href` location. */
-/** True if value is a redirect with a resolved `href` location. */
-function isResolvedRedirect(obj) {
-	return isRedirect(obj) && !!obj.options.href;
 }
 //#endregion
 //#region node_modules/@tanstack/router-core/dist/esm/load-matches.js
@@ -2150,203 +2432,6 @@ var componentTypes = [
 	"pendingComponent",
 	"notFoundComponent"
 ];
-//#endregion
-//#region node_modules/@tanstack/router-core/dist/esm/rewrite.js
-/** Compose multiple rewrite pairs into a single in/out rewrite. */
-function composeRewrites(rewrites) {
-	return {
-		input: ({ url }) => {
-			for (const rewrite of rewrites) url = executeRewriteInput(rewrite, url);
-			return url;
-		},
-		output: ({ url }) => {
-			for (let i = rewrites.length - 1; i >= 0; i--) url = executeRewriteOutput(rewrites[i], url);
-			return url;
-		}
-	};
-}
-/** Create a rewrite pair that strips/adds a basepath on input/output. */
-function rewriteBasepath(opts) {
-	const trimmedBasepath = trimPath(opts.basepath);
-	const normalizedBasepath = `/${trimmedBasepath}`;
-	const checkBasepath = opts.caseSensitive ? normalizedBasepath : normalizedBasepath.toLowerCase();
-	const checkBasepathWithSlash = `${checkBasepath}/`;
-	return {
-		input: ({ url }) => {
-			const pathname = opts.caseSensitive ? url.pathname : url.pathname.toLowerCase();
-			if (pathname === checkBasepath) url.pathname = "/";
-			else if (pathname.startsWith(checkBasepathWithSlash)) url.pathname = url.pathname.slice(normalizedBasepath.length);
-			return url;
-		},
-		output: ({ url }) => {
-			url.pathname = joinPaths([
-				"/",
-				trimmedBasepath,
-				url.pathname
-			]);
-			return url;
-		}
-	};
-}
-/** Execute a location input rewrite if provided. */
-function executeRewriteInput(rewrite, url) {
-	const res = rewrite?.input?.({ url });
-	if (res) {
-		if (typeof res === "string") return new URL(res);
-		else if (res instanceof URL) return res;
-	}
-	return url;
-}
-/** Execute a location output rewrite if provided. */
-function executeRewriteOutput(rewrite, url) {
-	const res = rewrite?.output?.({ url });
-	if (res) {
-		if (typeof res === "string") return new URL(res);
-		else if (res instanceof URL) return res;
-	}
-	return url;
-}
-//#endregion
-//#region node_modules/@tanstack/router-core/dist/esm/stores.js
-/** SSR non-reactive createMutableStore */
-function createNonReactiveMutableStore(initialValue) {
-	let value = initialValue;
-	return {
-		get() {
-			return value;
-		},
-		set(nextOrUpdater) {
-			value = functionalUpdate(nextOrUpdater, value);
-		}
-	};
-}
-/** SSR non-reactive createReadonlyStore */
-function createNonReactiveReadonlyStore(read) {
-	return { get() {
-		return read();
-	} };
-}
-function createRouterStores(initialState, config) {
-	const { createMutableStore, createReadonlyStore, batch, init } = config;
-	const matchStores = /* @__PURE__ */ new Map();
-	const pendingMatchStores = /* @__PURE__ */ new Map();
-	const cachedMatchStores = /* @__PURE__ */ new Map();
-	const status = createMutableStore(initialState.status);
-	const loadedAt = createMutableStore(initialState.loadedAt);
-	const isLoading = createMutableStore(initialState.isLoading);
-	const isTransitioning = createMutableStore(initialState.isTransitioning);
-	const location = createMutableStore(initialState.location);
-	const resolvedLocation = createMutableStore(initialState.resolvedLocation);
-	const statusCode = createMutableStore(initialState.statusCode);
-	const redirect = createMutableStore(initialState.redirect);
-	const matchesId = createMutableStore([]);
-	const pendingIds = createMutableStore([]);
-	const cachedIds = createMutableStore([]);
-	const matches = createReadonlyStore(() => readPoolMatches(matchStores, matchesId.get()));
-	const pendingMatches = createReadonlyStore(() => readPoolMatches(pendingMatchStores, pendingIds.get()));
-	const cachedMatches = createReadonlyStore(() => readPoolMatches(cachedMatchStores, cachedIds.get()));
-	const firstId = createReadonlyStore(() => matchesId.get()[0]);
-	const hasPending = createReadonlyStore(() => matchesId.get().some((matchId) => {
-		return matchStores.get(matchId)?.get().status === "pending";
-	}));
-	const matchRouteDeps = createReadonlyStore(() => ({
-		locationHref: location.get().href,
-		resolvedLocationHref: resolvedLocation.get()?.href,
-		status: status.get()
-	}));
-	const __store = createReadonlyStore(() => ({
-		status: status.get(),
-		loadedAt: loadedAt.get(),
-		isLoading: isLoading.get(),
-		isTransitioning: isTransitioning.get(),
-		matches: matches.get(),
-		location: location.get(),
-		resolvedLocation: resolvedLocation.get(),
-		statusCode: statusCode.get(),
-		redirect: redirect.get()
-	}));
-	const matchStoreByRouteIdCache = createLRUCache(64);
-	function getRouteMatchStore(routeId) {
-		let cached = matchStoreByRouteIdCache.get(routeId);
-		if (!cached) {
-			cached = createReadonlyStore(() => {
-				const ids = matchesId.get();
-				for (const id of ids) {
-					const matchStore = matchStores.get(id);
-					if (matchStore && matchStore.routeId === routeId) return matchStore.get();
-				}
-			});
-			matchStoreByRouteIdCache.set(routeId, cached);
-		}
-		return cached;
-	}
-	const store = {
-		status,
-		loadedAt,
-		isLoading,
-		isTransitioning,
-		location,
-		resolvedLocation,
-		statusCode,
-		redirect,
-		matchesId,
-		pendingIds,
-		cachedIds,
-		matches,
-		pendingMatches,
-		cachedMatches,
-		firstId,
-		hasPending,
-		matchRouteDeps,
-		matchStores,
-		pendingMatchStores,
-		cachedMatchStores,
-		__store,
-		getRouteMatchStore,
-		setMatches,
-		setPending,
-		setCached
-	};
-	setMatches(initialState.matches);
-	init?.(store);
-	function setMatches(nextMatches) {
-		reconcileMatchPool(nextMatches, matchStores, matchesId, createMutableStore, batch);
-	}
-	function setPending(nextMatches) {
-		reconcileMatchPool(nextMatches, pendingMatchStores, pendingIds, createMutableStore, batch);
-	}
-	function setCached(nextMatches) {
-		reconcileMatchPool(nextMatches, cachedMatchStores, cachedIds, createMutableStore, batch);
-	}
-	return store;
-}
-function readPoolMatches(pool, ids) {
-	const matches = [];
-	for (const id of ids) {
-		const matchStore = pool.get(id);
-		if (matchStore) matches.push(matchStore.get());
-	}
-	return matches;
-}
-function reconcileMatchPool(nextMatches, pool, idStore, createMutableStore, batch) {
-	const nextIds = nextMatches.map((d) => d.id);
-	const nextIdSet = new Set(nextIds);
-	batch(() => {
-		for (const id of pool.keys()) if (!nextIdSet.has(id)) pool.delete(id);
-		for (const nextMatch of nextMatches) {
-			const existing = pool.get(nextMatch.id);
-			if (!existing) {
-				const matchStore = createMutableStore(nextMatch);
-				matchStore.routeId = nextMatch.routeId;
-				pool.set(nextMatch.id, matchStore);
-				continue;
-			}
-			existing.routeId = nextMatch.routeId;
-			if (existing.get() !== nextMatch) existing.set(nextMatch);
-		}
-		if (!arraysEqual(idStore.get(), nextIds)) idStore.set(nextIds);
-	});
-}
 //#endregion
 //#region node_modules/@tanstack/router-core/dist/esm/router.js
 /**
@@ -3033,8 +3118,8 @@ var RouterCore = class {
 				preload: true,
 				dest: opts
 			});
-			const activeMatchIds = new Set([...this.stores.matchesId.get(), ...this.stores.pendingIds.get()]);
-			const loadedMatchIds = new Set([...activeMatchIds, ...this.stores.cachedIds.get()]);
+			const activeMatchIds = /* @__PURE__ */ new Set([...this.stores.matchesId.get(), ...this.stores.pendingIds.get()]);
+			const loadedMatchIds = /* @__PURE__ */ new Set([...activeMatchIds, ...this.stores.cachedIds.get()]);
 			const matchesToCache = matches.filter((match) => !loadedMatchIds.has(match.id));
 			if (matchesToCache.length) {
 				const cachedMatches = this.stores.cachedMatches.get();
@@ -3454,26 +3539,6 @@ function extractStrictParams(route, accumulatedParams) {
 	}
 }
 //#endregion
-//#region node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js
-function getSafeSessionStorage() {
-	try {
-		return sessionStorage;
-	} catch {
-		return;
-	}
-}
-var storageKey = "tsr-scroll-restoration-v1_3";
-getSafeSessionStorage();
-/**
-* The default `getKey` function for `useScrollRestoration`.
-* It returns the `key` from the location state or the `href` of the location.
-*
-* The `location.href` is used as a fallback to support the use case where the location state is not available like the initial render.
-*/
-var defaultGetScrollRestorationKey = (location) => {
-	return location.state.__TSR_key || location.href;
-};
-//#endregion
 //#region node_modules/@tanstack/router-core/dist/esm/link.js
 var preloadWarning = "Error preloading route! ☝️";
 //#endregion
@@ -3614,167 +3679,6 @@ var BaseRootRoute = class extends BaseRoute {
 //#region node_modules/@tanstack/router-core/dist/esm/ssr/constants.js
 var GLOBAL_TSR = "$_TSR";
 var TSR_SCRIPT_BARRIER_ID = "$tsr-stream-barrier";
-//#endregion
-//#region node_modules/@tanstack/react-router/dist/esm/CatchBoundary.js
-function CatchBoundary(props) {
-	const errorComponent = props.errorComponent ?? ErrorComponent;
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CatchBoundaryImpl, {
-		getResetKey: props.getResetKey,
-		onCatch: props.onCatch,
-		children: ({ error, reset }) => {
-			if (error) return import_react.createElement(errorComponent, {
-				error,
-				reset
-			});
-			return props.children;
-		}
-	});
-}
-var CatchBoundaryImpl = class extends import_react.Component {
-	constructor(..._args) {
-		super(..._args);
-		this.state = { error: null };
-	}
-	static getDerivedStateFromProps(props, state) {
-		const resetKey = props.getResetKey();
-		if (state.error && state.resetKey !== resetKey) return {
-			resetKey,
-			error: null
-		};
-		return { resetKey };
-	}
-	static getDerivedStateFromError(error) {
-		return { error };
-	}
-	reset() {
-		this.setState({ error: null });
-	}
-	componentDidCatch(error, errorInfo) {
-		if (this.props.onCatch) this.props.onCatch(error, errorInfo);
-	}
-	render() {
-		return this.props.children({
-			error: this.state.error,
-			reset: () => {
-				this.reset();
-			}
-		});
-	}
-};
-function ErrorComponent({ error }) {
-	const [show, setShow] = import_react.useState(false);
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-		style: {
-			padding: ".5rem",
-			maxWidth: "100%"
-		},
-		children: [
-			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				style: {
-					display: "flex",
-					alignItems: "center",
-					gap: ".5rem"
-				},
-				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", {
-					style: { fontSize: "1rem" },
-					children: "Something went wrong!"
-				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-					style: {
-						appearance: "none",
-						fontSize: ".6em",
-						border: "1px solid currentColor",
-						padding: ".1rem .2rem",
-						fontWeight: "bold",
-						borderRadius: ".25rem"
-					},
-					onClick: () => setShow((d) => !d),
-					children: show ? "Hide Error" : "Show Error"
-				})]
-			}),
-			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { style: { height: ".25rem" } }),
-			show ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("pre", {
-				style: {
-					fontSize: ".7em",
-					border: "1px solid red",
-					borderRadius: ".25rem",
-					padding: ".3rem",
-					color: "red",
-					overflow: "auto"
-				},
-				children: error.message ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("code", { children: error.message }) : null
-			}) }) : null
-		]
-	});
-}
-//#endregion
-//#region node_modules/@tanstack/react-router/dist/esm/ClientOnly.js
-/**
-* Render the children only after the JS has loaded client-side. Use an optional
-* fallback component if the JS is not yet loaded.
-*
-* @example
-* Render a Chart component if JS loads, renders a simple FakeChart
-* component server-side or if there is no JS. The FakeChart can have only the
-* UI without the behavior or be a loading spinner or skeleton.
-*
-* ```tsx
-* return (
-*   <ClientOnly fallback={<FakeChart />}>
-*     <Chart />
-*   </ClientOnly>
-* )
-* ```
-*/
-function ClientOnly({ children, fallback = null }) {
-	return useHydrated() ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_react.Fragment, { children }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_react.Fragment, { children: fallback });
-}
-/**
-* Return a boolean indicating if the JS has been hydrated already.
-* When doing Server-Side Rendering, the result will always be false.
-* When doing Client-Side Rendering, the result will always be false on the
-* first render and true from then on. Even if a new component renders it will
-* always start with true.
-*
-* @example
-* ```tsx
-* // Disable a button that needs JS to work.
-* let hydrated = useHydrated()
-* return (
-*   <button type="button" disabled={!hydrated} onClick={doSomethingCustom}>
-*     Click me
-*   </button>
-* )
-* ```
-* @returns True if the JS has been hydrated already, false otherwise.
-*/
-function useHydrated() {
-	return import_react.useSyncExternalStore(subscribe, () => true, () => false);
-}
-function subscribe() {
-	return () => {};
-}
-//#endregion
-//#region node_modules/@tanstack/react-router/dist/esm/routerContext.js
-var routerContext = import_react.createContext(null);
-//#endregion
-//#region node_modules/@tanstack/react-router/dist/esm/useRouter.js
-/**
-* Access the current TanStack Router instance from React context.
-* Must be used within a `RouterProvider`.
-*
-* Options:
-* - `warn`: Log a warning if no router context is found (default: true).
-*
-* @returns The registered router instance.
-* @link https://tanstack.com/router/latest/docs/framework/react/api/router/useRouterHook
-*/
-function useRouter(opts) {
-	return import_react.useContext(routerContext);
-}
-//#endregion
-//#region node_modules/@tanstack/react-router/dist/esm/matchContext.js
-var matchContext = import_react.createContext(void 0);
-var dummyMatchContext = import_react.createContext(void 0);
 //#endregion
 //#region node_modules/@tanstack/store/dist/esm/alien.js
 var ReactiveFlags = /* @__PURE__ */ ((ReactiveFlags2) => {
@@ -4122,172 +4026,6 @@ function useStore(atom, selector, compare = defaultCompare) {
 	}, [atom]);
 	const boundGetSnapshot = (0, import_react.useCallback)(() => atom?.get(), [atom]);
 	return (0, import_with_selector.useSyncExternalStoreWithSelector)(subscribe, boundGetSnapshot, boundGetSnapshot, selector, compare);
-}
-//#endregion
-//#region node_modules/@tanstack/react-router/dist/esm/useMatch.js
-var dummyStore = {
-	get() {},
-	subscribe() {
-		return { unsubscribe() {} };
-	}
-};
-function useStructuralSharing(opts, router) {
-	const previousResult = import_react.useRef();
-	return (slice) => {
-		const selected = opts?.select ? opts.select(slice) : slice;
-		if (opts?.structuralSharing ?? router.options.defaultStructuralSharing) return previousResult.current = replaceEqualDeep(previousResult.current, selected);
-		return selected;
-	};
-}
-/**
-* Read and select the nearest or targeted route match.
-* @link https://tanstack.com/router/latest/docs/framework/react/api/router/useMatchHook
-*/
-function useMatch(opts) {
-	const router = useRouter();
-	const nearestMatchId = import_react.useContext(opts.from ? dummyMatchContext : matchContext);
-	const matchStore = opts.from ? router.stores.getRouteMatchStore(opts.from) : router.stores.matchStores.get(nearestMatchId);
-	{
-		const match = matchStore?.get();
-		if (!match) {
-			if (opts.shouldThrow ?? true) invariant();
-			return;
-		}
-		return opts.select ? opts.select(match) : match;
-	}
-	const selector = useStructuralSharing(opts, router);
-	const matchSelection = useStore(matchStore ?? dummyStore, (match) => match ? selector(match) : dummyStore);
-	if (matchSelection !== dummyStore) return matchSelection;
-	if (opts.shouldThrow ?? true) invariant();
-}
-//#endregion
-//#region node_modules/@tanstack/react-router/dist/esm/useLoaderData.js
-/**
-* Read and select the current route's loader data with type‑safety.
-*
-* Options:
-* - `from`/`strict`: Choose which route's data to read and strictness
-* - `select`: Map the loader data to a derived value
-* - `structuralSharing`: Enable structural sharing for stable references
-*
-* @returns The loader data (or selected value) for the matched route.
-* @link https://tanstack.com/router/latest/docs/framework/react/api/router/useLoaderDataHook
-*/
-function useLoaderData(opts) {
-	return useMatch({
-		from: opts.from,
-		strict: opts.strict,
-		structuralSharing: opts.structuralSharing,
-		select: (match) => {
-			return opts.select ? opts.select(match.loaderData) : match.loaderData;
-		}
-	});
-}
-//#endregion
-//#region node_modules/@tanstack/react-router/dist/esm/useLoaderDeps.js
-/**
-* Read and select the current route's loader dependencies object.
-*
-* Options:
-* - `from`: Choose which route's loader deps to read
-* - `select`: Map the deps to a derived value
-* - `structuralSharing`: Enable structural sharing for stable references
-*
-* @returns The loader deps (or selected value) for the matched route.
-* @link https://tanstack.com/router/latest/docs/framework/react/api/router/useLoaderDepsHook
-*/
-function useLoaderDeps(opts) {
-	const { select, ...rest } = opts;
-	return useMatch({
-		...rest,
-		select: (match) => {
-			return select ? select(match.loaderDeps) : match.loaderDeps;
-		}
-	});
-}
-//#endregion
-//#region node_modules/@tanstack/react-router/dist/esm/useParams.js
-/**
-* Access the current route's path parameters with type-safety.
-*
-* Options:
-* - `from`/`strict`: Specify the matched route and whether to enforce strict typing
-* - `select`: Project the params object to a derived value for memoized renders
-* - `structuralSharing`: Enable structural sharing for stable references
-* - `shouldThrow`: Throw if the route is not found in strict contexts
-*
-* @returns The params object (or selected value) for the matched route.
-* @link https://tanstack.com/router/latest/docs/framework/react/api/router/useParamsHook
-*/
-function useParams(opts) {
-	return useMatch({
-		from: opts.from,
-		shouldThrow: opts.shouldThrow,
-		structuralSharing: opts.structuralSharing,
-		strict: opts.strict,
-		select: (match) => {
-			const params = opts.strict === false ? match.params : match._strictParams;
-			return opts.select ? opts.select(params) : params;
-		}
-	});
-}
-//#endregion
-//#region node_modules/@tanstack/react-router/dist/esm/useSearch.js
-/**
-* Read and select the current route's search parameters with type-safety.
-*
-* Options:
-* - `from`/`strict`: Control which route's search is read and how strictly it's typed
-* - `select`: Map the search object to a derived value for render optimization
-* - `structuralSharing`: Enable structural sharing for stable references
-* - `shouldThrow`: Throw when the route is not found (strict contexts)
-*
-* @returns The search object (or selected value) for the matched route.
-* @link https://tanstack.com/router/latest/docs/framework/react/api/router/useSearchHook
-*/
-function useSearch(opts) {
-	return useMatch({
-		from: opts.from,
-		strict: opts.strict,
-		shouldThrow: opts.shouldThrow,
-		structuralSharing: opts.structuralSharing,
-		select: (match) => {
-			return opts.select ? opts.select(match.search) : match.search;
-		}
-	});
-}
-//#endregion
-//#region node_modules/@tanstack/react-router/dist/esm/useNavigate.js
-/**
-* Imperative navigation hook.
-*
-* Returns a stable `navigate(options)` function to change the current location
-* programmatically. Prefer the `Link` component for user-initiated navigation,
-* and use this hook from effects, callbacks, or handlers where imperative
-* navigation is required.
-*
-* Options:
-* - `from`: Optional route base used to resolve relative `to` paths.
-*
-* @returns A function that accepts `NavigateOptions`.
-* @link https://tanstack.com/router/latest/docs/framework/react/api/router/useNavigateHook
-*/
-function useNavigate(_defaultOpts) {
-	const router = useRouter();
-	return import_react.useCallback((options) => {
-		return router.navigate({
-			...options,
-			from: options.from ?? _defaultOpts?.from
-		});
-	}, [_defaultOpts?.from, router]);
-}
-//#endregion
-//#region node_modules/@tanstack/react-router/dist/esm/useRouteContext.js
-function useRouteContext(opts) {
-	return useMatch({
-		...opts,
-		select: (match) => opts.select ? opts.select(match.context) : match.context
-	});
 }
 //#endregion
 //#region node_modules/@tanstack/react-router/dist/esm/link.js
@@ -4703,6 +4441,176 @@ function isCtrlEvent(e) {
 	return !!(e.metaKey || e.altKey || e.ctrlKey || e.shiftKey);
 }
 //#endregion
+//#region node_modules/@tanstack/react-router/dist/esm/matchContext.js
+var matchContext = import_react.createContext(void 0);
+var dummyMatchContext = import_react.createContext(void 0);
+//#endregion
+//#region node_modules/@tanstack/react-router/dist/esm/useMatch.js
+var dummyStore = {
+	get() {},
+	subscribe() {
+		return { unsubscribe() {} };
+	}
+};
+function useStructuralSharing(opts, router) {
+	const previousResult = import_react.useRef();
+	return (slice) => {
+		const selected = opts?.select ? opts.select(slice) : slice;
+		if (opts?.structuralSharing ?? router.options.defaultStructuralSharing) return previousResult.current = replaceEqualDeep(previousResult.current, selected);
+		return selected;
+	};
+}
+/**
+* Read and select the nearest or targeted route match.
+* @link https://tanstack.com/router/latest/docs/framework/react/api/router/useMatchHook
+*/
+function useMatch(opts) {
+	const router = useRouter();
+	const nearestMatchId = import_react.useContext(opts.from ? dummyMatchContext : matchContext);
+	const matchStore = opts.from ? router.stores.getRouteMatchStore(opts.from) : router.stores.matchStores.get(nearestMatchId);
+	{
+		const match = matchStore?.get();
+		if (!match) {
+			if (opts.shouldThrow ?? true) invariant();
+			return;
+		}
+		return opts.select ? opts.select(match) : match;
+	}
+	const selector = useStructuralSharing(opts, router);
+	const matchSelection = useStore(matchStore ?? dummyStore, (match) => match ? selector(match) : dummyStore);
+	if (matchSelection !== dummyStore) return matchSelection;
+	if (opts.shouldThrow ?? true) invariant();
+}
+//#endregion
+//#region node_modules/@tanstack/react-router/dist/esm/useLoaderData.js
+/**
+* Read and select the current route's loader data with type‑safety.
+*
+* Options:
+* - `from`/`strict`: Choose which route's data to read and strictness
+* - `select`: Map the loader data to a derived value
+* - `structuralSharing`: Enable structural sharing for stable references
+*
+* @returns The loader data (or selected value) for the matched route.
+* @link https://tanstack.com/router/latest/docs/framework/react/api/router/useLoaderDataHook
+*/
+function useLoaderData(opts) {
+	return useMatch({
+		from: opts.from,
+		strict: opts.strict,
+		structuralSharing: opts.structuralSharing,
+		select: (match) => {
+			return opts.select ? opts.select(match.loaderData) : match.loaderData;
+		}
+	});
+}
+//#endregion
+//#region node_modules/@tanstack/react-router/dist/esm/useLoaderDeps.js
+/**
+* Read and select the current route's loader dependencies object.
+*
+* Options:
+* - `from`: Choose which route's loader deps to read
+* - `select`: Map the deps to a derived value
+* - `structuralSharing`: Enable structural sharing for stable references
+*
+* @returns The loader deps (or selected value) for the matched route.
+* @link https://tanstack.com/router/latest/docs/framework/react/api/router/useLoaderDepsHook
+*/
+function useLoaderDeps(opts) {
+	const { select, ...rest } = opts;
+	return useMatch({
+		...rest,
+		select: (match) => {
+			return select ? select(match.loaderDeps) : match.loaderDeps;
+		}
+	});
+}
+//#endregion
+//#region node_modules/@tanstack/react-router/dist/esm/useParams.js
+/**
+* Access the current route's path parameters with type-safety.
+*
+* Options:
+* - `from`/`strict`: Specify the matched route and whether to enforce strict typing
+* - `select`: Project the params object to a derived value for memoized renders
+* - `structuralSharing`: Enable structural sharing for stable references
+* - `shouldThrow`: Throw if the route is not found in strict contexts
+*
+* @returns The params object (or selected value) for the matched route.
+* @link https://tanstack.com/router/latest/docs/framework/react/api/router/useParamsHook
+*/
+function useParams(opts) {
+	return useMatch({
+		from: opts.from,
+		shouldThrow: opts.shouldThrow,
+		structuralSharing: opts.structuralSharing,
+		strict: opts.strict,
+		select: (match) => {
+			const params = opts.strict === false ? match.params : match._strictParams;
+			return opts.select ? opts.select(params) : params;
+		}
+	});
+}
+//#endregion
+//#region node_modules/@tanstack/react-router/dist/esm/useSearch.js
+/**
+* Read and select the current route's search parameters with type-safety.
+*
+* Options:
+* - `from`/`strict`: Control which route's search is read and how strictly it's typed
+* - `select`: Map the search object to a derived value for render optimization
+* - `structuralSharing`: Enable structural sharing for stable references
+* - `shouldThrow`: Throw when the route is not found (strict contexts)
+*
+* @returns The search object (or selected value) for the matched route.
+* @link https://tanstack.com/router/latest/docs/framework/react/api/router/useSearchHook
+*/
+function useSearch(opts) {
+	return useMatch({
+		from: opts.from,
+		strict: opts.strict,
+		shouldThrow: opts.shouldThrow,
+		structuralSharing: opts.structuralSharing,
+		select: (match) => {
+			return opts.select ? opts.select(match.search) : match.search;
+		}
+	});
+}
+//#endregion
+//#region node_modules/@tanstack/react-router/dist/esm/useNavigate.js
+/**
+* Imperative navigation hook.
+*
+* Returns a stable `navigate(options)` function to change the current location
+* programmatically. Prefer the `Link` component for user-initiated navigation,
+* and use this hook from effects, callbacks, or handlers where imperative
+* navigation is required.
+*
+* Options:
+* - `from`: Optional route base used to resolve relative `to` paths.
+*
+* @returns A function that accepts `NavigateOptions`.
+* @link https://tanstack.com/router/latest/docs/framework/react/api/router/useNavigateHook
+*/
+function useNavigate(_defaultOpts) {
+	const router = useRouter();
+	return import_react.useCallback((options) => {
+		return router.navigate({
+			...options,
+			from: options.from ?? _defaultOpts?.from
+		});
+	}, [_defaultOpts?.from, router]);
+}
+//#endregion
+//#region node_modules/@tanstack/react-router/dist/esm/useRouteContext.js
+function useRouteContext(opts) {
+	return useMatch({
+		...opts,
+		select: (match) => opts.select ? opts.select(match.context) : match.context
+	});
+}
+//#endregion
 //#region node_modules/@tanstack/react-router/dist/esm/route.js
 var Route = class extends BaseRoute {
 	/**
@@ -4938,6 +4846,98 @@ function lazyRouteComponent(importer, exportName) {
 	return lazyComp;
 }
 //#endregion
+//#region node_modules/@tanstack/react-router/dist/esm/CatchBoundary.js
+function CatchBoundary(props) {
+	const errorComponent = props.errorComponent ?? ErrorComponent;
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CatchBoundaryImpl, {
+		getResetKey: props.getResetKey,
+		onCatch: props.onCatch,
+		children: ({ error, reset }) => {
+			if (error) return import_react.createElement(errorComponent, {
+				error,
+				reset
+			});
+			return props.children;
+		}
+	});
+}
+var CatchBoundaryImpl = class extends import_react.Component {
+	constructor(..._args) {
+		super(..._args);
+		this.state = { error: null };
+	}
+	static getDerivedStateFromProps(props, state) {
+		const resetKey = props.getResetKey();
+		if (state.error && state.resetKey !== resetKey) return {
+			resetKey,
+			error: null
+		};
+		return { resetKey };
+	}
+	static getDerivedStateFromError(error) {
+		return { error };
+	}
+	reset() {
+		this.setState({ error: null });
+	}
+	componentDidCatch(error, errorInfo) {
+		if (this.props.onCatch) this.props.onCatch(error, errorInfo);
+	}
+	render() {
+		return this.props.children({
+			error: this.state.error,
+			reset: () => {
+				this.reset();
+			}
+		});
+	}
+};
+function ErrorComponent({ error }) {
+	const [show, setShow] = import_react.useState(false);
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+		style: {
+			padding: ".5rem",
+			maxWidth: "100%"
+		},
+		children: [
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				style: {
+					display: "flex",
+					alignItems: "center",
+					gap: ".5rem"
+				},
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", {
+					style: { fontSize: "1rem" },
+					children: "Something went wrong!"
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+					style: {
+						appearance: "none",
+						fontSize: ".6em",
+						border: "1px solid currentColor",
+						padding: ".1rem .2rem",
+						fontWeight: "bold",
+						borderRadius: ".25rem"
+					},
+					onClick: () => setShow((d) => !d),
+					children: show ? "Hide Error" : "Show Error"
+				})]
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { style: { height: ".25rem" } }),
+			show ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("pre", {
+				style: {
+					fontSize: ".7em",
+					border: "1px solid red",
+					borderRadius: ".25rem",
+					padding: ".3rem",
+					color: "red",
+					overflow: "auto"
+				},
+				children: error.message ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("code", { children: error.message }) : null
+			}) }) : null
+		]
+	});
+}
+//#endregion
 //#region node_modules/@tanstack/react-router/dist/esm/not-found.js
 function CatchNotFound(props) {
 	const router = useRouter();
@@ -4974,18 +4974,6 @@ function DefaultGlobalNotFound() {
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { children: "Not Found" });
 }
 //#endregion
-//#region node_modules/@tanstack/react-router/dist/esm/ScriptOnce.js
-/**
-* Server-only helper to emit a script tag exactly once during SSR.
-*/
-function ScriptOnce({ children }) {
-	const router = useRouter();
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("script", {
-		nonce: router.options.ssr?.nonce,
-		dangerouslySetInnerHTML: { __html: children + ";document.currentScript.remove()" }
-	});
-}
-//#endregion
 //#region node_modules/@tanstack/react-router/dist/esm/SafeFragment.js
 function SafeFragment(props) {
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_jsx_runtime.Fragment, { children: props.children });
@@ -5006,6 +4994,18 @@ function renderRouteNotFound(router, route, data) {
 		return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(DefaultGlobalNotFound, {});
 	}
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(route.options.notFoundComponent, { ...data });
+}
+//#endregion
+//#region node_modules/@tanstack/react-router/dist/esm/ScriptOnce.js
+/**
+* Server-only helper to emit a script tag exactly once during SSR.
+*/
+function ScriptOnce({ children }) {
+	const router = useRouter();
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("script", {
+		nonce: router.options.ssr?.nonce,
+		dangerouslySetInnerHTML: { __html: children + ";document.currentScript.remove()" }
+	});
 }
 //#endregion
 //#region node_modules/@tanstack/router-core/dist/esm/scroll-restoration-inline.js
@@ -5250,6 +5250,36 @@ var Outlet = import_react.memo(function OutletImpl() {
 	return nextMatch;
 });
 //#endregion
+//#region node_modules/@tanstack/react-router/dist/esm/routerStores.js
+var getStoreFactory = (opts) => {
+	return {
+		createMutableStore: createNonReactiveMutableStore,
+		createReadonlyStore: createNonReactiveReadonlyStore,
+		batch: (fn) => fn()
+	};
+};
+//#endregion
+//#region node_modules/@tanstack/react-router/dist/esm/router.js
+/**
+* Creates a new Router instance for React.
+*
+* Pass the returned router to `RouterProvider` to enable routing.
+* Notable options: `routeTree` (your route definitions) and `context`
+* (required if the root route was created with `createRootRouteWithContext`).
+*
+* @param options Router options used to configure the router.
+* @returns A Router instance to be provided to `RouterProvider`.
+* @link https://tanstack.com/router/latest/docs/framework/react/api/router/createRouterFunction
+*/
+var createRouter = (options) => {
+	return new Router(options);
+};
+var Router = class extends RouterCore {
+	constructor(options) {
+		super(options, getStoreFactory);
+	}
+};
+//#endregion
 //#region node_modules/@tanstack/react-router/dist/esm/Matches.js
 /**
 * Internal component that renders the router's active match tree with
@@ -5280,36 +5310,6 @@ function MatchesInner() {
 		})
 	});
 }
-//#endregion
-//#region node_modules/@tanstack/react-router/dist/esm/routerStores.js
-var getStoreFactory = (opts) => {
-	return {
-		createMutableStore: createNonReactiveMutableStore,
-		createReadonlyStore: createNonReactiveReadonlyStore,
-		batch: (fn) => fn()
-	};
-};
-//#endregion
-//#region node_modules/@tanstack/react-router/dist/esm/router.js
-/**
-* Creates a new Router instance for React.
-*
-* Pass the returned router to `RouterProvider` to enable routing.
-* Notable options: `routeTree` (your route definitions) and `context`
-* (required if the root route was created with `createRootRouteWithContext`).
-*
-* @param options Router options used to configure the router.
-* @returns A Router instance to be provided to `RouterProvider`.
-* @link https://tanstack.com/router/latest/docs/framework/react/api/router/createRouterFunction
-*/
-var createRouter = (options) => {
-	return new Router(options);
-};
-var Router = class extends RouterCore {
-	constructor(options) {
-		super(options, getStoreFactory);
-	}
-};
 //#endregion
 //#region node_modules/@tanstack/react-router/dist/esm/RouterProvider.js
 /**
@@ -5649,6 +5649,626 @@ function renderScripts(router, scripts, assetScripts) {
 	})) });
 }
 //#endregion
+//#region node_modules/@tanstack/router-core/dist/esm/ssr/handlerCallback.js
+function isSsrResponse(value) {
+	return typeof value === "object" && value !== null && "response" in value && "serverSsrCleanup" in value;
+}
+function normalizeSsrResponse(result) {
+	return isSsrResponse(result) ? result : {
+		response: result,
+		serverSsrCleanup: "none"
+	};
+}
+function createSsrStreamResponse(router, response) {
+	if (!response.body) throw new Error("Invariant failed: SSR stream response requires a body");
+	let disposed = false;
+	return {
+		response,
+		serverSsrCleanup: "stream",
+		async dispose(reason) {
+			if (disposed) return;
+			disposed = true;
+			try {
+				await response.body.cancel(reason);
+			} catch {}
+			router.serverSsr?.cleanup();
+		}
+	};
+}
+async function replaceSsrResponse(result, response, reason) {
+	const ssrResponse = normalizeSsrResponse(result);
+	if (ssrResponse.serverSsrCleanup === "stream") await ssrResponse.dispose(reason);
+	return {
+		response,
+		serverSsrCleanup: "none"
+	};
+}
+async function stripSsrResponseBody(result, reason) {
+	const ssrResponse = normalizeSsrResponse(result);
+	if (ssrResponse.serverSsrCleanup === "stream") await ssrResponse.dispose(reason);
+	return {
+		response: new Response(null, ssrResponse.response),
+		serverSsrCleanup: "none"
+	};
+}
+function defineHandlerCallback(handler) {
+	return handler;
+}
+//#endregion
+//#region node_modules/@tanstack/router-core/dist/esm/ssr/transformStreamWithRouter.js
+function transformReadableStreamWithRouter(router, routerStream, opts) {
+	return transformStreamWithRouter(router, routerStream, opts);
+}
+function transformPipeableStreamWithRouter(router, routerStream, opts) {
+	return Readable.fromWeb(transformStreamWithRouter(router, Readable.toWeb(routerStream), opts));
+}
+var MIN_CLOSING_TAG_LENGTH = 4;
+var DEFAULT_SERIALIZATION_TIMEOUT_MS = 6e4;
+var DEFAULT_LIFETIME_TIMEOUT_MS = DEFAULT_SERIALIZATION_TIMEOUT_MS * 2;
+var MAX_LEFTOVER_CHARS = 2048;
+var MAX_TAIL_CHARS = 64 * 1024;
+var MAX_ROUTER_HTML_CHARS = 16 * 1024 * 1024;
+var MAX_PENDING_WRITE_CHARS = 16 * 1024 * 1024;
+var MergeState = {
+	ReadingBody: 0,
+	HoldingTail: 1,
+	AppDone: 2,
+	Draining: 3,
+	Done: 4
+};
+var textEncoder = new TextEncoder();
+var noop$1 = () => {};
+var resolvedPromise = Promise.resolve();
+function findHtmlBoundary(str) {
+	let lastClosingTagEnd = -1;
+	let searchFrom = str.length - MIN_CLOSING_TAG_LENGTH;
+	while (searchFrom >= 0) {
+		const openSlash = str.lastIndexOf("</", searchFrom);
+		if (openSlash === -1) break;
+		if ((str.charCodeAt(openSlash + 2) | 32) === 98 && (str.charCodeAt(openSlash + 3) | 32) === 111 && (str.charCodeAt(openSlash + 4) | 32) === 100 && (str.charCodeAt(openSlash + 5) | 32) === 121 && str.charCodeAt(openSlash + 6) === 62) return -openSlash - 2;
+		if (lastClosingTagEnd === -1) {
+			let i = openSlash + 2;
+			const startCode = str.charCodeAt(i);
+			if (startCode >= 97 && startCode <= 122 || startCode >= 65 && startCode <= 90) {
+				i++;
+				while (i < str.length) {
+					const code = str.charCodeAt(i);
+					if (code >= 97 && code <= 122 || code >= 65 && code <= 90 || code >= 48 && code <= 57 || code === 95 || code === 58 || code === 46 || code === 45) i++;
+					else break;
+				}
+				if (str.charCodeAt(i) === 62) lastClosingTagEnd = i + 1;
+			}
+		}
+		searchFrom = openSlash - 1;
+	}
+	return lastClosingTagEnd;
+}
+function safeReleaseReader(reader) {
+	try {
+		reader.releaseLock();
+		return true;
+	} catch {
+		return false;
+	}
+}
+/**
+* Cancel a reader without producing an unhandled rejection. `reader.cancel()`
+* can reject (e.g. when the underlying source's cancel() throws), and
+* downstream cancel() should still wait for upstream teardown when possible.
+*/
+function safeCancelReader(reader, reason) {
+	let cancelPromise;
+	try {
+		cancelPromise = reader.cancel(reason);
+	} catch {}
+	if (!safeReleaseReader(reader) && cancelPromise) return cancelPromise.then(noop$1, noop$1).then(() => {
+		safeReleaseReader(reader);
+	});
+	return cancelPromise ? cancelPromise.then(noop$1, noop$1) : resolvedPromise;
+}
+function createReaderState(appStream) {
+	const reader = appStream.getReader();
+	let released = false;
+	return {
+		reader,
+		cancel: (reason) => {
+			if (released) return resolvedPromise;
+			released = true;
+			return safeCancelReader(reader, reason);
+		},
+		release: () => {
+			if (released) return;
+			released = true;
+			safeReleaseReader(reader);
+		}
+	};
+}
+function createAbortNotifier(opts) {
+	let abortNotified = false;
+	return (reason) => {
+		if (abortNotified) return;
+		abortNotified = true;
+		try {
+			opts?.onAbort?.(reason);
+		} catch {}
+	};
+}
+function transformStreamWithRouter(router, appStream, opts) {
+	const serverSsr = router.serverSsr;
+	if (!serverSsr) throw new Error("Invariant failed: router.serverSsr is required");
+	if (serverSsr.reserveStreamFastPath()) return makeFastPathStream(appStream, opts, serverSsr);
+	return makeMainStream(serverSsr, appStream, opts);
+}
+function makeFastPathStream(appStream, opts, serverSsr) {
+	let cleanedUp = false;
+	let controller;
+	let state = MergeState.ReadingBody;
+	let lifetimeTimeoutHandle;
+	let stopListeningToInjectedHtml;
+	const readerState = createReaderState(appStream);
+	const notifyAbort = createAbortNotifier(opts);
+	const isDone = () => state === MergeState.Done;
+	let renderFinished = false;
+	const finishSsrRendering = () => {
+		if (!serverSsr || renderFinished) return true;
+		renderFinished = true;
+		try {
+			serverSsr.setRenderFinished();
+			return true;
+		} catch (error) {
+			safeError(error);
+			cleanup(error);
+			return false;
+		}
+	};
+	const cleanup = (reason, cancelReader = true) => {
+		if (cleanedUp) return resolvedPromise;
+		cleanedUp = true;
+		if (lifetimeTimeoutHandle !== void 0) {
+			clearTimeout(lifetimeTimeoutHandle);
+			lifetimeTimeoutHandle = void 0;
+		}
+		try {
+			stopListeningToInjectedHtml?.();
+		} catch {}
+		stopListeningToInjectedHtml = void 0;
+		if (cancelReader) notifyAbort(reason);
+		const readerDone = cancelReader ? readerState.cancel(reason) : (readerState.release(), resolvedPromise);
+		if (serverSsr) try {
+			serverSsr.cleanup();
+		} catch (error) {
+			console.error("Error in SSR cleanup:", error);
+		}
+		return readerDone;
+	};
+	const safeClose = () => {
+		if (isDone()) return;
+		state = MergeState.Done;
+		try {
+			controller?.close();
+		} catch {}
+	};
+	const safeError = (error) => {
+		if (isDone()) return;
+		state = MergeState.Done;
+		try {
+			controller?.error(error);
+		} catch {}
+	};
+	if (serverSsr) stopListeningToInjectedHtml = serverSsr.onInjectedHtml(() => {
+		const err = /* @__PURE__ */ new Error("SSR router HTML injected during fast path");
+		safeError(err);
+		cleanup(err);
+	});
+	const lifetimeMs = opts?.lifetimeMs ?? DEFAULT_LIFETIME_TIMEOUT_MS;
+	lifetimeTimeoutHandle = setTimeout(() => {
+		if (!cleanedUp && !isDone()) {
+			const err = /* @__PURE__ */ new Error("Stream lifetime exceeded");
+			console.warn(`SSR stream transform exceeded maximum lifetime (${lifetimeMs}ms), forcing cleanup`);
+			safeError(err);
+			cleanup(err);
+		}
+	}, lifetimeMs);
+	return new ReadableStream$1({
+		start(c) {
+			controller = c;
+		},
+		async pull(c) {
+			if (cleanedUp || isDone()) return;
+			try {
+				const { done, value } = await readerState.reader.read();
+				if (!done) {
+					if (!cleanedUp && !isDone()) c.enqueue(value);
+					return;
+				}
+				if (cleanedUp || isDone()) return;
+				if (!finishSsrRendering()) return;
+				safeClose();
+				return cleanup(void 0, false);
+			} catch (error) {
+				if (cleanedUp) return;
+				console.error("Error reading appStream:", error);
+				if (state < MergeState.AppDone) try {
+					serverSsr?.setRenderFinished();
+				} catch {}
+				safeError(error);
+				return cleanup(error);
+			} finally {
+				if (cleanedUp || isDone()) readerState.release();
+			}
+		},
+		cancel(reason) {
+			state = MergeState.Done;
+			return cleanup(reason);
+		}
+	});
+}
+function makeMainStream(serverSsr, appStream, opts) {
+	let stopListeningToInjectedHtml;
+	let stopListeningToSerializationFinished;
+	let serializationTimeoutHandle;
+	let lifetimeTimeoutHandle;
+	let cleanedUp = false;
+	let controller;
+	let closeWhenDrained = false;
+	let state = MergeState.ReadingBody;
+	const readerState = createReaderState(appStream);
+	const notifyAbort = createAbortNotifier(opts);
+	const pendingWrites = [];
+	let pendingWriteHead = 0;
+	let pendingWriteChars = 0;
+	function clearPending() {
+		pendingWrites.length = 0;
+		pendingWriteHead = 0;
+		pendingWriteChars = 0;
+	}
+	let drainResolve = null;
+	const waitForDrain = () => new Promise((r) => {
+		drainResolve = r;
+	});
+	const signalDrain = () => {
+		if (drainResolve) {
+			const r = drainResolve;
+			drainResolve = null;
+			r();
+		}
+	};
+	const isDone = () => state === MergeState.Done;
+	function drainPending() {
+		if (!controller || isDone()) return;
+		while (pendingWriteHead < pendingWrites.length) {
+			const ds = controller.desiredSize;
+			if (ds !== null && ds <= 0) return;
+			const next = pendingWrites[pendingWriteHead];
+			pendingWrites[pendingWriteHead] = "";
+			pendingWriteHead++;
+			pendingWriteChars -= next.length;
+			try {
+				controller.enqueue(textEncoder.encode(next));
+			} catch (error) {
+				safeError(error);
+				cleanup(error);
+				return;
+			}
+		}
+		if (pendingWriteHead >= pendingWrites.length) {
+			pendingWrites.length = 0;
+			pendingWriteHead = 0;
+		}
+		if (closeWhenDrained && pendingWriteHead >= pendingWrites.length) {
+			closeWhenDrained = false;
+			safeClose();
+			cleanup(void 0, false);
+		}
+	}
+	/**
+	* Enqueue a string chunk through the backpressure queue. Stored as a
+	* string and encoded only when the downstream actually accepts the chunk
+	* — keeps native-memory pressure inside the controller's queue (which
+	* honors desiredSize) rather than ours.
+	*/
+	function writeChunk(chunk) {
+		if (cleanedUp || isDone()) return;
+		if (!chunk.length) return;
+		if (pendingWriteChars + chunk.length > MAX_PENDING_WRITE_CHARS) {
+			const err = /* @__PURE__ */ new Error("SSR stream pending output exceeded maximum buffer");
+			safeError(err);
+			cleanup(err);
+			return;
+		}
+		pendingWrites.push(chunk);
+		pendingWriteChars += chunk.length;
+		drainPending();
+	}
+	function safeClose() {
+		if (isDone()) return;
+		state = MergeState.Done;
+		try {
+			controller?.close();
+		} catch {}
+	}
+	function safeError(error) {
+		if (isDone()) return;
+		state = MergeState.Done;
+		try {
+			controller?.error(error);
+		} catch {}
+	}
+	/**
+	* Cleanup with guards; must be idempotent.
+	*/
+	function cleanup(reason, cancelReader = true) {
+		if (cleanedUp) return resolvedPromise;
+		cleanedUp = true;
+		try {
+			stopListeningToInjectedHtml?.();
+			stopListeningToSerializationFinished?.();
+		} catch {}
+		stopListeningToInjectedHtml = void 0;
+		stopListeningToSerializationFinished = void 0;
+		if (serializationTimeoutHandle !== void 0) {
+			clearTimeout(serializationTimeoutHandle);
+			serializationTimeoutHandle = void 0;
+		}
+		if (lifetimeTimeoutHandle !== void 0) {
+			clearTimeout(lifetimeTimeoutHandle);
+			lifetimeTimeoutHandle = void 0;
+		}
+		clearPendingRouterHtml();
+		leftover = "";
+		pendingTail = "";
+		clearPending();
+		if (cancelReader) notifyAbort(reason);
+		const readerDone = cancelReader ? readerState.cancel(reason) : (readerState.release(), resolvedPromise);
+		signalDrain();
+		try {
+			serverSsr.cleanup();
+		} catch (error) {
+			console.error("Error in SSR cleanup:", error);
+		}
+		return readerDone;
+	}
+	const textDecoder = new TextDecoder();
+	const pendingRouterHtml = [];
+	let pendingRouterHtmlChars = 0;
+	let leftover = "";
+	let pendingTail = "";
+	let streamBarrierLifted = false;
+	let streamBarrierMarkerSeen = false;
+	let serializationFinished = false;
+	function noteBarrierMarker(chunk) {
+		if (streamBarrierMarkerSeen) return;
+		if (chunk.includes("$tsr-stream-barrier")) streamBarrierMarkerSeen = true;
+	}
+	function liftBarrierAfterBoundary() {
+		if (streamBarrierLifted) return;
+		if (!streamBarrierMarkerSeen) return;
+		streamBarrierLifted = true;
+		serverSsr.liftScriptBarrier();
+	}
+	const stream = new ReadableStream$1({
+		start(c) {
+			controller = c;
+			drainPending();
+		},
+		pull() {
+			drainPending();
+			signalDrain();
+		},
+		cancel(reason) {
+			state = MergeState.Done;
+			return cleanup(reason);
+		}
+	});
+	function drainRouterHtml() {
+		if (cleanedUp || isDone()) return;
+		let html;
+		try {
+			html = serverSsr.takeBufferedHtml();
+		} catch (error) {
+			safeError(error);
+			cleanup(error);
+			return;
+		}
+		if (!html) return;
+		if (state >= MergeState.Draining) {
+			const err = /* @__PURE__ */ new Error("SSR router HTML injected after stream finalization");
+			safeError(err);
+			cleanup(err);
+			return;
+		}
+		if (state === MergeState.HoldingTail) {
+			flushPendingRouterHtml();
+			writeChunk(html);
+		} else {
+			if (pendingRouterHtmlChars + html.length > MAX_ROUTER_HTML_CHARS) {
+				const err = /* @__PURE__ */ new Error("SSR router HTML exceeded maximum buffer");
+				safeError(err);
+				cleanup(err);
+				return;
+			}
+			pendingRouterHtml.push(html);
+			pendingRouterHtmlChars += html.length;
+		}
+	}
+	function flushPendingRouterHtml() {
+		if (!pendingRouterHtml.length) return;
+		for (const html of pendingRouterHtml) writeChunk(html);
+		clearPendingRouterHtml();
+	}
+	function clearPendingRouterHtml() {
+		pendingRouterHtml.length = 0;
+		pendingRouterHtmlChars = 0;
+	}
+	function appendTail(chunk) {
+		pendingTail += chunk;
+		if (pendingTail.length > MAX_TAIL_CHARS) throw new Error("SSR stream tail exceeded maximum buffer");
+	}
+	function waitForBackpressure() {
+		return !!(controller && controller.desiredSize !== null && controller.desiredSize <= 0);
+	}
+	function startSerializationTimeout() {
+		if (cleanedUp || isDone()) return;
+		if (serializationTimeoutHandle !== void 0) return;
+		const timeoutMs = opts?.timeoutMs ?? DEFAULT_SERIALIZATION_TIMEOUT_MS;
+		serializationTimeoutHandle = setTimeout(() => {
+			if (!cleanedUp && !isDone()) {
+				const err = /* @__PURE__ */ new Error("Serialization timeout after app render finished");
+				console.error("Serialization timeout after app render finished");
+				safeError(err);
+				cleanup(err);
+			}
+		}, timeoutMs);
+	}
+	/**
+	* Finish only when app done and serialization complete. Queues final
+	* output and requests close-when-drained so we don't close ahead of
+	* pending writes still waiting on downstream capacity.
+	*/
+	function tryFinish() {
+		if (state !== MergeState.AppDone || !serializationFinished) return;
+		if (cleanedUp || isDone()) return;
+		if (serializationTimeoutHandle !== void 0) {
+			clearTimeout(serializationTimeoutHandle);
+			serializationTimeoutHandle = void 0;
+		}
+		drainRouterHtml();
+		if (cleanedUp || isDone()) return;
+		const decoderRemainder = textDecoder.decode();
+		if (leftover) writeChunk(leftover);
+		if (cleanedUp || isDone()) return;
+		if (decoderRemainder) writeChunk(decoderRemainder);
+		if (cleanedUp || isDone()) return;
+		flushPendingRouterHtml();
+		if (cleanedUp || isDone()) return;
+		if (pendingTail) writeChunk(pendingTail);
+		if (cleanedUp || isDone()) return;
+		leftover = "";
+		pendingTail = "";
+		state = MergeState.Draining;
+		closeWhenDrained = true;
+		drainPending();
+	}
+	function finishAppRendering() {
+		if (state >= MergeState.AppDone) return;
+		state = MergeState.AppDone;
+		try {
+			serverSsr.setRenderFinished();
+		} catch (error) {
+			safeError(error);
+			cleanup(error);
+			return;
+		}
+		drainRouterHtml();
+		if (cleanedUp || isDone()) return;
+		serializationFinished = serializationFinished || serverSsr.isSerializationFinished();
+		if (serializationFinished) tryFinish();
+		else startSerializationTimeout();
+	}
+	const timeoutMs = opts?.timeoutMs ?? DEFAULT_SERIALIZATION_TIMEOUT_MS;
+	const lifetimeMs = opts?.lifetimeMs ?? timeoutMs * 2;
+	lifetimeTimeoutHandle = setTimeout(() => {
+		if (!cleanedUp && !isDone()) {
+			const err = /* @__PURE__ */ new Error("Stream lifetime exceeded");
+			console.warn(`SSR stream transform exceeded maximum lifetime (${lifetimeMs}ms), forcing cleanup`);
+			safeError(err);
+			cleanup(err);
+		}
+	}, lifetimeMs);
+	stopListeningToInjectedHtml = serverSsr.onInjectedHtml(() => {
+		drainRouterHtml();
+	});
+	stopListeningToSerializationFinished = serverSsr.onSerializationFinished(() => {
+		serializationFinished = true;
+		drainRouterHtml();
+		tryFinish();
+	});
+	drainRouterHtml();
+	if (cleanedUp || isDone()) return stream;
+	serializationFinished = serializationFinished || serverSsr.isSerializationFinished();
+	if (serializationFinished) {
+		drainRouterHtml();
+		if (cleanedUp || isDone()) return stream;
+	}
+	(async () => {
+		try {
+			while (true) {
+				if (waitForBackpressure()) {
+					await waitForDrain();
+					if (cleanedUp || isDone()) return;
+				}
+				const { done, value } = await readerState.reader.read();
+				if (done) break;
+				if (cleanedUp || isDone()) return;
+				const text = typeof value === "string" ? value : textDecoder.decode(value, { stream: true });
+				const chunkString = leftover ? leftover + text : text;
+				if (state >= MergeState.HoldingTail) {
+					appendTail(chunkString);
+					leftover = "";
+					continue;
+				}
+				const boundary = findHtmlBoundary(chunkString);
+				if (boundary < -1) {
+					const bodyEndIndex = -boundary - 2;
+					state = MergeState.HoldingTail;
+					appendTail(chunkString.slice(bodyEndIndex));
+					const bodyChunk = chunkString.slice(0, bodyEndIndex);
+					writeChunk(bodyChunk);
+					if (cleanedUp || isDone()) return;
+					noteBarrierMarker(bodyChunk);
+					liftBarrierAfterBoundary();
+					if (cleanedUp || isDone()) return;
+					flushPendingRouterHtml();
+					leftover = "";
+					continue;
+				}
+				const lastClosingTagEnd = boundary;
+				if (lastClosingTagEnd > 0) {
+					const safeChunk = chunkString.slice(0, lastClosingTagEnd);
+					writeChunk(safeChunk);
+					if (cleanedUp || isDone()) return;
+					noteBarrierMarker(safeChunk);
+					liftBarrierAfterBoundary();
+					if (cleanedUp || isDone()) return;
+					flushPendingRouterHtml();
+					leftover = chunkString.slice(lastClosingTagEnd);
+					if (leftover.length > MAX_LEFTOVER_CHARS) {
+						noteBarrierMarker(leftover);
+						writeChunk(leftover.slice(0, leftover.length - MAX_LEFTOVER_CHARS));
+						leftover = leftover.slice(-2048);
+					}
+				} else {
+					const combined = chunkString;
+					if (combined.length > MAX_LEFTOVER_CHARS) {
+						noteBarrierMarker(combined);
+						const flushUpto = combined.length - MAX_LEFTOVER_CHARS;
+						writeChunk(combined.slice(0, flushUpto));
+						leftover = combined.slice(flushUpto);
+					} else leftover = combined;
+				}
+			}
+			if (cleanedUp || isDone()) return;
+			finishAppRendering();
+		} catch (error) {
+			if (cleanedUp) return;
+			console.error("Error reading appStream:", error);
+			if (state < MergeState.AppDone) try {
+				serverSsr.setRenderFinished();
+			} catch {}
+			safeError(error);
+			cleanup(error);
+		} finally {
+			readerState.release();
+		}
+	})().catch((error) => {
+		if (cleanedUp) return;
+		console.error("Error in stream transform:", error);
+		safeError(error);
+		cleanup(error);
+	});
+	return stream;
+}
+//#endregion
 //#region node_modules/react-dom/cjs/react-dom-server-legacy.node.production.js
 /**
 * @license React
@@ -5703,7 +6323,7 @@ var require_react_dom_server_legacy_node_production = /* @__PURE__ */ __commonJS
 		illegalAttributeNameCache[attributeName] = !0;
 		return !1;
 	}
-	var unitlessNumbers = new Set("animationIterationCount aspectRatio borderImageOutset borderImageSlice borderImageWidth boxFlex boxFlexGroup boxOrdinalGroup columnCount columns flex flexGrow flexPositive flexShrink flexNegative flexOrder gridArea gridRow gridRowEnd gridRowSpan gridRowStart gridColumn gridColumnEnd gridColumnSpan gridColumnStart fontWeight lineClamp lineHeight opacity order orphans scale tabSize widows zIndex zoom fillOpacity floodOpacity stopOpacity strokeDasharray strokeDashoffset strokeMiterlimit strokeOpacity strokeWidth MozAnimationIterationCount MozBoxFlex MozBoxFlexGroup MozLineClamp msAnimationIterationCount msFlex msZoom msFlexGrow msFlexNegative msFlexOrder msFlexPositive msFlexShrink msGridColumn msGridColumnSpan msGridRow msGridRowSpan WebkitAnimationIterationCount WebkitBoxFlex WebKitBoxFlexGroup WebkitBoxOrdinalGroup WebkitColumnCount WebkitColumns WebkitFlex WebkitFlexGrow WebkitFlexPositive WebkitFlexShrink WebkitLineClamp".split(" ")), aliases = new Map([
+	var unitlessNumbers = new Set("animationIterationCount aspectRatio borderImageOutset borderImageSlice borderImageWidth boxFlex boxFlexGroup boxOrdinalGroup columnCount columns flex flexGrow flexPositive flexShrink flexNegative flexOrder gridArea gridRow gridRowEnd gridRowSpan gridRowStart gridColumn gridColumnEnd gridColumnSpan gridColumnStart fontWeight lineClamp lineHeight opacity order orphans scale tabSize widows zIndex zoom fillOpacity floodOpacity stopOpacity strokeDasharray strokeDashoffset strokeMiterlimit strokeOpacity strokeWidth MozAnimationIterationCount MozBoxFlex MozBoxFlexGroup MozLineClamp msAnimationIterationCount msFlex msZoom msFlexGrow msFlexNegative msFlexOrder msFlexPositive msFlexShrink msGridColumn msGridColumnSpan msGridRow msGridRowSpan WebkitAnimationIterationCount WebkitBoxFlex WebKitBoxFlexGroup WebkitBoxOrdinalGroup WebkitColumnCount WebkitColumns WebkitFlex WebkitFlexGrow WebkitFlexPositive WebkitFlexShrink WebkitLineClamp".split(" ")), aliases = /* @__PURE__ */ new Map([
 		["acceptCharset", "accept-charset"],
 		["htmlFor", "for"],
 		["httpEquiv", "http-equiv"],
@@ -9507,17 +10127,17 @@ var require_react_dom_server_node_production = /* @__PURE__ */ __commonJSMin(((e
 	var currentView = null, writtenBytes = 0, destinationHasCapacity$1 = !0;
 	function writeChunk(destination, chunk) {
 		if ("string" === typeof chunk) {
-			if (0 !== chunk.length) if (2048 < 3 * chunk.length) 0 < writtenBytes && (writeToDestination(destination, currentView.subarray(0, writtenBytes)), currentView = new Uint8Array(2048), writtenBytes = 0), writeToDestination(destination, chunk);
+			if (0 !== chunk.length) if (2048 < 3 * chunk.length) 0 < writtenBytes && (writeToDestination(destination, currentView.subarray(0, writtenBytes)), currentView = /* @__PURE__ */ new Uint8Array(2048), writtenBytes = 0), writeToDestination(destination, chunk);
 			else {
 				var target = currentView;
 				0 < writtenBytes && (target = currentView.subarray(writtenBytes));
 				target = textEncoder.encodeInto(chunk, target);
 				var read = target.read;
 				writtenBytes += target.written;
-				read < chunk.length && (writeToDestination(destination, currentView.subarray(0, writtenBytes)), currentView = new Uint8Array(2048), writtenBytes = textEncoder.encodeInto(chunk.slice(read), currentView).written);
-				2048 === writtenBytes && (writeToDestination(destination, currentView), currentView = new Uint8Array(2048), writtenBytes = 0);
+				read < chunk.length && (writeToDestination(destination, currentView.subarray(0, writtenBytes)), currentView = /* @__PURE__ */ new Uint8Array(2048), writtenBytes = textEncoder.encodeInto(chunk.slice(read), currentView).written);
+				2048 === writtenBytes && (writeToDestination(destination, currentView), currentView = /* @__PURE__ */ new Uint8Array(2048), writtenBytes = 0);
 			}
-		} else 0 !== chunk.byteLength && (2048 < chunk.byteLength ? (0 < writtenBytes && (writeToDestination(destination, currentView.subarray(0, writtenBytes)), currentView = new Uint8Array(2048), writtenBytes = 0), writeToDestination(destination, chunk)) : (target = currentView.length - writtenBytes, target < chunk.byteLength && (0 === target ? writeToDestination(destination, currentView) : (currentView.set(chunk.subarray(0, target), writtenBytes), writtenBytes += target, writeToDestination(destination, currentView), chunk = chunk.subarray(target)), currentView = new Uint8Array(2048), writtenBytes = 0), currentView.set(chunk, writtenBytes), writtenBytes += chunk.byteLength, 2048 === writtenBytes && (writeToDestination(destination, currentView), currentView = new Uint8Array(2048), writtenBytes = 0)));
+		} else 0 !== chunk.byteLength && (2048 < chunk.byteLength ? (0 < writtenBytes && (writeToDestination(destination, currentView.subarray(0, writtenBytes)), currentView = /* @__PURE__ */ new Uint8Array(2048), writtenBytes = 0), writeToDestination(destination, chunk)) : (target = currentView.length - writtenBytes, target < chunk.byteLength && (0 === target ? writeToDestination(destination, currentView) : (currentView.set(chunk.subarray(0, target), writtenBytes), writtenBytes += target, writeToDestination(destination, currentView), chunk = chunk.subarray(target)), currentView = /* @__PURE__ */ new Uint8Array(2048), writtenBytes = 0), currentView.set(chunk, writtenBytes), writtenBytes += chunk.byteLength, 2048 === writtenBytes && (writeToDestination(destination, currentView), currentView = /* @__PURE__ */ new Uint8Array(2048), writtenBytes = 0)));
 	}
 	function writeToDestination(destination, view) {
 		destination = destination.write(view);
@@ -9548,7 +10168,7 @@ var require_react_dom_server_node_production = /* @__PURE__ */ __commonJSMin(((e
 		illegalAttributeNameCache[attributeName] = !0;
 		return !1;
 	}
-	var unitlessNumbers = new Set("animationIterationCount aspectRatio borderImageOutset borderImageSlice borderImageWidth boxFlex boxFlexGroup boxOrdinalGroup columnCount columns flex flexGrow flexPositive flexShrink flexNegative flexOrder gridArea gridRow gridRowEnd gridRowSpan gridRowStart gridColumn gridColumnEnd gridColumnSpan gridColumnStart fontWeight lineClamp lineHeight opacity order orphans scale tabSize widows zIndex zoom fillOpacity floodOpacity stopOpacity strokeDasharray strokeDashoffset strokeMiterlimit strokeOpacity strokeWidth MozAnimationIterationCount MozBoxFlex MozBoxFlexGroup MozLineClamp msAnimationIterationCount msFlex msZoom msFlexGrow msFlexNegative msFlexOrder msFlexPositive msFlexShrink msGridColumn msGridColumnSpan msGridRow msGridRowSpan WebkitAnimationIterationCount WebkitBoxFlex WebKitBoxFlexGroup WebkitBoxOrdinalGroup WebkitColumnCount WebkitColumns WebkitFlex WebkitFlexGrow WebkitFlexPositive WebkitFlexShrink WebkitLineClamp".split(" ")), aliases = new Map([
+	var unitlessNumbers = new Set("animationIterationCount aspectRatio borderImageOutset borderImageSlice borderImageWidth boxFlex boxFlexGroup boxOrdinalGroup columnCount columns flex flexGrow flexPositive flexShrink flexNegative flexOrder gridArea gridRow gridRowEnd gridRowSpan gridRowStart gridColumn gridColumnEnd gridColumnSpan gridColumnStart fontWeight lineClamp lineHeight opacity order orphans scale tabSize widows zIndex zoom fillOpacity floodOpacity stopOpacity strokeDasharray strokeDashoffset strokeMiterlimit strokeOpacity strokeWidth MozAnimationIterationCount MozBoxFlex MozBoxFlexGroup MozLineClamp msAnimationIterationCount msFlex msZoom msFlexGrow msFlexNegative msFlexOrder msFlexPositive msFlexShrink msGridColumn msGridColumnSpan msGridRow msGridRowSpan WebkitAnimationIterationCount WebkitBoxFlex WebKitBoxFlexGroup WebkitBoxOrdinalGroup WebkitColumnCount WebkitColumns WebkitFlex WebkitFlexGrow WebkitFlexPositive WebkitFlexShrink WebkitLineClamp".split(" ")), aliases = /* @__PURE__ */ new Map([
 		["acceptCharset", "accept-charset"],
 		["htmlFor", "for"],
 		["httpEquiv", "http-equiv"],
@@ -13157,7 +13777,7 @@ var require_react_dom_server_node_production = /* @__PURE__ */ __commonJSMin(((e
 	}
 	var flushingPartialBoundaries = !1;
 	function flushCompletedQueues(request, destination) {
-		currentView = new Uint8Array(2048);
+		currentView = /* @__PURE__ */ new Uint8Array(2048);
 		writtenBytes = 0;
 		destinationHasCapacity$1 = !0;
 		try {
@@ -13279,7 +13899,7 @@ var require_react_dom_server_node_production = /* @__PURE__ */ __commonJSMin(((e
 				}
 				completedBoundaries.splice(0, i);
 				completeWriting(destination);
-				currentView = new Uint8Array(2048);
+				currentView = /* @__PURE__ */ new Uint8Array(2048);
 				writtenBytes = 0;
 				flushingPartialBoundaries = destinationHasCapacity$1 = !0;
 				var partialBoundaries = request.partialBoundaries;
@@ -13737,8 +14357,8 @@ var require_react_dom_server_node_production = /* @__PURE__ */ __commonJSMin(((e
 	exports.version = "19.2.7";
 }));
 //#endregion
-//#region node_modules/react-dom/server.node.js
-var require_server_node = /* @__PURE__ */ __commonJSMin(((exports) => {
+//#region node_modules/isbot/index.mjs
+var import_server_node = /* @__PURE__ */ __toESM((/* @__PURE__ */ __commonJSMin(((exports) => {
 	var l = require_react_dom_server_legacy_node_production(), s = require_react_dom_server_node_production();
 	exports.version = l.version;
 	exports.renderToString = l.renderToString;
@@ -13747,630 +14367,7 @@ var require_server_node = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.renderToReadableStream = s.renderToReadableStream;
 	exports.resumeToPipeableStream = s.resumeToPipeableStream;
 	exports.resume = s.resume;
-}));
-//#endregion
-//#region node_modules/@tanstack/router-core/dist/esm/ssr/handlerCallback.js
-function isSsrResponse(value) {
-	return typeof value === "object" && value !== null && "response" in value && "serverSsrCleanup" in value;
-}
-function normalizeSsrResponse(result) {
-	return isSsrResponse(result) ? result : {
-		response: result,
-		serverSsrCleanup: "none"
-	};
-}
-function createSsrStreamResponse(router, response) {
-	if (!response.body) throw new Error("Invariant failed: SSR stream response requires a body");
-	let disposed = false;
-	return {
-		response,
-		serverSsrCleanup: "stream",
-		async dispose(reason) {
-			if (disposed) return;
-			disposed = true;
-			try {
-				await response.body.cancel(reason);
-			} catch {}
-			router.serverSsr?.cleanup();
-		}
-	};
-}
-async function replaceSsrResponse(result, response, reason) {
-	const ssrResponse = normalizeSsrResponse(result);
-	if (ssrResponse.serverSsrCleanup === "stream") await ssrResponse.dispose(reason);
-	return {
-		response,
-		serverSsrCleanup: "none"
-	};
-}
-async function stripSsrResponseBody(result, reason) {
-	const ssrResponse = normalizeSsrResponse(result);
-	if (ssrResponse.serverSsrCleanup === "stream") await ssrResponse.dispose(reason);
-	return {
-		response: new Response(null, ssrResponse.response),
-		serverSsrCleanup: "none"
-	};
-}
-function defineHandlerCallback(handler) {
-	return handler;
-}
-//#endregion
-//#region node_modules/@tanstack/router-core/dist/esm/ssr/transformStreamWithRouter.js
-function transformReadableStreamWithRouter(router, routerStream, opts) {
-	return transformStreamWithRouter(router, routerStream, opts);
-}
-function transformPipeableStreamWithRouter(router, routerStream, opts) {
-	return Readable.fromWeb(transformStreamWithRouter(router, Readable.toWeb(routerStream), opts));
-}
-var MIN_CLOSING_TAG_LENGTH = 4;
-var DEFAULT_SERIALIZATION_TIMEOUT_MS = 6e4;
-var DEFAULT_LIFETIME_TIMEOUT_MS = DEFAULT_SERIALIZATION_TIMEOUT_MS * 2;
-var MAX_LEFTOVER_CHARS = 2048;
-var MAX_TAIL_CHARS = 64 * 1024;
-var MAX_ROUTER_HTML_CHARS = 16 * 1024 * 1024;
-var MAX_PENDING_WRITE_CHARS = 16 * 1024 * 1024;
-var MergeState = {
-	ReadingBody: 0,
-	HoldingTail: 1,
-	AppDone: 2,
-	Draining: 3,
-	Done: 4
-};
-var textEncoder = new TextEncoder();
-var noop$1 = () => {};
-var resolvedPromise = Promise.resolve();
-function findHtmlBoundary(str) {
-	let lastClosingTagEnd = -1;
-	let searchFrom = str.length - MIN_CLOSING_TAG_LENGTH;
-	while (searchFrom >= 0) {
-		const openSlash = str.lastIndexOf("</", searchFrom);
-		if (openSlash === -1) break;
-		if ((str.charCodeAt(openSlash + 2) | 32) === 98 && (str.charCodeAt(openSlash + 3) | 32) === 111 && (str.charCodeAt(openSlash + 4) | 32) === 100 && (str.charCodeAt(openSlash + 5) | 32) === 121 && str.charCodeAt(openSlash + 6) === 62) return -openSlash - 2;
-		if (lastClosingTagEnd === -1) {
-			let i = openSlash + 2;
-			const startCode = str.charCodeAt(i);
-			if (startCode >= 97 && startCode <= 122 || startCode >= 65 && startCode <= 90) {
-				i++;
-				while (i < str.length) {
-					const code = str.charCodeAt(i);
-					if (code >= 97 && code <= 122 || code >= 65 && code <= 90 || code >= 48 && code <= 57 || code === 95 || code === 58 || code === 46 || code === 45) i++;
-					else break;
-				}
-				if (str.charCodeAt(i) === 62) lastClosingTagEnd = i + 1;
-			}
-		}
-		searchFrom = openSlash - 1;
-	}
-	return lastClosingTagEnd;
-}
-function safeReleaseReader(reader) {
-	try {
-		reader.releaseLock();
-		return true;
-	} catch {
-		return false;
-	}
-}
-/**
-* Cancel a reader without producing an unhandled rejection. `reader.cancel()`
-* can reject (e.g. when the underlying source's cancel() throws), and
-* downstream cancel() should still wait for upstream teardown when possible.
-*/
-function safeCancelReader(reader, reason) {
-	let cancelPromise;
-	try {
-		cancelPromise = reader.cancel(reason);
-	} catch {}
-	if (!safeReleaseReader(reader) && cancelPromise) return cancelPromise.then(noop$1, noop$1).then(() => {
-		safeReleaseReader(reader);
-	});
-	return cancelPromise ? cancelPromise.then(noop$1, noop$1) : resolvedPromise;
-}
-function createReaderState(appStream) {
-	const reader = appStream.getReader();
-	let released = false;
-	return {
-		reader,
-		cancel: (reason) => {
-			if (released) return resolvedPromise;
-			released = true;
-			return safeCancelReader(reader, reason);
-		},
-		release: () => {
-			if (released) return;
-			released = true;
-			safeReleaseReader(reader);
-		}
-	};
-}
-function createAbortNotifier(opts) {
-	let abortNotified = false;
-	return (reason) => {
-		if (abortNotified) return;
-		abortNotified = true;
-		try {
-			opts?.onAbort?.(reason);
-		} catch {}
-	};
-}
-function transformStreamWithRouter(router, appStream, opts) {
-	const serverSsr = router.serverSsr;
-	if (!serverSsr) throw new Error("Invariant failed: router.serverSsr is required");
-	if (serverSsr.reserveStreamFastPath()) return makeFastPathStream(appStream, opts, serverSsr);
-	return makeMainStream(serverSsr, appStream, opts);
-}
-function makeFastPathStream(appStream, opts, serverSsr) {
-	let cleanedUp = false;
-	let controller;
-	let state = MergeState.ReadingBody;
-	let lifetimeTimeoutHandle;
-	let stopListeningToInjectedHtml;
-	const readerState = createReaderState(appStream);
-	const notifyAbort = createAbortNotifier(opts);
-	const isDone = () => state === MergeState.Done;
-	let renderFinished = false;
-	const finishSsrRendering = () => {
-		if (!serverSsr || renderFinished) return true;
-		renderFinished = true;
-		try {
-			serverSsr.setRenderFinished();
-			return true;
-		} catch (error) {
-			safeError(error);
-			cleanup(error);
-			return false;
-		}
-	};
-	const cleanup = (reason, cancelReader = true) => {
-		if (cleanedUp) return resolvedPromise;
-		cleanedUp = true;
-		if (lifetimeTimeoutHandle !== void 0) {
-			clearTimeout(lifetimeTimeoutHandle);
-			lifetimeTimeoutHandle = void 0;
-		}
-		try {
-			stopListeningToInjectedHtml?.();
-		} catch {}
-		stopListeningToInjectedHtml = void 0;
-		if (cancelReader) notifyAbort(reason);
-		const readerDone = cancelReader ? readerState.cancel(reason) : (readerState.release(), resolvedPromise);
-		if (serverSsr) try {
-			serverSsr.cleanup();
-		} catch (error) {
-			console.error("Error in SSR cleanup:", error);
-		}
-		return readerDone;
-	};
-	const safeClose = () => {
-		if (isDone()) return;
-		state = MergeState.Done;
-		try {
-			controller?.close();
-		} catch {}
-	};
-	const safeError = (error) => {
-		if (isDone()) return;
-		state = MergeState.Done;
-		try {
-			controller?.error(error);
-		} catch {}
-	};
-	if (serverSsr) stopListeningToInjectedHtml = serverSsr.onInjectedHtml(() => {
-		const err = /* @__PURE__ */ new Error("SSR router HTML injected during fast path");
-		safeError(err);
-		cleanup(err);
-	});
-	const lifetimeMs = opts?.lifetimeMs ?? DEFAULT_LIFETIME_TIMEOUT_MS;
-	lifetimeTimeoutHandle = setTimeout(() => {
-		if (!cleanedUp && !isDone()) {
-			const err = /* @__PURE__ */ new Error("Stream lifetime exceeded");
-			console.warn(`SSR stream transform exceeded maximum lifetime (${lifetimeMs}ms), forcing cleanup`);
-			safeError(err);
-			cleanup(err);
-		}
-	}, lifetimeMs);
-	return new ReadableStream$1({
-		start(c) {
-			controller = c;
-		},
-		async pull(c) {
-			if (cleanedUp || isDone()) return;
-			try {
-				const { done, value } = await readerState.reader.read();
-				if (!done) {
-					if (!cleanedUp && !isDone()) c.enqueue(value);
-					return;
-				}
-				if (cleanedUp || isDone()) return;
-				if (!finishSsrRendering()) return;
-				safeClose();
-				return cleanup(void 0, false);
-			} catch (error) {
-				if (cleanedUp) return;
-				console.error("Error reading appStream:", error);
-				if (state < MergeState.AppDone) try {
-					serverSsr?.setRenderFinished();
-				} catch {}
-				safeError(error);
-				return cleanup(error);
-			} finally {
-				if (cleanedUp || isDone()) readerState.release();
-			}
-		},
-		cancel(reason) {
-			state = MergeState.Done;
-			return cleanup(reason);
-		}
-	});
-}
-function makeMainStream(serverSsr, appStream, opts) {
-	let stopListeningToInjectedHtml;
-	let stopListeningToSerializationFinished;
-	let serializationTimeoutHandle;
-	let lifetimeTimeoutHandle;
-	let cleanedUp = false;
-	let controller;
-	let closeWhenDrained = false;
-	let state = MergeState.ReadingBody;
-	const readerState = createReaderState(appStream);
-	const notifyAbort = createAbortNotifier(opts);
-	const pendingWrites = [];
-	let pendingWriteHead = 0;
-	let pendingWriteChars = 0;
-	function clearPending() {
-		pendingWrites.length = 0;
-		pendingWriteHead = 0;
-		pendingWriteChars = 0;
-	}
-	let drainResolve = null;
-	const waitForDrain = () => new Promise((r) => {
-		drainResolve = r;
-	});
-	const signalDrain = () => {
-		if (drainResolve) {
-			const r = drainResolve;
-			drainResolve = null;
-			r();
-		}
-	};
-	const isDone = () => state === MergeState.Done;
-	function drainPending() {
-		if (!controller || isDone()) return;
-		while (pendingWriteHead < pendingWrites.length) {
-			const ds = controller.desiredSize;
-			if (ds !== null && ds <= 0) return;
-			const next = pendingWrites[pendingWriteHead];
-			pendingWrites[pendingWriteHead] = "";
-			pendingWriteHead++;
-			pendingWriteChars -= next.length;
-			try {
-				controller.enqueue(textEncoder.encode(next));
-			} catch (error) {
-				safeError(error);
-				cleanup(error);
-				return;
-			}
-		}
-		if (pendingWriteHead >= pendingWrites.length) {
-			pendingWrites.length = 0;
-			pendingWriteHead = 0;
-		}
-		if (closeWhenDrained && pendingWriteHead >= pendingWrites.length) {
-			closeWhenDrained = false;
-			safeClose();
-			cleanup(void 0, false);
-		}
-	}
-	/**
-	* Enqueue a string chunk through the backpressure queue. Stored as a
-	* string and encoded only when the downstream actually accepts the chunk
-	* — keeps native-memory pressure inside the controller's queue (which
-	* honors desiredSize) rather than ours.
-	*/
-	function writeChunk(chunk) {
-		if (cleanedUp || isDone()) return;
-		if (!chunk.length) return;
-		if (pendingWriteChars + chunk.length > MAX_PENDING_WRITE_CHARS) {
-			const err = /* @__PURE__ */ new Error("SSR stream pending output exceeded maximum buffer");
-			safeError(err);
-			cleanup(err);
-			return;
-		}
-		pendingWrites.push(chunk);
-		pendingWriteChars += chunk.length;
-		drainPending();
-	}
-	function safeClose() {
-		if (isDone()) return;
-		state = MergeState.Done;
-		try {
-			controller?.close();
-		} catch {}
-	}
-	function safeError(error) {
-		if (isDone()) return;
-		state = MergeState.Done;
-		try {
-			controller?.error(error);
-		} catch {}
-	}
-	/**
-	* Cleanup with guards; must be idempotent.
-	*/
-	function cleanup(reason, cancelReader = true) {
-		if (cleanedUp) return resolvedPromise;
-		cleanedUp = true;
-		try {
-			stopListeningToInjectedHtml?.();
-			stopListeningToSerializationFinished?.();
-		} catch {}
-		stopListeningToInjectedHtml = void 0;
-		stopListeningToSerializationFinished = void 0;
-		if (serializationTimeoutHandle !== void 0) {
-			clearTimeout(serializationTimeoutHandle);
-			serializationTimeoutHandle = void 0;
-		}
-		if (lifetimeTimeoutHandle !== void 0) {
-			clearTimeout(lifetimeTimeoutHandle);
-			lifetimeTimeoutHandle = void 0;
-		}
-		clearPendingRouterHtml();
-		leftover = "";
-		pendingTail = "";
-		clearPending();
-		if (cancelReader) notifyAbort(reason);
-		const readerDone = cancelReader ? readerState.cancel(reason) : (readerState.release(), resolvedPromise);
-		signalDrain();
-		try {
-			serverSsr.cleanup();
-		} catch (error) {
-			console.error("Error in SSR cleanup:", error);
-		}
-		return readerDone;
-	}
-	const textDecoder = new TextDecoder();
-	const pendingRouterHtml = [];
-	let pendingRouterHtmlChars = 0;
-	let leftover = "";
-	let pendingTail = "";
-	let streamBarrierLifted = false;
-	let streamBarrierMarkerSeen = false;
-	let serializationFinished = false;
-	function noteBarrierMarker(chunk) {
-		if (streamBarrierMarkerSeen) return;
-		if (chunk.includes("$tsr-stream-barrier")) streamBarrierMarkerSeen = true;
-	}
-	function liftBarrierAfterBoundary() {
-		if (streamBarrierLifted) return;
-		if (!streamBarrierMarkerSeen) return;
-		streamBarrierLifted = true;
-		serverSsr.liftScriptBarrier();
-	}
-	const stream = new ReadableStream$1({
-		start(c) {
-			controller = c;
-			drainPending();
-		},
-		pull() {
-			drainPending();
-			signalDrain();
-		},
-		cancel(reason) {
-			state = MergeState.Done;
-			return cleanup(reason);
-		}
-	});
-	function drainRouterHtml() {
-		if (cleanedUp || isDone()) return;
-		let html;
-		try {
-			html = serverSsr.takeBufferedHtml();
-		} catch (error) {
-			safeError(error);
-			cleanup(error);
-			return;
-		}
-		if (!html) return;
-		if (state >= MergeState.Draining) {
-			const err = /* @__PURE__ */ new Error("SSR router HTML injected after stream finalization");
-			safeError(err);
-			cleanup(err);
-			return;
-		}
-		if (state === MergeState.HoldingTail) {
-			flushPendingRouterHtml();
-			writeChunk(html);
-		} else {
-			if (pendingRouterHtmlChars + html.length > MAX_ROUTER_HTML_CHARS) {
-				const err = /* @__PURE__ */ new Error("SSR router HTML exceeded maximum buffer");
-				safeError(err);
-				cleanup(err);
-				return;
-			}
-			pendingRouterHtml.push(html);
-			pendingRouterHtmlChars += html.length;
-		}
-	}
-	function flushPendingRouterHtml() {
-		if (!pendingRouterHtml.length) return;
-		for (const html of pendingRouterHtml) writeChunk(html);
-		clearPendingRouterHtml();
-	}
-	function clearPendingRouterHtml() {
-		pendingRouterHtml.length = 0;
-		pendingRouterHtmlChars = 0;
-	}
-	function appendTail(chunk) {
-		pendingTail += chunk;
-		if (pendingTail.length > MAX_TAIL_CHARS) throw new Error("SSR stream tail exceeded maximum buffer");
-	}
-	function waitForBackpressure() {
-		return !!(controller && controller.desiredSize !== null && controller.desiredSize <= 0);
-	}
-	function startSerializationTimeout() {
-		if (cleanedUp || isDone()) return;
-		if (serializationTimeoutHandle !== void 0) return;
-		const timeoutMs = opts?.timeoutMs ?? DEFAULT_SERIALIZATION_TIMEOUT_MS;
-		serializationTimeoutHandle = setTimeout(() => {
-			if (!cleanedUp && !isDone()) {
-				const err = /* @__PURE__ */ new Error("Serialization timeout after app render finished");
-				console.error("Serialization timeout after app render finished");
-				safeError(err);
-				cleanup(err);
-			}
-		}, timeoutMs);
-	}
-	/**
-	* Finish only when app done and serialization complete. Queues final
-	* output and requests close-when-drained so we don't close ahead of
-	* pending writes still waiting on downstream capacity.
-	*/
-	function tryFinish() {
-		if (state !== MergeState.AppDone || !serializationFinished) return;
-		if (cleanedUp || isDone()) return;
-		if (serializationTimeoutHandle !== void 0) {
-			clearTimeout(serializationTimeoutHandle);
-			serializationTimeoutHandle = void 0;
-		}
-		drainRouterHtml();
-		if (cleanedUp || isDone()) return;
-		const decoderRemainder = textDecoder.decode();
-		if (leftover) writeChunk(leftover);
-		if (cleanedUp || isDone()) return;
-		if (decoderRemainder) writeChunk(decoderRemainder);
-		if (cleanedUp || isDone()) return;
-		flushPendingRouterHtml();
-		if (cleanedUp || isDone()) return;
-		if (pendingTail) writeChunk(pendingTail);
-		if (cleanedUp || isDone()) return;
-		leftover = "";
-		pendingTail = "";
-		state = MergeState.Draining;
-		closeWhenDrained = true;
-		drainPending();
-	}
-	function finishAppRendering() {
-		if (state >= MergeState.AppDone) return;
-		state = MergeState.AppDone;
-		try {
-			serverSsr.setRenderFinished();
-		} catch (error) {
-			safeError(error);
-			cleanup(error);
-			return;
-		}
-		drainRouterHtml();
-		if (cleanedUp || isDone()) return;
-		serializationFinished = serializationFinished || serverSsr.isSerializationFinished();
-		if (serializationFinished) tryFinish();
-		else startSerializationTimeout();
-	}
-	const timeoutMs = opts?.timeoutMs ?? DEFAULT_SERIALIZATION_TIMEOUT_MS;
-	const lifetimeMs = opts?.lifetimeMs ?? timeoutMs * 2;
-	lifetimeTimeoutHandle = setTimeout(() => {
-		if (!cleanedUp && !isDone()) {
-			const err = /* @__PURE__ */ new Error("Stream lifetime exceeded");
-			console.warn(`SSR stream transform exceeded maximum lifetime (${lifetimeMs}ms), forcing cleanup`);
-			safeError(err);
-			cleanup(err);
-		}
-	}, lifetimeMs);
-	stopListeningToInjectedHtml = serverSsr.onInjectedHtml(() => {
-		drainRouterHtml();
-	});
-	stopListeningToSerializationFinished = serverSsr.onSerializationFinished(() => {
-		serializationFinished = true;
-		drainRouterHtml();
-		tryFinish();
-	});
-	drainRouterHtml();
-	if (cleanedUp || isDone()) return stream;
-	serializationFinished = serializationFinished || serverSsr.isSerializationFinished();
-	if (serializationFinished) {
-		drainRouterHtml();
-		if (cleanedUp || isDone()) return stream;
-	}
-	(async () => {
-		try {
-			while (true) {
-				if (waitForBackpressure()) {
-					await waitForDrain();
-					if (cleanedUp || isDone()) return;
-				}
-				const { done, value } = await readerState.reader.read();
-				if (done) break;
-				if (cleanedUp || isDone()) return;
-				const text = typeof value === "string" ? value : textDecoder.decode(value, { stream: true });
-				const chunkString = leftover ? leftover + text : text;
-				if (state >= MergeState.HoldingTail) {
-					appendTail(chunkString);
-					leftover = "";
-					continue;
-				}
-				const boundary = findHtmlBoundary(chunkString);
-				if (boundary < -1) {
-					const bodyEndIndex = -boundary - 2;
-					state = MergeState.HoldingTail;
-					appendTail(chunkString.slice(bodyEndIndex));
-					const bodyChunk = chunkString.slice(0, bodyEndIndex);
-					writeChunk(bodyChunk);
-					if (cleanedUp || isDone()) return;
-					noteBarrierMarker(bodyChunk);
-					liftBarrierAfterBoundary();
-					if (cleanedUp || isDone()) return;
-					flushPendingRouterHtml();
-					leftover = "";
-					continue;
-				}
-				const lastClosingTagEnd = boundary;
-				if (lastClosingTagEnd > 0) {
-					const safeChunk = chunkString.slice(0, lastClosingTagEnd);
-					writeChunk(safeChunk);
-					if (cleanedUp || isDone()) return;
-					noteBarrierMarker(safeChunk);
-					liftBarrierAfterBoundary();
-					if (cleanedUp || isDone()) return;
-					flushPendingRouterHtml();
-					leftover = chunkString.slice(lastClosingTagEnd);
-					if (leftover.length > MAX_LEFTOVER_CHARS) {
-						noteBarrierMarker(leftover);
-						writeChunk(leftover.slice(0, leftover.length - MAX_LEFTOVER_CHARS));
-						leftover = leftover.slice(-2048);
-					}
-				} else {
-					const combined = chunkString;
-					if (combined.length > MAX_LEFTOVER_CHARS) {
-						noteBarrierMarker(combined);
-						const flushUpto = combined.length - MAX_LEFTOVER_CHARS;
-						writeChunk(combined.slice(0, flushUpto));
-						leftover = combined.slice(flushUpto);
-					} else leftover = combined;
-				}
-			}
-			if (cleanedUp || isDone()) return;
-			finishAppRendering();
-		} catch (error) {
-			if (cleanedUp) return;
-			console.error("Error reading appStream:", error);
-			if (state < MergeState.AppDone) try {
-				serverSsr.setRenderFinished();
-			} catch {}
-			safeError(error);
-			cleanup(error);
-		} finally {
-			readerState.release();
-		}
-	})().catch((error) => {
-		if (cleanedUp) return;
-		console.error("Error in stream transform:", error);
-		safeError(error);
-		cleanup(error);
-	});
-	return stream;
-}
-//#endregion
-//#region node_modules/isbot/index.mjs
-var import_server_node = /* @__PURE__ */ __toESM(require_server_node(), 1);
+})))(), 1);
 var fullPattern = " daum[ /]| deusu/|(?:^|[^g])news(?!sapphire)|(?<! (?:channel/|google/))google(?!(wv|app|/google| pixel))|(?<! cu)bots?(?:\\b|_)|(?<!(?:lib))http|(?<!cam)scan|24x7|;\\s\\w+;$|@[a-z][\\w-]+\\.|\\(\\)|\\.com\\b|\\b\\w+\\.ai|\\bbw/|\\bdlc\\b|\\bort/|\\bperl\\b|\\btime/|\\||^[\\w \\.\\-\\(?:\\):%]+(?:/v?\\d+(?:\\.\\d+)?(?:\\.\\d{1,10})*?)?(?:,|$)|^[\\w\\-]+/[\\w]+$|^[^ ]{50,}$|^\\d+\\b|^\\W|^\\w*search\\b|^\\w+/[\\w\\(\\)]*$|^\\w+/\\d\\.\\d\\s\\([\\w@]+\\)$|^active|^ad muncher|^amaya|^apache/|^avsdevicesdk/|^azure|^biglotron|^blackbox exporter|^bot|^clamav[ /]|^claude-code/|^client/|^cobweb/|^custom|^ddg[_-]android|^discourse|^dispatch/\\d|^downcast/|^duckduckgo|^email|^exodusmovement|^facebook|^getright/|^gozilla/|^hobbit|^hotzonu|^hwcdn/|^igetter/|^jeode/|^jetty/|^jigsaw|^microsoft bits|^movabletype|^mozilla/\\d\\.\\d\\s[\\w\\.-]+$|^mozilla/\\d\\.\\d\\s\\((?:compatible;)?(?:\\s?[\\w\\d-.]+\\/\\d+\\.\\d+)?\\)$|^navermailapp|^netsurf|^offline|^openai/|^owler|^php|^postman|^ps_daily/|^python|^rank|^read|^reed|^remove\\.bg/|^rest|^rss|^snapchat|^sora |^space bison|^stape/|^svn|^swcd |^taringa|^thumbor/|^track|^w3c|^webbandit/|^webcopier|^wget|^whatsapp|^wordpress|^xenu link sleuth|^yahoo|^yandex|^zdm/\\d|^zoom marketplace/|abuse|advisor|agent\\b|analyzer|archive|ask jeeves/teoma|attracta|audit|bluecoat drtr|browsex|burpcollaborator|capture|catch|check\\b|checker|chrome-lighthouse|chromeframe|classifier|cloudflare|collapsify\\b|convertify|cookiehubverify/|crawl|cursor/|cypress/|dareboost|datanyze|dejaclick|detect|dmbrowser|download|exaleadcloudview|feed|fetcher|firephp|foregenix|functionize|grab|productfinder|hardenize\\b|headless|hotjar|httrack|hubspot marketing grader|ibisbrowser|infrawatch|insight|inspect|iplabel|java(?!;)|library|linkcheck|linktiger|mail\\.ru/|manager|manus-user/|marketgoo/|measure|monitor\\b|neustar wpm|node\\b|nutch|offbyone|openvas|optimize|pageburst|pagespeed|parser|phantomjs|pingdom|playwright|powermarks|preview|proxy|ptst[ /]\\d|readable/|retriever|rexx;|rigor|rss\\b|scrape|securityheaders|selenium|server|silktide|sindup/|sogou|sparkler/|speedcurve|spider|splash|statuscake|supercleaner|synapse|synthetic|testlocally|tools|torrent|transcoder|upday/|url|validator|virtuoso|wappalyzer|watchtowr|webglance|webkit2png|whatcms/|xtate/";
 var naivePattern = /bot|crawl|http|lighthouse|scan|search|spider/i;
 var pattern;
@@ -14487,4 +14484,4 @@ var renderRouterToStream = async ({ request, router, responseHeaders, children }
 	throw new Error("No renderToReadableStream or renderToPipeableStream found in react-dom/server. Ensure you are using a version of react-dom that supports streaming.");
 };
 //#endregion
-export { createLRUCache as A, resolveManifestAssetLink as C, isResolvedRedirect as D, isRedirect as E, decodePath as M, rootRouteId as O, getStylesheetHref as S, executeRewriteInput as T, GLOBAL_TSR as _, replaceSsrResponse as a, createInlineCssStyleAsset as b, HeadContent as c, Outlet as d, lazyRouteComponent as f, useRouter as g, Link as h, normalizeSsrResponse as i, invariant as j, isNotFound as k, RouterProvider as l, createRootRouteWithContext as m, defineHandlerCallback as n, stripSsrResponseBody as o, createFileRoute as p, isSsrResponse as r, Scripts as s, renderRouterToStream as t, createRouter as u, TSR_SCRIPT_BARRIER_ID as v, resolveManifestCssLink as w, getScriptPreloadAttrs as x, createInlineCssPlaceholderAsset as y };
+export { invariant as A, resolveManifestCssLink as C, rootRouteId as D, isResolvedRedirect as E, useRouter as M, isNotFound as O, resolveManifestAssetLink as S, isRedirect as T, TSR_SCRIPT_BARRIER_ID as _, replaceSsrResponse as a, getScriptPreloadAttrs as b, HeadContent as c, Outlet as d, lazyRouteComponent as f, GLOBAL_TSR as g, Link as h, normalizeSsrResponse as i, decodePath as j, createLRUCache as k, RouterProvider as l, createRootRouteWithContext as m, defineHandlerCallback as n, stripSsrResponseBody as o, createFileRoute as p, isSsrResponse as r, Scripts as s, renderRouterToStream as t, createRouter as u, createInlineCssPlaceholderAsset as v, executeRewriteInput as w, getStylesheetHref as x, createInlineCssStyleAsset as y };

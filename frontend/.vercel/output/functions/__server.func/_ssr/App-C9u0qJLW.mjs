@@ -5,18 +5,18 @@ import { t as require_dist } from "../_libs/react-router-dom.mjs";
 import { t as clsx } from "../_libs/clsx.mjs";
 import { n as y, t as xo } from "../_libs/react-toastify.mjs";
 import { t as axios } from "../_libs/axios+[...].mjs";
-import { C as CalendarClock, S as CalendarX, T as Bell, _ as ClipboardList, a as ShieldCheck, b as Check, c as Pencil, d as LogOut, f as LayoutDashboard, g as EyeOff, h as Eye, i as Trash2, l as Minus, m as FilePlusCorner, n as Users, o as Search, p as History, r as User, s as Plus, t as X, u as Menu, v as ChevronRight, w as CalendarCheck, x as Calendar, y as ChevronLeft } from "../_libs/lucide-react.mjs";
+import { C as CalendarCheck, S as CalendarClock, T as FilePlusCorner, _ as ChevronRight, a as ShieldCheck, b as Calendar, c as Pencil, d as LogOut, f as LayoutDashboard, g as ClipboardList, h as EyeOff, i as Trash2, l as Minus, m as Eye, n as Users, o as Search, p as History, r as User, s as Plus, t as X, u as Menu, v as ChevronLeft, w as Bell, x as CalendarX, y as Check } from "../_libs/lucide-react.mjs";
 import { i as Trigger, n as Portal, r as Root2, t as Content2 } from "../_libs/@radix-ui/react-popover+[...].mjs";
 import { t as twMerge } from "../_libs/tailwind-merge.mjs";
 import { n as useForm, t as u } from "../_libs/@hookform/resolvers+[...].mjs";
 import { a as stringType, i as objectType, n as enumType, r as literalType, t as booleanType } from "../_libs/zod.mjs";
 import { n as jt, t as Lt } from "../_libs/input-otp.mjs";
 import { a as CartesianGrid, c as Cell, d as Legend, i as XAxis, l as ResponsiveContainer, n as BarChart, o as Bar, r as YAxis, s as Pie, t as PieChart, u as Tooltip } from "../_libs/recharts+[...].mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/App-CnWeHuii.js
+//#region node_modules/.nitro/vite/services/ssr/assets/App-C9u0qJLW.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var import_dist = require_dist();
-var API_BASE_URL = "https://leavedesk.onrender.com".replace(/\/+$/, "");
+var API_BASE_URL = "http://127.0.0.1:8000".replace(/\/+$/, "");
 var ACCESS_KEY = "ems.access";
 var REFRESH_KEY = "ems.refresh";
 var USER_KEY = "ems.user";
@@ -244,6 +244,20 @@ function RoleRoute({ role }) {
 	});
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_dist.Outlet, {});
 }
+function Logo({ size = "md" }) {
+	const box = size === "sm" ? "h-8 w-8 text-sm" : "h-9 w-9";
+	const label = size === "sm" ? "text-sm" : "text-base";
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+		className: "flex items-center gap-2",
+		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+			className: `grid ${box} place-items-center rounded-md bg-[#2563EB] font-semibold text-white`,
+			children: "LD"
+		}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+			className: `${label} font-semibold text-[#0F172A]`,
+			children: "LeaveDesk"
+		})]
+	});
+}
 function AuthLayout() {
 	const { user } = useAuth();
 	if (user) return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_dist.Navigate, {
@@ -257,16 +271,7 @@ function AuthLayout() {
 			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 				className: "hidden flex-col justify-between border-r border-[#E2E8F0] bg-white p-12 lg:flex",
 				children: [
-					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						className: "flex items-center gap-2",
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-							className: "grid h-9 w-9 place-items-center rounded-md bg-[#2563EB] font-semibold text-white",
-							children: "LD"
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-							className: "text-base font-semibold text-[#0F172A]",
-							children: "LeaveDesk"
-						})]
-					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Logo, {}),
 					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
 						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
 							className: "text-2xl font-semibold tracking-tight text-[#0F172A]",
@@ -295,10 +300,13 @@ function AuthLayout() {
 					})
 				]
 			}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-				className: "flex items-center justify-center p-6 sm:p-10",
-				children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+				className: "flex items-center justify-center p-4 sm:p-10",
+				children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 					className: "w-full max-w-md",
-					children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_dist.Outlet, {})
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+						className: "mb-6 lg:hidden",
+						children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Logo, {})
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_dist.Outlet, {})]
 				})
 			})]
 		})
@@ -361,16 +369,7 @@ function Sidebar({ mobileOpen, onClose }) {
 		children: [
 			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 				className: "flex h-16 items-center justify-between border-b border-[#E2E8F0] px-5",
-				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					className: "flex items-center gap-2",
-					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-						className: "grid h-8 w-8 place-items-center rounded-md bg-[#2563EB] text-sm font-semibold text-white",
-						children: "LM"
-					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-						className: "text-sm font-semibold text-[#0F172A]",
-						children: "LeaveDesk"
-					})]
-				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Logo, { size: "sm" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 					className: "rounded-md p-1 text-slate-500 hover:bg-slate-100 lg:hidden",
 					onClick: onClose,
 					"aria-label": "Close menu",
@@ -378,7 +377,7 @@ function Sidebar({ mobileOpen, onClose }) {
 				})]
 			}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("nav", {
-				className: "flex-1 space-y-1 px-3 py-4",
+				className: "flex-1 space-y-1 overflow-y-auto px-3 py-4",
 				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
 					className: "px-2 pb-2 text-[11px] font-medium uppercase tracking-wider text-slate-400",
 					children: isAdmin ? "Administration" : "Workspace"
@@ -387,13 +386,13 @@ function Sidebar({ mobileOpen, onClose }) {
 					onClick: onClose,
 					className: ({ isActive }) => `flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors ${isActive ? "bg-[#EFF6FF] text-[#1D4ED8]" : "text-slate-600 hover:bg-slate-100 hover:text-[#0F172A]"}`,
 					end: true,
-					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(item.icon, { className: "h-4 w-4" }), item.label]
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(item.icon, { className: "h-4 w-4 shrink-0" }), item.label]
 				}, item.to))]
 			}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 				className: "border-t border-[#E2E8F0] p-4 text-xs text-slate-500",
 				children: ["Logged in as", /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-					className: "mt-0.5 font-medium text-[#0F172A]",
+					className: "mt-0.5 truncate font-medium text-[#0F172A]",
 					children: user ? user.full_name || `${user.first_name} ${user.last_name}` : "—"
 				})]
 			})
@@ -408,7 +407,7 @@ function Sidebar({ mobileOpen, onClose }) {
 			className: "absolute inset-0 bg-slate-900/40",
 			onClick: onClose
 		}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-			className: "absolute inset-y-0 left-0 w-64 border-r border-[#E2E8F0] shadow-lg",
+			className: "absolute inset-y-0 left-0 w-[min(100vw,16rem)] border-r border-[#E2E8F0] shadow-lg",
 			children: content
 		})]
 	})] });
@@ -535,7 +534,7 @@ function Topbar({ onMenu }) {
 		})));
 	};
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("header", {
-		className: "sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-[#E2E8F0] bg-white px-4 sm:px-6 lg:px-8",
+		className: "sticky top-0 z-30 flex h-14 items-center gap-2 border-b border-[#E2E8F0] bg-white px-2.5 sm:h-16 sm:gap-3 sm:px-6 lg:px-8",
 		children: [
 			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 				onClick: onMenu,
@@ -544,98 +543,104 @@ function Topbar({ onMenu }) {
 				children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Menu, { className: "h-5 w-5" })
 			}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-				className: "flex-1",
+				className: "min-w-0 flex-1",
 				children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
-					className: "text-sm font-medium text-slate-500",
+					className: "truncate text-sm font-medium text-slate-500",
 					children: isAdmin ? "" : ""
 				})
 			}),
-			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Popover, {
-				open,
-				onOpenChange: handleOpenChange,
-				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(PopoverTrigger, {
-					asChild: true,
-					children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-						className: "relative rounded-md p-2 text-slate-500 hover:bg-slate-100",
-						"aria-label": "Notifications",
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Bell, { className: "h-5 w-5" }), unreadCount > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-							className: "absolute right-1 top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#DC2626] px-1 text-[10px] font-semibold text-white",
-							children: unreadCount > 9 ? "9+" : unreadCount
-						})]
-					})
-				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(PopoverContent, {
-					align: "end",
-					className: "w-80 p-0",
-					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						className: "flex items-center justify-between border-b border-[#E2E8F0] px-4 py-3",
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
-							className: "text-sm font-semibold text-[#0F172A]",
-							children: "Notifications"
-						}), unreadCount > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-							type: "button",
-							onClick: handleMarkAllRead,
-							className: "text-xs font-medium text-[#2563EB] hover:underline",
-							children: "Mark all read"
-						})]
-					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-						className: "max-h-80 overflow-y-auto",
-						children: loading && notifications.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-							className: "px-4 py-6 text-center text-sm text-slate-500",
-							children: "Loading…"
-						}) : notifications.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-							className: "px-4 py-6 text-center text-sm text-slate-500",
-							children: "No notifications yet."
-						}) : notifications.map((notification) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-							type: "button",
-							onClick: () => handleNotificationClick(notification),
-							className: `block w-full border-b border-[#F1F5F9] px-4 py-3 text-left transition-colors hover:bg-slate-50 ${!notification.is_read ? "bg-[#EFF6FF]/40" : ""}`,
-							children: [
-								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-									className: "flex items-start justify-between gap-2",
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-										className: "text-sm font-medium text-[#0F172A]",
-										children: notification.title
-									}), !notification.is_read && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "mt-1 h-2 w-2 shrink-0 rounded-full bg-[#2563EB]" })]
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-									className: "mt-1 text-xs leading-5 text-slate-600",
-									children: notification.message
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-									className: "mt-1 text-[11px] text-slate-400",
-									children: timeAgo(notification.created_at)
-								})
-							]
-						}, notification.id))
-					})]
-				})]
-			}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				className: "flex items-center gap-3 border-l border-[#E2E8F0] pl-4",
-				children: [
-					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-						className: "grid h-9 w-9 place-items-center rounded-full bg-[#EFF6FF] text-sm font-semibold text-[#1D4ED8]",
-						children: initials
-					}),
-					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						className: "hidden text-sm sm:block",
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-							className: "font-medium text-[#0F172A]",
-							children: user ? user.full_name || `${user.first_name} ${user.last_name}` : "—"
+				className: "ml-auto flex items-center gap-1 sm:gap-2 sm:gap-3",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Popover, {
+					open,
+					onOpenChange: handleOpenChange,
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(PopoverTrigger, {
+						asChild: true,
+						children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+							className: "relative rounded-md p-2 text-slate-500 hover:bg-slate-100",
+							"aria-label": "Notifications",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Bell, { className: "h-5 w-5" }), unreadCount > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+								className: "absolute right-1 top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#DC2626] px-1 text-[10px] font-semibold text-white",
+								children: unreadCount > 9 ? "9+" : unreadCount
+							})]
+						})
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(PopoverContent, {
+						align: "end",
+						className: "w-[90vw] max-w-sm p-0 sm:w-80",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "flex items-center justify-between border-b border-[#E2E8F0] px-4 py-3",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
+								className: "text-sm font-semibold text-[#0F172A]",
+								children: "Notifications"
+							}), unreadCount > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+								type: "button",
+								onClick: handleMarkAllRead,
+								className: "text-xs font-medium text-[#2563EB] hover:underline",
+								children: "Mark all read"
+							})]
 						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-							className: "text-xs text-slate-500",
-							children: isAdmin ? "Administrator" : "Employee"
+							className: "max-h-80 overflow-y-auto",
+							children: loading && notifications.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+								className: "px-4 py-6 text-center text-sm text-slate-500",
+								children: "Loading…"
+							}) : notifications.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+								className: "px-4 py-6 text-center text-sm text-slate-500",
+								children: "No notifications yet."
+							}) : notifications.map((notification) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+								type: "button",
+								onClick: () => handleNotificationClick(notification),
+								className: `block w-full border-b border-[#F1F5F9] px-4 py-3 text-left transition-colors hover:bg-slate-50 ${!notification.is_read ? "bg-[#EFF6FF]/40" : ""}`,
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex items-start justify-between gap-2",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "text-sm font-medium text-[#0F172A]",
+											children: notification.title
+										}), !notification.is_read && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "mt-1 h-2 w-2 shrink-0 rounded-full bg-[#2563EB]" })]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+										className: "mt-1 text-xs leading-5 text-slate-600",
+										children: notification.message
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+										className: "mt-1 text-[11px] text-slate-400",
+										children: timeAgo(notification.created_at)
+									})
+								]
+							}, notification.id))
 						})]
-					}),
-					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-						onClick: async () => {
-							await logout();
-							navigate("/login", { replace: true });
-						},
-						className: "inline-flex items-center gap-1.5 rounded-md border border-[#E2E8F0] px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50",
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(LogOut, { className: "h-3.5 w-3.5" }), " Logout"]
-					})
-				]
+					})]
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "flex items-center gap-1.5 border-l border-[#E2E8F0] pl-1.5 sm:gap-2 sm:pl-3",
+					children: [
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+							className: "grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#EFF6FF] text-xs font-semibold text-[#1D4ED8] sm:h-9 sm:w-9 sm:text-sm",
+							children: initials
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "hidden sm:block",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+								className: "text-sm font-medium text-[#0F172A]",
+								children: user ? user.full_name || `${user.first_name} ${user.last_name}` : "—"
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+								className: "text-xs text-slate-500",
+								children: isAdmin ? "Administrator" : "Employee"
+							})]
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+							onClick: async () => {
+								await logout();
+								navigate("/login", { replace: true });
+							},
+							className: "inline-flex items-center justify-center rounded-md border border-[#E2E8F0] p-2 text-slate-700 hover:bg-slate-50 sm:px-3 sm:py-1.5",
+							"aria-label": "Log out",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(LogOut, { className: "h-3.5 w-3.5" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+								className: "ml-1.5 hidden text-xs font-medium sm:inline",
+								children: "Logout"
+							})]
+						})
+					]
+				})]
 			})
 		]
 	});
@@ -650,7 +655,7 @@ function AppLayout() {
 		}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 			className: "lg:pl-64",
 			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Topbar, { onMenu: () => setOpen(true) }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("main", {
-				className: "mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8",
+				className: "mx-auto w-full max-w-7xl px-3 py-4 sm:px-6 sm:py-6 lg:px-8",
 				children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_dist.Outlet, {})
 			})]
 		})]
@@ -756,13 +761,6 @@ function LoginPage() {
 		}
 	};
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
-		/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-			className: "mb-8 lg:hidden",
-			children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-				className: "grid h-9 w-9 place-items-center rounded-md bg-[#2563EB] font-semibold text-white",
-				children: "LM"
-			})
-		}),
 		/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
 			className: "text-xl font-semibold tracking-tight text-[#0F172A]",
 			children: "Sign in to LeaveDesk"
@@ -820,16 +818,18 @@ function LoginPage() {
 					})
 				}),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
-					className: "text-center text-xs text-slate-500",
+					className: "flex flex-wrap items-center justify-center gap-x-1 gap-y-1 text-center text-xs text-slate-500",
 					children: [
-						"Don't have an account?",
-						" ",
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Don't have an account?" }),
 						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_dist.Link, {
 							to: "/register",
 							className: "text-[#1D4ED8] hover:underline",
 							children: "Create one"
 						}),
-						" · ",
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+							"aria-hidden": "true",
+							children: "·"
+						}),
 						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_dist.Link, {
 							to: "/verify-email",
 							className: "text-[#1D4ED8] hover:underline",
@@ -1124,18 +1124,24 @@ function VerifyEmailPage() {
 				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
 					className: "mb-2 block text-xs font-medium text-slate-700",
 					children: "Verification code"
-				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InputOTP, {
-					maxLength: 6,
-					value: code,
-					onChange: setCode,
-					children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(InputOTPGroup, { children: [
-						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(InputOTPSlot, { index: 0 }),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(InputOTPSlot, { index: 1 }),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(InputOTPSlot, { index: 2 }),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(InputOTPSlot, { index: 3 }),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(InputOTPSlot, { index: 4 }),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(InputOTPSlot, { index: 5 })
-					] })
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+					className: "overflow-x-auto",
+					children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InputOTP, {
+						maxLength: 6,
+						value: code,
+						onChange: setCode,
+						children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(InputOTPGroup, {
+							className: "min-w-max",
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(InputOTPSlot, { index: 0 }),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(InputOTPSlot, { index: 1 }),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(InputOTPSlot, { index: 2 }),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(InputOTPSlot, { index: 3 }),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(InputOTPSlot, { index: 4 }),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(InputOTPSlot, { index: 5 })
+							]
+						})
+					})
 				})] }),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
 					type: "button",
@@ -1333,18 +1339,24 @@ function ResetPasswordPage() {
 				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
 					className: "mb-2 block text-xs font-medium text-slate-700",
 					children: "Reset code"
-				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InputOTP, {
-					maxLength: 6,
-					value: code,
-					onChange: setCode,
-					children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(InputOTPGroup, { children: [
-						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(InputOTPSlot, { index: 0 }),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(InputOTPSlot, { index: 1 }),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(InputOTPSlot, { index: 2 }),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(InputOTPSlot, { index: 3 }),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(InputOTPSlot, { index: 4 }),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(InputOTPSlot, { index: 5 })
-					] })
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+					className: "overflow-x-auto",
+					children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InputOTP, {
+						maxLength: 6,
+						value: code,
+						onChange: setCode,
+						children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(InputOTPGroup, {
+							className: "min-w-max",
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(InputOTPSlot, { index: 0 }),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(InputOTPSlot, { index: 1 }),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(InputOTPSlot, { index: 2 }),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(InputOTPSlot, { index: 3 }),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(InputOTPSlot, { index: 4 }),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(InputOTPSlot, { index: 5 })
+							]
+						})
+					})
 				})] }),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
 					label: "New password",
@@ -1376,14 +1388,17 @@ function ResetPasswordPage() {
 					children: "Resend code"
 				}),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
-					className: "text-center text-xs text-slate-500",
+					className: "flex flex-wrap items-center justify-center gap-x-1 gap-y-1 text-center text-xs text-slate-500",
 					children: [
 						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_dist.Link, {
 							to: "/forgot-password",
 							className: "text-[#1D4ED8] hover:underline",
 							children: "Request a new code"
 						}),
-						" · ",
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+							"aria-hidden": "true",
+							children: "·"
+						}),
 						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_dist.Link, {
 							to: "/login",
 							className: "text-[#1D4ED8] hover:underline",
@@ -1441,15 +1456,15 @@ var leavesApi = {
 };
 function StatCard({ label, value, hint, icon, tone = "neutral" }) {
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-		className: "rounded-lg border border-[#E2E8F0] bg-white p-5",
+		className: "rounded-lg border border-[#E2E8F0] bg-white p-4 sm:p-5",
 		children: [
 			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				className: "flex items-center justify-between",
+				className: "flex items-start justify-between gap-3",
 				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-					className: "text-xs font-medium uppercase tracking-wider text-slate-500",
+					className: "text-[10px] font-medium uppercase tracking-wider text-slate-500 sm:text-xs",
 					children: label
 				}), icon && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-					className: `grid h-8 w-8 place-items-center rounded-md ${{
+					className: `grid h-8 w-8 shrink-0 place-items-center rounded-md ${{
 						neutral: "text-slate-600 bg-slate-100",
 						info: "text-[#1D4ED8] bg-[#EFF6FF]",
 						success: "text-[#16A34A] bg-[#DCFCE7]",
@@ -1460,7 +1475,7 @@ function StatCard({ label, value, hint, icon, tone = "neutral" }) {
 				})]
 			}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-				className: "mt-3 text-2xl font-semibold text-[#0F172A]",
+				className: "mt-3 text-xl font-semibold text-[#0F172A] sm:text-2xl",
 				children: value
 			}),
 			hint && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
@@ -1472,27 +1487,72 @@ function StatCard({ label, value, hint, icon, tone = "neutral" }) {
 }
 function Card({ children, className = "", title, subtitle, actions }) {
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-		className: `rounded-lg border border-[#E2E8F0] bg-white ${className}`,
+		className: `overflow-hidden rounded-lg border border-[#E2E8F0] bg-white ${className}`,
 		children: [(title || actions) && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-			className: "flex items-start justify-between gap-3 border-b border-[#E2E8F0] px-5 py-3",
-			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [title && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
-				className: "text-sm font-semibold text-[#0F172A]",
-				children: title
-			}), subtitle && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-				className: "mt-0.5 text-xs text-slate-500",
-				children: subtitle
-			})] }), actions]
+			className: "flex flex-col gap-2 border-b border-[#E2E8F0] px-4 py-3 sm:flex-row sm:items-start sm:justify-between sm:gap-3 sm:px-5",
+			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "min-w-0",
+				children: [title && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
+					className: "text-sm font-semibold text-[#0F172A]",
+					children: title
+				}), subtitle && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+					className: "mt-0.5 text-xs text-slate-500",
+					children: subtitle
+				})]
+			}), actions && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+				className: "shrink-0",
+				children: actions
+			})]
 		}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-			className: "p-5",
+			className: "p-4 sm:p-5",
 			children
 		})]
 	});
 }
+function cellValue(row, col) {
+	return col.render ? col.render(row) : row[col.key];
+}
 function Table({ columns, data, empty = "No records found.", loading }) {
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-		className: "overflow-x-auto rounded-md border border-[#E2E8F0]",
+	const mobileColumns = columns.filter((c) => !c.hideOnMobile);
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+		className: "space-y-3 md:hidden",
+		children: loading ? Array.from({ length: 3 }).map((_, i) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+			className: "space-y-2 rounded-md border border-[#E2E8F0] bg-white p-4",
+			children: mobileColumns.slice(0, 4).map((c) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "h-3 w-3/4 animate-pulse rounded bg-slate-100" }, c.key))
+		}, i)) : data.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+			className: "rounded-md border border-[#E2E8F0] bg-white px-4 py-10 text-center text-sm text-slate-500",
+			children: empty
+		}) : data.map((row) => {
+			const actionCol = mobileColumns.find((c) => c.key === "actions" || !c.header);
+			return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "rounded-md border border-[#E2E8F0] bg-white p-4",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+					className: "space-y-2",
+					children: mobileColumns.filter((c) => c.key !== "actions" && c.header).map((c) => {
+						const value = cellValue(row, c);
+						if (value == null || value === "") return null;
+						const stack = c.className?.includes("break-words");
+						return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: stack ? "space-y-1 text-sm" : "flex justify-between gap-3 text-sm",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+								className: "text-slate-500",
+								children: c.header
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+								className: stack ? `text-slate-700 ${c.className || ""}` : `min-w-0 text-right text-slate-700 ${c.className || ""}`,
+								children: value
+							})]
+						}, c.key);
+					})
+				}), actionCol && cellValue(row, actionCol) ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+					className: "mt-3 flex flex-wrap gap-2 border-t border-[#E2E8F0] pt-3",
+					children: cellValue(row, actionCol)
+				}) : null]
+			}, row.id);
+		})
+	}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+		className: "hidden overflow-x-auto rounded-md border border-[#E2E8F0] md:block",
 		children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", {
-			className: "min-w-full divide-y divide-[#E2E8F0] text-sm",
+			className: "min-w-[640px] w-full divide-y divide-[#E2E8F0] text-sm",
 			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", {
 				className: "bg-slate-50",
 				children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tr", { children: columns.map((c) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
@@ -1513,12 +1573,12 @@ function Table({ columns, data, empty = "No records found.", loading }) {
 					className: "hover:bg-slate-50/60",
 					children: columns.map((c) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
 						className: `px-4 py-2.5 text-slate-700 ${c.className || ""}`,
-						children: c.render ? c.render(row) : row[c.key]
+						children: cellValue(row, c)
 					}, c.key))
 				}, row.id))
 			})]
 		})
-	});
+	})] });
 }
 var map = {
 	Pending: "bg-[#FEF3C7] text-[#92400E] border-[#FDE68A]",
@@ -1587,7 +1647,7 @@ function EmployeeDashboard() {
 		className: "space-y-6",
 		children: [
 			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				className: "flex flex-wrap items-end justify-between gap-3",
+				className: "flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between",
 				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("h1", {
 					className: "text-xl font-semibold tracking-tight text-[#0F172A]",
 					children: ["Welcome back, ", user?.first_name]
@@ -1596,11 +1656,15 @@ function EmployeeDashboard() {
 					children: "Overview of your leave requests and balances."
 				})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_dist.Link, {
 					to: "/employee/apply-leave",
-					children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, { children: "+ Apply for leave" })
+					className: "w-full sm:w-auto",
+					children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
+						className: "w-full sm:w-auto",
+						children: "+ Apply for leave"
+					})
 				})]
 			}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				className: "grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4",
+				className: "grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4",
 				children: [
 					/* @__PURE__ */ (0, import_jsx_runtime.jsx)(StatCard, {
 						label: "Total requests",
@@ -1629,7 +1693,7 @@ function EmployeeDashboard() {
 				]
 			}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				className: "grid grid-cols-1 gap-6 lg:grid-cols-3",
+				className: "grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-3",
 				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 					className: "lg:col-span-2",
 					children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Card, {
@@ -1674,22 +1738,31 @@ function EmployeeDashboard() {
 						className: "py-10 text-center text-xs text-slate-500",
 						children: "No data to display."
 					}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-						className: "h-60",
-						children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ResponsiveContainer, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(PieChart, { children: [
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Pie, {
-								data: chartData,
-								dataKey: "value",
-								innerRadius: 50,
-								outerRadius: 80,
-								paddingAngle: 2,
-								children: chartData.map((d) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Cell, { fill: d.color }, d.name))
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Tooltip, {}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Legend, {
-								iconType: "circle",
-								wrapperStyle: { fontSize: 12 }
-							})
-						] }) })
+						className: "h-56 sm:h-60",
+						children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ResponsiveContainer, {
+							width: "100%",
+							height: "100%",
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(PieChart, { children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Pie, {
+									data: chartData,
+									dataKey: "value",
+									innerRadius: 45,
+									outerRadius: 75,
+									paddingAngle: 2,
+									children: chartData.map((d) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Cell, { fill: d.color }, d.name))
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Tooltip, {}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Legend, {
+									iconType: "circle",
+									layout: "horizontal",
+									verticalAlign: "bottom",
+									wrapperStyle: {
+										fontSize: 11,
+										paddingTop: 8
+									}
+								})
+							] })
+						})
 					})
 				})]
 			})
@@ -1738,13 +1811,16 @@ function ApplyLeavePage() {
 	};
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 		className: "mx-auto max-w-3xl space-y-6",
-		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
-			className: "text-xl font-semibold tracking-tight text-[#0F172A]",
-			children: "Apply for leave"
-		}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-			className: "mt-1 text-sm text-slate-500",
-			children: "Submit a new leave request for HR approval."
-		})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Card, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", {
+		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+			className: "space-y-1",
+			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
+				className: "text-xl font-semibold tracking-tight text-[#0F172A]",
+				children: "Apply for leave"
+			}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+				className: "text-sm text-slate-500",
+				children: "Submit a new leave request for HR approval."
+			})]
+		}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Card, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", {
 			onSubmit: handleSubmit(onSubmit),
 			className: "space-y-5",
 			noValidate: true,
@@ -1799,7 +1875,7 @@ function ApplyLeavePage() {
 					})
 				] }),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					className: "flex justify-end gap-2 border-t border-[#E2E8F0] pt-4",
+					className: "flex flex-col-reverse gap-2 border-t border-[#E2E8F0] pt-4 sm:flex-row sm:justify-end",
 					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
 						type: "button",
 						variant: "secondary",
@@ -1821,26 +1897,29 @@ function Pagination({ page, pageSize, total, onPageChange }) {
 	const from = total === 0 ? 0 : (page - 1) * pageSize + 1;
 	const to = Math.min(page * pageSize, total);
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-		className: "flex items-center justify-between border-t border-[#E2E8F0] px-4 py-3 text-xs text-slate-600",
-		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [
-			"Showing ",
-			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", {
-				className: "text-[#0F172A]",
-				children: from
-			}),
-			"–",
-			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", {
-				className: "text-[#0F172A]",
-				children: to
-			}),
-			" of",
-			" ",
-			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", {
-				className: "text-[#0F172A]",
-				children: total
-			})
-		] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-			className: "flex items-center gap-1",
+		className: "flex flex-col gap-3 border-t border-[#E2E8F0] px-4 py-3 text-xs text-slate-600 sm:flex-row sm:items-center sm:justify-between",
+		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+			className: "text-center sm:text-left",
+			children: [
+				"Showing ",
+				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", {
+					className: "text-[#0F172A]",
+					children: from
+				}),
+				"–",
+				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", {
+					className: "text-[#0F172A]",
+					children: to
+				}),
+				" of",
+				" ",
+				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", {
+					className: "text-[#0F172A]",
+					children: total
+				})
+			]
+		}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+			className: "flex items-center justify-center gap-1 sm:justify-end",
 			children: [
 				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 					className: "inline-flex items-center gap-1 rounded-md border border-[#E2E8F0] bg-white px-2.5 py-1 disabled:opacity-50",
@@ -1876,37 +1955,37 @@ function Modal({ open, onClose, title, children, footer, size = "md" }) {
 	}, [open, onClose]);
 	if (!open) return null;
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-		className: "fixed inset-0 z-50 flex items-center justify-center p-4",
+		className: "fixed inset-0 z-50 flex items-end justify-center sm:items-center sm:p-4",
 		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 			className: "absolute inset-0 bg-slate-900/40",
 			onClick: onClose
 		}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 			role: "dialog",
 			"aria-modal": "true",
-			className: `relative w-full ${{
+			className: `relative flex max-h-[90vh] w-full flex-col ${{
 				sm: "max-w-sm",
 				md: "max-w-lg",
 				lg: "max-w-2xl"
-			}[size]} rounded-lg border border-[#E2E8F0] bg-white shadow-lg`,
+			}[size]} rounded-t-lg border border-[#E2E8F0] bg-white shadow-lg sm:max-h-[85vh] sm:rounded-lg`,
 			children: [
 				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					className: "flex items-start justify-between border-b border-[#E2E8F0] px-5 py-3",
+					className: "flex shrink-0 items-start justify-between border-b border-[#E2E8F0] px-4 py-3 sm:px-5",
 					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
-						className: "text-sm font-semibold text-[#0F172A]",
+						className: "pr-4 text-sm font-semibold text-[#0F172A]",
 						children: title
 					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 						onClick: onClose,
-						className: "rounded-md p-1 text-slate-500 hover:bg-slate-100",
+						className: "shrink-0 rounded-md p-1 text-slate-500 hover:bg-slate-100",
 						"aria-label": "Close",
 						children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(X, { className: "h-4 w-4" })
 					})]
 				}),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-					className: "px-5 py-4 text-sm text-slate-700",
+					className: "overflow-y-auto px-4 py-4 text-sm text-slate-700 sm:px-5",
 					children
 				}),
 				footer && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-					className: "flex items-center justify-end gap-2 border-t border-[#E2E8F0] bg-slate-50 px-5 py-3",
+					className: "flex shrink-0 flex-col-reverse gap-2 border-t border-[#E2E8F0] bg-slate-50 px-4 py-3 sm:flex-row sm:items-center sm:justify-end sm:px-5 [&>button]:w-full sm:[&>button]:w-auto",
 					children: footer
 				})
 			]
@@ -1987,17 +2066,20 @@ function LeaveHistoryPage() {
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 		className: "space-y-6",
 		children: [
-			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
-				className: "text-xl font-semibold tracking-tight text-[#0F172A]",
-				children: "Leave history"
-			}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-				className: "mt-1 text-sm text-slate-500",
-				children: "All leave requests you've submitted."
-			})] }),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "space-y-1",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
+					className: "text-xl font-semibold tracking-tight text-[#0F172A]",
+					children: "Leave history"
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+					className: "text-sm text-slate-500",
+					children: "All leave requests you've submitted."
+				})]
+			}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Card, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				className: "flex flex-wrap items-center gap-3",
+				className: "flex flex-col gap-3 sm:flex-row sm:items-center",
 				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					className: "relative flex-1 min-w-[220px]",
+					className: "relative flex-1 min-w-0 sm:min-w-[220px]",
 					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Search, { className: "pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-slate-400" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
 						value: q,
 						onChange: (e) => setQ(e.target.value),
@@ -2005,7 +2087,7 @@ function LeaveHistoryPage() {
 						className: "block w-full rounded-md border border-[#E2E8F0] bg-white py-2 pl-9 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB]/30"
 					})]
 				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-					className: "w-44",
+					className: "w-full sm:w-44",
 					children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Select, {
 						value: status,
 						onChange: (e) => {
@@ -2135,13 +2217,16 @@ function ProfilePage() {
 	};
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 		className: "mx-auto max-w-4xl space-y-6",
-		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
-			className: "text-xl font-semibold tracking-tight text-[#0F172A]",
-			children: "My profile"
-		}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-			className: "mt-1 text-sm text-slate-500",
-			children: "View and update your account information."
-		})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+			className: "space-y-1",
+			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
+				className: "text-xl font-semibold tracking-tight text-[#0F172A]",
+				children: "My profile"
+			}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+				className: "text-sm text-slate-500",
+				children: "View and update your account information."
+			})]
+		}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 			className: "grid grid-cols-1 gap-6 lg:grid-cols-3",
 			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Card, {
 				className: "lg:col-span-1",
@@ -2164,39 +2249,39 @@ function ProfilePage() {
 							className: "mt-4 w-full space-y-2 border-t border-[#E2E8F0] pt-4 text-left text-xs",
 							children: [
 								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-									className: "flex justify-between",
+									className: "flex justify-between gap-2",
 									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-										className: "text-slate-500",
+										className: "shrink-0 text-slate-500",
 										children: "Employee ID"
 									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-										className: "font-medium text-[#0F172A]",
+										className: "truncate font-medium text-[#0F172A]",
 										children: user.employee_id
 									})]
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-									className: "flex justify-between",
+									className: "flex justify-between gap-2",
 									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-										className: "text-slate-500",
+										className: "shrink-0 text-slate-500",
 										children: "Email"
 									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-										className: "font-medium text-[#0F172A]",
+										className: "min-w-0 break-all text-right font-medium text-[#0F172A]",
 										children: user.email
 									})]
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-									className: "flex justify-between",
+									className: "flex justify-between gap-2",
 									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-										className: "text-slate-500",
+										className: "shrink-0 text-slate-500",
 										children: "Department"
 									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-										className: "font-medium text-[#0F172A]",
+										className: "truncate text-right font-medium text-[#0F172A]",
 										children: user.department
 									})]
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-									className: "flex justify-between",
+									className: "flex justify-between gap-2",
 									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-										className: "text-slate-500",
+										className: "shrink-0 text-slate-500",
 										children: "Joined"
 									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
 										className: "font-medium text-[#0F172A]",
@@ -2245,7 +2330,7 @@ function ProfilePage() {
 							})]
 						}),
 						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-							className: "flex justify-end gap-2 border-t border-[#E2E8F0] pt-4",
+							className: "flex flex-col-reverse gap-2 border-t border-[#E2E8F0] pt-4 sm:flex-row sm:justify-end",
 							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
 								type: "submit",
 								loading: isSubmitting,
@@ -2301,15 +2386,18 @@ function AdminDashboard() {
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 		className: "space-y-6",
 		children: [
-			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
-				className: "text-xl font-semibold tracking-tight text-[#0F172A]",
-				children: "HR Dashboard"
-			}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-				className: "mt-1 text-sm text-slate-500",
-				children: "Organization-wide leave overview."
-			})] }),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+				className: "flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between",
+				children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
+					className: "text-xl font-semibold tracking-tight text-[#0F172A]",
+					children: "HR Dashboard"
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+					className: "mt-1 text-sm text-slate-500",
+					children: "Track leave activity and team status at a glance."
+				})] })
+			}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				className: "grid grid-cols-2 gap-4 lg:grid-cols-5",
+				className: "grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-5",
 				children: [
 					/* @__PURE__ */ (0, import_jsx_runtime.jsx)(StatCard, {
 						label: "Employees",
@@ -2343,58 +2431,66 @@ function AdminDashboard() {
 				]
 			}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				className: "grid grid-cols-1 gap-6 lg:grid-cols-3",
+				className: "grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-3",
 				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Card, {
 					className: "lg:col-span-2",
 					title: "Requests by leave type",
 					subtitle: "From most recent activity",
 					children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-						className: "h-72",
-						children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ResponsiveContainer, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(BarChart, {
-							data: byType,
-							margin: {
-								top: 8,
-								right: 8,
-								bottom: 0,
-								left: -20
-							},
-							children: [
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CartesianGrid, {
-									strokeDasharray: "3 3",
-									stroke: "#E2E8F0",
-									vertical: false
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(XAxis, {
-									dataKey: "name",
-									tick: {
-										fontSize: 12,
-										fill: "#64748B"
-									},
-									axisLine: false,
-									tickLine: false
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(YAxis, {
-									tick: {
-										fontSize: 12,
-										fill: "#64748B"
-									},
-									axisLine: false,
-									tickLine: false,
-									allowDecimals: false
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Tooltip, { cursor: { fill: "#F1F5F9" } }),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Bar, {
-									dataKey: "value",
-									fill: "#2563EB",
-									radius: [
-										4,
-										4,
-										0,
-										0
-									]
-								})
-							]
-						}) })
+						className: "h-64 sm:h-72",
+						children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ResponsiveContainer, {
+							width: "100%",
+							height: "100%",
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(BarChart, {
+								data: byType,
+								margin: {
+									top: 8,
+									right: 4,
+									bottom: 0,
+									left: -12
+								},
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CartesianGrid, {
+										strokeDasharray: "3 3",
+										stroke: "#E2E8F0",
+										vertical: false
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)(XAxis, {
+										dataKey: "name",
+										tick: {
+											fontSize: 11,
+											fill: "#64748B"
+										},
+										axisLine: false,
+										tickLine: false,
+										interval: 0,
+										angle: -20,
+										textAnchor: "end",
+										height: 50
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)(YAxis, {
+										tick: {
+											fontSize: 12,
+											fill: "#64748B"
+										},
+										axisLine: false,
+										tickLine: false,
+										allowDecimals: false
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Tooltip, { cursor: { fill: "#F1F5F9" } }),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Bar, {
+										dataKey: "value",
+										fill: "#2563EB",
+										radius: [
+											4,
+											4,
+											0,
+											0
+										]
+									})
+								]
+							})
+						})
 					})
 				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Card, {
 					title: "Status distribution",
@@ -2402,21 +2498,30 @@ function AdminDashboard() {
 						className: "py-10 text-center text-xs text-slate-500",
 						children: "No data yet."
 					}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-						className: "h-72",
-						children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ResponsiveContainer, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(PieChart, { children: [
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Pie, {
-								data: statusChart,
-								dataKey: "value",
-								innerRadius: 45,
-								outerRadius: 75,
-								children: statusChart.map((d) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Cell, { fill: d.color }, d.name))
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Tooltip, {}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Legend, {
-								iconType: "circle",
-								wrapperStyle: { fontSize: 12 }
-							})
-						] }) })
+						className: "h-64 sm:h-72",
+						children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ResponsiveContainer, {
+							width: "100%",
+							height: "100%",
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(PieChart, { children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Pie, {
+									data: statusChart,
+									dataKey: "value",
+									innerRadius: 40,
+									outerRadius: 70,
+									children: statusChart.map((d) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Cell, { fill: d.color }, d.name))
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Tooltip, {}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Legend, {
+									iconType: "circle",
+									layout: "horizontal",
+									verticalAlign: "bottom",
+									wrapperStyle: {
+										fontSize: 11,
+										paddingTop: 8
+									}
+								})
+							] })
+						})
 					})
 				})]
 			}),
@@ -2527,17 +2632,20 @@ function AdminLeavesPage() {
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 		className: "space-y-6",
 		children: [
-			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
-				className: "text-xl font-semibold tracking-tight text-[#0F172A]",
-				children: "Leave requests"
-			}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-				className: "mt-1 text-sm text-slate-500",
-				children: "Review and act on team leave requests."
-			})] }),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "space-y-1",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
+					className: "text-xl font-semibold tracking-tight text-[#0F172A]",
+					children: "Leave requests"
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+					className: "text-sm text-slate-500",
+					children: "Review and act on team leave requests."
+				})]
+			}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Card, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				className: "flex flex-wrap items-center gap-3",
+				className: "flex flex-col gap-3 sm:flex-row sm:items-center",
 				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					className: "relative flex-1 min-w-[220px]",
+					className: "relative flex-1 min-w-0 sm:min-w-[220px]",
 					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Search, { className: "pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-slate-400" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
 						value: q,
 						onChange: (e) => setQ(e.target.value),
@@ -2545,7 +2653,7 @@ function AdminLeavesPage() {
 						className: "block w-full rounded-md border border-[#E2E8F0] bg-white py-2 pl-9 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB]/30"
 					})]
 				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-					className: "w-44",
+					className: "w-full sm:w-44",
 					children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Select, {
 						value: status,
 						onChange: (e) => {
@@ -2608,7 +2716,7 @@ function AdminLeavesPage() {
 							key: "actions",
 							header: "Actions",
 							render: (r) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "flex items-center gap-1",
+								className: "flex flex-wrap items-center gap-1",
 								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Button, {
 									size: "sm",
 									variant: "ghost",
@@ -2646,7 +2754,7 @@ function AdminLeavesPage() {
 				onClose: () => setViewing(null),
 				title: "Leave request details",
 				children: viewing && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("dl", {
-					className: "grid grid-cols-2 gap-x-4 gap-y-3 text-sm",
+					className: "grid grid-cols-1 gap-x-4 gap-y-3 text-sm sm:grid-cols-2",
 					children: [
 						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("dt", {
 							className: "text-slate-500",
@@ -2706,18 +2814,18 @@ function AdminLeavesPage() {
 							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("dd", { children: formatDateTime(viewing.approved_at) })
 						] }),
 						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("dt", {
-							className: "col-span-2 mt-2 text-slate-500",
+							className: "sm:col-span-2 mt-2 text-slate-500",
 							children: "Reason"
 						}),
 						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("dd", {
-							className: "col-span-2 rounded-md border border-[#E2E8F0] bg-slate-50 p-3 text-slate-700",
+							className: "sm:col-span-2 rounded-md border border-[#E2E8F0] bg-slate-50 p-3 text-slate-700",
 							children: viewing.reason
 						}),
 						viewing.admin_comment && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("dt", {
-							className: "col-span-2 mt-2 text-slate-500",
+							className: "sm:col-span-2 mt-2 text-slate-500",
 							children: "Admin comment"
 						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("dd", {
-							className: "col-span-2 rounded-md border border-[#E2E8F0] bg-slate-50 p-3 text-slate-700",
+							className: "sm:col-span-2 rounded-md border border-[#E2E8F0] bg-slate-50 p-3 text-slate-700",
 							children: viewing.admin_comment
 						})] })
 					]
@@ -2944,7 +3052,7 @@ function AdminEmployeesPage() {
 		className: "space-y-6",
 		children: [
 			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				className: "flex flex-wrap items-end justify-between gap-3",
+				className: "flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between",
 				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
 					className: "text-xl font-semibold tracking-tight text-[#0F172A]",
 					children: "Employees"
@@ -2953,13 +3061,14 @@ function AdminEmployeesPage() {
 					children: "Manage employee accounts and access."
 				})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Button, {
 					onClick: openCreate,
+					className: "w-full sm:w-auto",
 					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, { className: "h-4 w-4" }), " Add employee"]
 				})]
 			}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Card, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				className: "flex flex-wrap items-center gap-3",
+				className: "flex flex-col gap-3 sm:flex-row sm:items-center",
 				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					className: "relative flex-1 min-w-[220px]",
+					className: "relative flex-1 min-w-0 sm:min-w-[220px]",
 					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Search, { className: "pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-slate-400" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
 						value: q,
 						onChange: (e) => setQ(e.target.value),
@@ -2967,7 +3076,7 @@ function AdminEmployeesPage() {
 						className: "block w-full rounded-md border border-[#E2E8F0] bg-white py-2 pl-9 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB]/30"
 					})]
 				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-					className: "w-44",
+					className: "w-full sm:w-44",
 					children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Select, {
 						value: roleFilter,
 						onChange: (e) => {
@@ -3046,7 +3155,7 @@ function AdminEmployeesPage() {
 							key: "actions",
 							header: "Actions",
 							render: (r) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "flex items-center gap-1",
+								className: "flex flex-wrap items-center gap-1",
 								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Button, {
 									size: "sm",
 									variant: "secondary",
@@ -3308,16 +3417,19 @@ function AdminAuditLogsPage() {
 	};
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 		className: "space-y-6",
-		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
-			className: "text-xl font-semibold tracking-tight text-[#0F172A]",
-			children: "Audit logs"
-		}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-			className: "mt-1 text-sm text-slate-500",
-			children: "A history of administrative actions."
-		})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Card, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-			className: "flex flex-wrap items-center gap-3",
+		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+			className: "space-y-1",
+			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
+				className: "text-xl font-semibold tracking-tight text-[#0F172A]",
+				children: "Audit logs"
+			}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+				className: "text-sm text-slate-500",
+				children: "A history of administrative actions."
+			})]
+		}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Card, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+			className: "flex flex-col gap-3 sm:flex-row sm:items-center",
 			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				className: "relative flex-1 min-w-[220px]",
+				className: "relative flex-1 min-w-0 sm:min-w-[220px]",
 				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Search, { className: "pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-slate-400" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
 					value: q,
 					onChange: (e) => setQ(e.target.value),
@@ -3325,7 +3437,7 @@ function AdminAuditLogsPage() {
 					className: "block w-full rounded-md border border-[#E2E8F0] bg-white py-2 pl-9 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB]/30"
 				})]
 			}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-				className: "w-56",
+				className: "w-full sm:w-56",
 				children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Select, {
 					value: action,
 					onChange: (e) => {
@@ -3368,7 +3480,8 @@ function AdminAuditLogsPage() {
 					},
 					{
 						key: "description",
-						header: "Description"
+						header: "Description",
+						className: "break-words max-w-md"
 					}
 				]
 			}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Pagination, {
@@ -3506,9 +3619,10 @@ function App() {
 			element: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(NotFoundPage, {})
 		})
 	] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(xo, {
-		position: "top-right",
+		position: "top-center",
 		autoClose: 3e3,
-		newestOnTop: true
+		newestOnTop: true,
+		className: "!top-16 sm:!top-4"
 	})] }) });
 }
 //#endregion
