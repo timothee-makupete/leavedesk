@@ -261,7 +261,7 @@ function AuthLayout() {
 						className: "flex items-center gap-2",
 						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 							className: "grid h-9 w-9 place-items-center rounded-md bg-[#2563EB] font-semibold text-white",
-							children: "LM"
+							children: "LD"
 						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
 							className: "text-base font-semibold text-[#0F172A]",
 							children: "LeaveDesk"
