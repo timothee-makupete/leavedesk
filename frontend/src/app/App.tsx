@@ -57,7 +57,12 @@ export default function App() {
           <Route path="/" element={<RoleRedirect />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
-        <ToastContainer position="top-right" autoClose={3000} newestOnTop />
+        <ToastContainer
+          position="top-center"
+          autoClose={3000}
+          newestOnTop
+          className="!top-16 sm:!top-4"
+        />
       </BrowserRouter>
     </AuthProvider>
   );

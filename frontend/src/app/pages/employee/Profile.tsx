@@ -74,19 +74,23 @@ export function ProfilePage() {
             <p className="text-xs text-slate-500">{user.role === "ADMIN" ? "Administrator" : "Employee"}</p>
             <div className="mt-4 w-full space-y-2 border-t border-[#E2E8F0] pt-4 text-left text-xs">
               <div className="flex justify-between gap-2">
-                <span className="text-slate-500">Employee ID</span>
-                <span className="font-medium text-[#0F172A]">{user.employee_id}</span>
+                <span className="shrink-0 text-slate-500">Employee ID</span>
+                <span className="truncate font-medium text-[#0F172A]">{user.employee_id}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-slate-500">Email</span>
-                <span className="font-medium text-[#0F172A]">{user.email}</span>
+              <div className="flex justify-between gap-2">
+                <span className="shrink-0 text-slate-500">Email</span>
+                <span className="min-w-0 break-all text-right font-medium text-[#0F172A]">
+                  {user.email}
+                </span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-slate-500">Department</span>
-                <span className="font-medium text-[#0F172A]">{user.department}</span>
+              <div className="flex justify-between gap-2">
+                <span className="shrink-0 text-slate-500">Department</span>
+                <span className="truncate text-right font-medium text-[#0F172A]">
+                  {user.department}
+                </span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-slate-500">Joined</span>
+              <div className="flex justify-between gap-2">
+                <span className="shrink-0 text-slate-500">Joined</span>
                 <span className="font-medium text-[#0F172A]">{formatDate(user.date_joined)}</span>
               </div>
             </div>

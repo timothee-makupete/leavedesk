@@ -46,11 +46,6 @@ export function LoginPage() {
 
   return (
     <div>
-      <div className="mb-8 lg:hidden">
-        <div className="grid h-9 w-9 place-items-center rounded-md bg-[#2563EB] font-semibold text-white">
-          LD
-        </div>
-      </div>
       <h2 className="text-xl font-semibold tracking-tight text-[#0F172A]">Sign in to LeaveDesk</h2>
       <p className="mt-1 text-sm text-slate-500">
         Use the email address registered with your LeaveDesk.
@@ -99,12 +94,12 @@ export function LoginPage() {
           </Link>
         </p>
 
-        <p className="text-center text-xs text-slate-500">
-          Don't have an account?{" "}
+        <p className="flex flex-wrap items-center justify-center gap-x-1 gap-y-1 text-center text-xs text-slate-500">
+          <span>Don&apos;t have an account?</span>
           <Link to="/register" className="text-[#1D4ED8] hover:underline">
             Create one
           </Link>
-          {" · "}
+          <span aria-hidden="true">·</span>
           <Link to="/verify-email" className="text-[#1D4ED8] hover:underline">
             Verify email
           </Link>
