@@ -4,10 +4,10 @@ import { o as require_jsx_runtime } from "../_libs/@radix-ui/react-arrow+[...].m
 import { M as useRouter, c as HeadContent, d as Outlet, f as lazyRouteComponent, h as Link, m as createRootRouteWithContext, p as createFileRoute, s as Scripts, u as createRouter } from "../_libs/@tanstack/react-router+[...].mjs";
 import { t as QueryClient } from "../_libs/tanstack__query-core.mjs";
 import { t as QueryClientProvider } from "../_libs/tanstack__react-query.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/router-DGfPd5DB.js
+//#region node_modules/.nitro/vite/services/ssr/assets/router-C5hyzqce.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
-var styles_default = "/assets/styles-31Y-bvFP.css";
+var styles_default = "/assets/styles-0lMtc1fC.css";
 function reportLovableError(error, context = {}) {
 	if (typeof window === "undefined") return;
 	window.__lovableEvents?.captureException?.(error, {
@@ -134,9 +134,9 @@ function RootComponent() {
 		children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Outlet, {})
 	});
 }
-var $$splitComponentImporter$1 = () => import("../_-JL4UOKyI.mjs");
+var $$splitComponentImporter$1 = () => import("../_-Cp1n8arC.mjs");
 var Route$1 = createFileRoute("/$")({ component: lazyRouteComponent($$splitComponentImporter$1, "component") });
-var $$splitComponentImporter = () => import("./routes-DSvJmUOu.mjs");
+var $$splitComponentImporter = () => import("./routes-D8Cb2H2G.mjs");
 var Route = createFileRoute("/")({
 	head: () => ({ meta: [{ title: "Leave Management System" }, {
 		name: "description",

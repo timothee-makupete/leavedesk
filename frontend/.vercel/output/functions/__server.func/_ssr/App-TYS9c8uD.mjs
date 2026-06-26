@@ -12,11 +12,11 @@ import { n as useForm, t as u } from "../_libs/@hookform/resolvers+[...].mjs";
 import { a as stringType, i as objectType, n as enumType, r as literalType, t as booleanType } from "../_libs/zod.mjs";
 import { n as jt, t as Lt } from "../_libs/input-otp.mjs";
 import { a as CartesianGrid, c as Cell, d as Legend, i as XAxis, l as ResponsiveContainer, n as BarChart, o as Bar, r as YAxis, s as Pie, t as PieChart, u as Tooltip } from "../_libs/recharts+[...].mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/App-C9u0qJLW.js
+//#region node_modules/.nitro/vite/services/ssr/assets/App-TYS9c8uD.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var import_dist = require_dist();
-var API_BASE_URL = "http://127.0.0.1:8000".replace(/\/+$/, "");
+var API_BASE_URL = "https://leavedesk.onrender.com".replace(/\/+$/, "");
 var ACCESS_KEY = "ems.access";
 var REFRESH_KEY = "ems.refresh";
 var USER_KEY = "ems.user";

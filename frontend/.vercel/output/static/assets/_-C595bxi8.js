@@ -1,0 +1,1 @@
+import{t as e}from"./AppMount-D_nWHL7f.js";var t=e;export{t as component};

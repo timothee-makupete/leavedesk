@@ -1,10 +1,10 @@
 import { o as __toESM } from "../_runtime.mjs";
 import { u as require_react } from "../_libs/@floating-ui/react-dom+[...].mjs";
 import { o as require_jsx_runtime } from "../_libs/@radix-ui/react-arrow+[...].mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/AppMount-CMhx6VuA.js
+//#region node_modules/.nitro/vite/services/ssr/assets/AppMount-k8FgvTMQ.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
-var App = (0, import_react.lazy)(() => import("./App-C9u0qJLW.mjs"));
+var App = (0, import_react.lazy)(() => import("./App-TYS9c8uD.mjs"));
 function AppMount() {
 	const [mounted, setMounted] = (0, import_react.useState)(false);
 	(0, import_react.useEffect)(() => setMounted(true), []);
