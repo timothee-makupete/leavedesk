@@ -75,69 +75,6 @@ var bisectRight = ascendingBisect.right;
 ascendingBisect.left;
 bisector(number).center;
 //#endregion
-//#region node_modules/d3-array/src/sort.js
-function compareDefined(compare = ascending) {
-	if (compare === ascending) return ascendingDefined;
-	if (typeof compare !== "function") throw new TypeError("compare is not a function");
-	return (a, b) => {
-		const x = compare(a, b);
-		if (x || x === 0) return x;
-		return (compare(b, b) === 0) - (compare(a, a) === 0);
-	};
-}
-function ascendingDefined(a, b) {
-	return (a == null || !(a >= a)) - (b == null || !(b >= b)) || (a < b ? -1 : a > b ? 1 : 0);
-}
-//#endregion
-//#region node_modules/d3-array/src/ticks.js
-var e10 = Math.sqrt(50), e5 = Math.sqrt(10), e2 = Math.sqrt(2);
-function tickSpec(start, stop, count) {
-	const step = (stop - start) / Math.max(0, count), power = Math.floor(Math.log10(step)), error = step / Math.pow(10, power), factor = error >= e10 ? 10 : error >= e5 ? 5 : error >= e2 ? 2 : 1;
-	let i1, i2, inc;
-	if (power < 0) {
-		inc = Math.pow(10, -power) / factor;
-		i1 = Math.round(start * inc);
-		i2 = Math.round(stop * inc);
-		if (i1 / inc < start) ++i1;
-		if (i2 / inc > stop) --i2;
-		inc = -inc;
-	} else {
-		inc = Math.pow(10, power) * factor;
-		i1 = Math.round(start / inc);
-		i2 = Math.round(stop / inc);
-		if (i1 * inc < start) ++i1;
-		if (i2 * inc > stop) --i2;
-	}
-	if (i2 < i1 && .5 <= count && count < 2) return tickSpec(start, stop, count * 2);
-	return [
-		i1,
-		i2,
-		inc
-	];
-}
-function ticks(start, stop, count) {
-	stop = +stop, start = +start, count = +count;
-	if (!(count > 0)) return [];
-	if (start === stop) return [start];
-	const reverse = stop < start, [i1, i2, inc] = reverse ? tickSpec(stop, start, count) : tickSpec(start, stop, count);
-	if (!(i2 >= i1)) return [];
-	const n = i2 - i1 + 1, ticks = new Array(n);
-	if (reverse) if (inc < 0) for (let i = 0; i < n; ++i) ticks[i] = (i2 - i) / -inc;
-	else for (let i = 0; i < n; ++i) ticks[i] = (i2 - i) * inc;
-	else if (inc < 0) for (let i = 0; i < n; ++i) ticks[i] = (i1 + i) / -inc;
-	else for (let i = 0; i < n; ++i) ticks[i] = (i1 + i) * inc;
-	return ticks;
-}
-function tickIncrement(start, stop, count) {
-	stop = +stop, start = +start, count = +count;
-	return tickSpec(start, stop, count)[2];
-}
-function tickStep(start, stop, count) {
-	stop = +stop, start = +start, count = +count;
-	const reverse = stop < start, inc = reverse ? tickIncrement(stop, start, count) : tickIncrement(start, stop, count);
-	return (reverse ? -1 : 1) * (inc < 0 ? 1 / -inc : inc);
-}
-//#endregion
 //#region node_modules/d3-array/src/max.js
 function max(values, valueof) {
 	let max;
@@ -160,6 +97,20 @@ function min(values, valueof) {
 		for (let value of values) if ((value = valueof(value, ++index, values)) != null && (min > value || min === void 0 && value >= value)) min = value;
 	}
 	return min;
+}
+//#endregion
+//#region node_modules/d3-array/src/sort.js
+function compareDefined(compare = ascending) {
+	if (compare === ascending) return ascendingDefined;
+	if (typeof compare !== "function") throw new TypeError("compare is not a function");
+	return (a, b) => {
+		const x = compare(a, b);
+		if (x || x === 0) return x;
+		return (compare(b, b) === 0) - (compare(a, a) === 0);
+	};
+}
+function ascendingDefined(a, b) {
+	return (a == null || !(a >= a)) - (b == null || !(b >= b)) || (a < b ? -1 : a > b ? 1 : 0);
 }
 //#endregion
 //#region node_modules/d3-array/src/quickselect.js
@@ -228,4 +179,53 @@ function range(start, stop, step) {
 	return range;
 }
 //#endregion
-export { tickStep as a, bisector as c, tickIncrement as i, ascending as l, quantile as n, ticks as o, quantileSorted as r, bisectRight as s, range as t };
+//#region node_modules/d3-array/src/ticks.js
+var e10 = Math.sqrt(50), e5 = Math.sqrt(10), e2 = Math.sqrt(2);
+function tickSpec(start, stop, count) {
+	const step = (stop - start) / Math.max(0, count), power = Math.floor(Math.log10(step)), error = step / Math.pow(10, power), factor = error >= e10 ? 10 : error >= e5 ? 5 : error >= e2 ? 2 : 1;
+	let i1, i2, inc;
+	if (power < 0) {
+		inc = Math.pow(10, -power) / factor;
+		i1 = Math.round(start * inc);
+		i2 = Math.round(stop * inc);
+		if (i1 / inc < start) ++i1;
+		if (i2 / inc > stop) --i2;
+		inc = -inc;
+	} else {
+		inc = Math.pow(10, power) * factor;
+		i1 = Math.round(start / inc);
+		i2 = Math.round(stop / inc);
+		if (i1 * inc < start) ++i1;
+		if (i2 * inc > stop) --i2;
+	}
+	if (i2 < i1 && .5 <= count && count < 2) return tickSpec(start, stop, count * 2);
+	return [
+		i1,
+		i2,
+		inc
+	];
+}
+function ticks(start, stop, count) {
+	stop = +stop, start = +start, count = +count;
+	if (!(count > 0)) return [];
+	if (start === stop) return [start];
+	const reverse = stop < start, [i1, i2, inc] = reverse ? tickSpec(stop, start, count) : tickSpec(start, stop, count);
+	if (!(i2 >= i1)) return [];
+	const n = i2 - i1 + 1, ticks = new Array(n);
+	if (reverse) if (inc < 0) for (let i = 0; i < n; ++i) ticks[i] = (i2 - i) / -inc;
+	else for (let i = 0; i < n; ++i) ticks[i] = (i2 - i) * inc;
+	else if (inc < 0) for (let i = 0; i < n; ++i) ticks[i] = (i1 + i) / -inc;
+	else for (let i = 0; i < n; ++i) ticks[i] = (i1 + i) * inc;
+	return ticks;
+}
+function tickIncrement(start, stop, count) {
+	stop = +stop, start = +start, count = +count;
+	return tickSpec(start, stop, count)[2];
+}
+function tickStep(start, stop, count) {
+	stop = +stop, start = +start, count = +count;
+	const reverse = stop < start, inc = reverse ? tickIncrement(stop, start, count) : tickIncrement(start, stop, count);
+	return (reverse ? -1 : 1) * (inc < 0 ? 1 / -inc : inc);
+}
+//#endregion
+export { quantile as a, bisector as c, range as i, ascending as l, tickStep as n, quantileSorted as o, ticks as r, bisectRight as s, tickIncrement as t };

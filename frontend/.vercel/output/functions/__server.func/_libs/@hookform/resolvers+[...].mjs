@@ -1354,7 +1354,7 @@ function createFormControl(props = {}) {
 		if (!keepStateOptions.keepDefaultValues) _defaultValues = updatedValues;
 		if (!keepStateOptions.keepValues) {
 			if (keepStateOptions.keepDirtyValues) {
-				const fieldsToCheck = new Set([..._names.mount, ...Object.keys(getDirtyFields(_defaultValues, _formValues))]);
+				const fieldsToCheck = /* @__PURE__ */ new Set([..._names.mount, ...Object.keys(getDirtyFields(_defaultValues, _formValues))]);
 				for (const fieldName of Array.from(fieldsToCheck)) {
 					const isDirty = get(_formState.dirtyFields, fieldName);
 					const existingValue = get(_formValues, fieldName);
@@ -1788,7 +1788,7 @@ var _parse = (_Err) => (schema, value, _ctx, _params) => {
 	}, ctx);
 	if (result instanceof Promise) throw new $ZodAsyncError();
 	if (result.issues.length) {
-		const e = new (_params?.Err ?? _Err)(result.issues.map((iss) => finalizeIssue(iss, ctx, config())));
+		const e = new ((_params?.Err) ?? _Err)(result.issues.map((iss) => finalizeIssue(iss, ctx, config())));
 		captureStackTrace(e, _params?.callee);
 		throw e;
 	}
@@ -1803,7 +1803,7 @@ var _parseAsync = (_Err) => async (schema, value, _ctx, params) => {
 	}, ctx);
 	if (result instanceof Promise) result = await result;
 	if (result.issues.length) {
-		const e = new (params?.Err ?? _Err)(result.issues.map((iss) => finalizeIssue(iss, ctx, config())));
+		const e = new ((params?.Err) ?? _Err)(result.issues.map((iss) => finalizeIssue(iss, ctx, config())));
 		captureStackTrace(e, params?.callee);
 		throw e;
 	}

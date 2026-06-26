@@ -115,6 +115,30 @@ var createLucideIcon = (iconName, iconNode) => {
 * This source code is licensed under the ISC license.
 * See the LICENSE file in the root directory of this source tree.
 */
+var FilePlusCorner = createLucideIcon("file-plus-corner", [
+	["path", {
+		d: "M11.35 22H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.706.706l3.588 3.588A2.4 2.4 0 0 1 20 8v5.35",
+		key: "17jvcc"
+	}],
+	["path", {
+		d: "M14 2v5a1 1 0 0 0 1 1h5",
+		key: "wfsgrz"
+	}],
+	["path", {
+		d: "M14 19h6",
+		key: "bvotb8"
+	}],
+	["path", {
+		d: "M17 16v6",
+		key: "18yu1i"
+	}]
+]);
+/**
+* @license lucide-react v0.575.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
 var Bell = createLucideIcon("bell", [["path", {
 	d: "M10.268 21a2 2 0 0 0 3.464 0",
 	key: "vwvbt9"
@@ -364,30 +388,6 @@ var Eye = createLucideIcon("eye", [["path", {
 * This source code is licensed under the ISC license.
 * See the LICENSE file in the root directory of this source tree.
 */
-var FilePlusCorner = createLucideIcon("file-plus-corner", [
-	["path", {
-		d: "M11.35 22H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.706.706l3.588 3.588A2.4 2.4 0 0 1 20 8v5.35",
-		key: "17jvcc"
-	}],
-	["path", {
-		d: "M14 2v5a1 1 0 0 0 1 1h5",
-		key: "wfsgrz"
-	}],
-	["path", {
-		d: "M14 19h6",
-		key: "bvotb8"
-	}],
-	["path", {
-		d: "M17 16v6",
-		key: "18yu1i"
-	}]
-]);
-/**
-* @license lucide-react v0.575.0 - ISC
-*
-* This source code is licensed under the ISC license.
-* See the LICENSE file in the root directory of this source tree.
-*/
 var History = createLucideIcon("history", [
 	["path", {
 		d: "M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8",
@@ -629,4 +629,4 @@ var X = createLucideIcon("x", [["path", {
 	key: "d8bk6v"
 }]]);
 //#endregion
-export { CalendarClock as C, CalendarX as S, Bell as T, ClipboardList as _, ShieldCheck as a, Check as b, Pencil as c, LogOut as d, LayoutDashboard as f, EyeOff as g, Eye as h, Trash2 as i, Minus as l, FilePlusCorner as m, Users as n, Search as o, History as p, User as r, Plus as s, X as t, Menu as u, ChevronRight as v, CalendarCheck as w, Calendar as x, ChevronLeft as y };
+export { CalendarCheck as C, CalendarClock as S, FilePlusCorner as T, ChevronRight as _, ShieldCheck as a, Calendar as b, Pencil as c, LogOut as d, LayoutDashboard as f, ClipboardList as g, EyeOff as h, Trash2 as i, Minus as l, Eye as m, Users as n, Search as o, History as p, User as r, Plus as s, X as t, Menu as u, ChevronLeft as v, Bell as w, CalendarX as x, Check as y };

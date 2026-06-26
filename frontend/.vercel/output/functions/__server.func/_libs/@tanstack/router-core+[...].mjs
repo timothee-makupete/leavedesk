@@ -1,4 +1,4 @@
-import { A as createLRUCache, M as decodePath, O as rootRouteId, S as getStylesheetHref, _ as GLOBAL_TSR, b as createInlineCssStyleAsset, j as invariant, v as TSR_SCRIPT_BARRIER_ID, y as createInlineCssPlaceholderAsset } from "./react-router+[...].mjs";
+import { A as invariant, D as rootRouteId, _ as TSR_SCRIPT_BARRIER_ID, g as GLOBAL_TSR, j as decodePath, k as createLRUCache, v as createInlineCssPlaceholderAsset, x as getStylesheetHref, y as createInlineCssStyleAsset } from "./react-router+[...].mjs";
 //#region node_modules/seroval/dist/esm/production/index.mjs
 var M = ((i) => (i[i.AggregateError = 1] = "AggregateError", i[i.ArrowFunction = 2] = "ArrowFunction", i[i.ErrorPrototypeStack = 4] = "ErrorPrototypeStack", i[i.ObjectAssign = 8] = "ObjectAssign", i[i.BigIntTypedArray = 16] = "BigIntTypedArray", i[i.RegExp = 32] = "RegExp", i))(M || {});
 var v$1 = Symbol.asyncIterator, pr = Symbol.hasInstance, R = Symbol.isConcatSpreadable, C = Symbol.iterator, dr = Symbol.match, gr = Symbol.matchAll, yr = Symbol.replace, Nr = Symbol.search, br = Symbol.species, vr = Symbol.split, Cr = Symbol.toPrimitive, P$1 = Symbol.toStringTag, Ar = Symbol.unscopables;
@@ -2022,7 +2022,7 @@ function uint8ArrayToBase64(bytes) {
 	return btoa(chunks.join(""));
 }
 function base64ToUint8Array(base64) {
-	if (base64.length === 0) return new Uint8Array(0);
+	if (base64.length === 0) return /* @__PURE__ */ new Uint8Array(0);
 	if (hasNodeBuffer) {
 		const buf = BufferCtor.from(base64, "base64");
 		return new Uint8Array(buf.buffer, buf.byteOffset, buf.byteLength);

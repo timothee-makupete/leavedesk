@@ -108,7 +108,7 @@ export function AdminAuditLogsPage() {
               { key: "action", header: "Action", render: (r) => <Badge tone={toneFor(r.action)}>{r.action}</Badge> },
               { key: "admin", header: "Administrator", render: (r) => r.admin?.full_name || "—" },
               { key: "timestamp", header: "Timestamp", render: (r) => formatDateTime(r.created_at) },
-              { key: "description", header: "Description" },
+              { key: "description", header: "Description", className: "break-words max-w-md" },
             ]}
           />
           <Pagination page={page} pageSize={PAGE_SIZE} total={count} onPageChange={setPage} />

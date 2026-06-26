@@ -107,13 +107,13 @@ export function EmployeeDashboard() {
             <p className="py-10 text-center text-xs text-slate-500">No data to display.</p>
           ) : (
             <div className="h-56 sm:h-60">
-              <ResponsiveContainer>
+              <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
-                  <Pie data={chartData} dataKey="value" innerRadius={50} outerRadius={80} paddingAngle={2}>
+                  <Pie data={chartData} dataKey="value" innerRadius={45} outerRadius={75} paddingAngle={2}>
                     {chartData.map((d) => <Cell key={d.name} fill={d.color} />)}
                   </Pie>
                   <Tooltip />
-                  <Legend iconType="circle" wrapperStyle={{ fontSize: 12 }} />
+                  <Legend iconType="circle" layout="horizontal" verticalAlign="bottom" wrapperStyle={{ fontSize: 11, paddingTop: 8 }} />
                 </PieChart>
               </ResponsiveContainer>
             </div>

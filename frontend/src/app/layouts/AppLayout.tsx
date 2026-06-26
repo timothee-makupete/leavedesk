@@ -10,7 +10,7 @@ export function AppLayout() {
       <Sidebar mobileOpen={open} onClose={() => setOpen(false)} />
       <div className="lg:pl-64">
         <Topbar onMenu={() => setOpen(true)} />
-        <main className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+        <main className="mx-auto w-full max-w-7xl px-3 py-4 sm:px-6 sm:py-6 lg:px-8">
           <Outlet />
         </main>
       </div>

@@ -107,16 +107,18 @@ export function ResetPasswordPage() {
 
         <div>
           <label className="mb-2 block text-xs font-medium text-slate-700">Reset code</label>
-          <InputOTP maxLength={6} value={code} onChange={setCode}>
-            <InputOTPGroup>
-              <InputOTPSlot index={0} />
-              <InputOTPSlot index={1} />
-              <InputOTPSlot index={2} />
-              <InputOTPSlot index={3} />
-              <InputOTPSlot index={4} />
-              <InputOTPSlot index={5} />
-            </InputOTPGroup>
-          </InputOTP>
+          <div className="overflow-x-auto">
+            <InputOTP maxLength={6} value={code} onChange={setCode}>
+              <InputOTPGroup className="min-w-max">
+                <InputOTPSlot index={0} />
+                <InputOTPSlot index={1} />
+                <InputOTPSlot index={2} />
+                <InputOTPSlot index={3} />
+                <InputOTPSlot index={4} />
+                <InputOTPSlot index={5} />
+              </InputOTPGroup>
+            </InputOTP>
+          </div>
         </div>
 
         <Input
@@ -143,11 +145,11 @@ export function ResetPasswordPage() {
           Resend code
         </Button>
 
-        <p className="text-center text-xs text-slate-500">
+        <p className="flex flex-wrap items-center justify-center gap-x-1 gap-y-1 text-center text-xs text-slate-500">
           <Link to="/forgot-password" className="text-[#1D4ED8] hover:underline">
             Request a new code
           </Link>
-          {" · "}
+          <span aria-hidden="true">·</span>
           <Link to="/login" className="text-[#1D4ED8] hover:underline">
             Back to sign in
           </Link>
